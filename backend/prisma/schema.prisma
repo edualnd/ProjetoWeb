@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Comments {
+  commentId     Int         @id @default(autoincrement())
+  authorId      String     
+  publicationId Int
+  comment       String      @db.VarChar(200)
+  createdAt     DateTime    @default(now())
+  User          User        @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+
+  @@index([authorId], map: "Comments_authorId_fkey")
+  @@index([publicationId], map: "Comments_publicationId_fkey")
+}
+
+model EventSubscription {
+  userId        String      
+  publicationId Int
+  createdAt     DateTime    @default(now())
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+  User          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([publicationId, userId])
+  @@index([userId], map: "EventSubscription_userId_fkey")
+}
+
+model Publication {
+  publicationId         Int                 @id @default(autoincrement())
+  authorId              String                 
+  video                 String?             @db.VarChar(255)
+  image                 String?             @db.VarChar(255)
+  text                  String              @db.VarChar(255)
+  createdAt             DateTime            @default(now())
+  isEvent               Boolean             @default(false)
+  eventDate             DateTime?
+  registrationStartDate DateTime?
+  registrationEndDate   DateTime?
+  Comments              Comments[]
+  EventSubscription     EventSubscription[]
+  User                  User                @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  Rating                Rating[]
+
+  @@index([authorId], map: "Publication_authorId_fkey")
+}
+
+model Rating {
+  authorId      String      
+  publicationId Int
+  rating        Float
+  User          User        @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+
+  @@id([publicationId, authorId])
+  @@index([authorId], map: "Rating_authorId_fkey")
+}
+
+model User {
+  userImage String?
+  bio String? @db.VarChar(100)
+  userId            String              @id  @default(uuid())
+  username          String              @unique @db.VarChar(30)
+  email             String              @unique @db.VarChar(30)
+  password          String              @db.VarChar(100)
+  role              User_role           @default(COMMON)
+  Comments          Comments[]
+  EventSubscription EventSubscription[]
+  Publication       Publication[]
+  Rating            Rating[]
+  followedBy        Follows[]           @relation("followedBy")
+  following         Follows[]           @relation("following")
+  Session           Session[]
+}
+
+model Follows {
+  followingId  String
+  followedById String
+  followedBy   User @relation("followedBy", fields: [followedById], references: [userId], onDelete: Cascade)
+  following    User @relation("following", fields: [followingId], references: [userId], onDelete: Cascade)
+
+  @@id([followedById, followingId])
+}
+
+model Session{
+  deviceId      String      @id
+  userId        String
+  expiredAt     DateTime
+  User          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+
+enum User_role {
+  COMMON
+  PROFESSIONAL
+}
