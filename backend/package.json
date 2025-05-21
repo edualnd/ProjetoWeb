@@ -2,7 +2,7 @@
   "name": "sportlit-api",
   "version": "1.0.0",
   "description": "Api para o projeto multidisciplinar do 3° Semestre",
-  "main": "serves.js",
+  "main": "src/server.js",
   "type": "module",
   "author": "Ana Julia Andrade",
   "contributors": [
@@ -14,8 +14,8 @@
   "scripts": {
     "format": "prettier --write .",
     "prisma": "npx prisma generate && npx prisma db push",
-    "dev": "node --watch server.js",
-    "start": "node server.js"
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
