@@ -90,6 +90,7 @@ model Follows {
 model Session{
   deviceId      String      @id
   userId        String
+  sessionId     String
   expiredAt     DateTime
   User          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
