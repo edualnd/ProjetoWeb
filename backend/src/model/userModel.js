@@ -1,43 +1,34 @@
 import prisma from '../utils/prisma/db.js';
-import { z } from 'zod';
 
-const userSchema = z.object({
-  username: z.string().min(3).max(30),
-  email: z.string().min(3).max(30).email(),
-  password: z.string().min(3).max(20),
-  role: z.enum(['COMMON', 'PROFESSIONAL']).default('COMMON').optional(),
-  userImage: z.string().optional(),
-  bio: z.string().min(0).max(100).optional(),
-});
-
-
-//TODO: REGISTER
-
-//TODO: query find bys email or username
+// REGISTER
 const checkRegisterCredentials = async (email, username) => {
-    const user = await prisma.user.findFirst({
-        where: {
-            OR: [
-                { email: email },
-                { username: username }
-            ]
-        },
-        select:{
-            userId: true
-        }
-    });
-    return user;
-}
-//TODO: query create user
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: email }, { username: username }],
+    },
+    select: {
+      userId: true,
+    },
+  });
+  return user;
+};
+
 const registerUser = async (data) => {
-    const user = await prisma.user.create({
-        data: data
-    });
-    return user;
-}
+  const user = await prisma.user.create({
+    data: data,
+  });
 
-//TODO: LOGIN
+  return user;
+};
 
-//TODO: query find bys email or username
+//LOGIN
+const checkLoginCredentials = async (data) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: data }, { username: data }],
+    },
+  });
+  return user;
+};
 
-export {userSchema, checkRegisterCredentials, registerUser}
+export {checkRegisterCredentials, registerUser, checkLoginCredentials};
