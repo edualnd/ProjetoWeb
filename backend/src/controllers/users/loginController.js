@@ -1,2 +1,5 @@
-const loginController =()=>{}
+const loginController =(req, res)=>{
+  
+}
+
 export default loginController;
