@@ -1,5 +1,7 @@
+import { checkRegisterCredentials, registerUser } from "../../model/userModel.js";
 import userSchema from "../../schemas/userSchema.js";
 import { hashPass } from "../../utils/security/bcryptUtils.js";
+
 import validateSchema from "../../utils/validators/schemaValidator.js";
 
 const registerController = async (req, res)=>{
@@ -12,7 +14,7 @@ const registerController = async (req, res)=>{
             error: error,
         });
     } 
-    const credentialsAlreadyRegistered = await checkregisteredCredentials(userData.email, userData.username);
+    const credentialsAlreadyRegistered = await checkRegisterCredentials(user.email, user.username);
     if(credentialsAlreadyRegistered){
       return res.status(400).json({
             message: "Success false, user already registered",

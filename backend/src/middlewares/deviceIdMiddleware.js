@@ -2,7 +2,7 @@ const deviceIdGenerator = async (req, res, next) => {
     const isDeviceId = req.cookies?.deviceId;
     if(!isDeviceId){
         const deviceId = crypto.randomUUID();
-        res.cookies('deviceId', deviceId, {
+        res.cookie('deviceId', deviceId, {
             httpOnly: true,
             path:"/",
             sameSite: 'strict',
