@@ -5,24 +5,23 @@ import prisma from '../utils/prisma/db.js';
 
 const router = express.Router();
 
-
 //TODO: Cadastro
-router.post("/register", registerController)
+router.post('/register', registerController);
 //TODO: Login
-router.post("/login", loginController)
+router.post('/login', loginController);
 
 //TODO: Visualizar perfil
-router.get("/profiles", async (req, res) => {
+router.get('/profiles', async (req, res) => {
   const profiles = await prisma.user.findMany({
-    omit:{
+    omit: {
       password: true,
       userId: true,
-    }
-  })
-    res.status(200).json({
-        message: "Success true, profile retrieved",
-        profiles: profiles,
-    });
+    },
+  });
+  res.status(200).json({
+    message: 'Success true, profile retrieved',
+    profiles: profiles,
+  });
 });
 //TODO: Visualizar posts
 
@@ -31,8 +30,5 @@ router.get("/profiles", async (req, res) => {
 //TODO: Visualizar comentarios
 
 //TODO: Visualizar avaliações
-
-
-
 
 export default router;

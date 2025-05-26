@@ -9,5 +9,4 @@ const userSchema = z.object({
   bio: z.string().min(0).max(100).optional(),
 });
 
-
-export default userSchema
+export default userSchema;

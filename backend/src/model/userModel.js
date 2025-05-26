@@ -31,4 +31,4 @@ const checkLoginCredentials = async (data) => {
   return user;
 };
 
-export {checkRegisterCredentials, registerUser, checkLoginCredentials};
+export { checkRegisterCredentials, registerUser, checkLoginCredentials };
