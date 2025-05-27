@@ -1,4 +1,4 @@
-import prisma from '../prisma/db';
+import prisma from '../prisma/db.js';
 
 const createSession = async (data) => {
   const session = await prisma.session.create({
@@ -17,12 +17,17 @@ const findSession = async (deviceId, sessionId) => {
 };
 
 const deleteSession = async (deviceId) => {
-  const session = await prisma.session.delete({
-    where: {
-      deviceId,
-    },
-  });
-  return session;
+  try{
+    const session = await prisma.session.delete({
+      where: {
+        deviceId,
+      },
+    });
+    return session
+  }catch(e){
+    return false
+  }
+  
 };
 
 const deleteAllSessions = async (userId) => {

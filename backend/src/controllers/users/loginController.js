@@ -1,5 +1,8 @@
+import dayjs from 'dayjs';
 import { checkLoginCredentials } from '../../model/userModel.js';
 import { compare } from '../../utils/security/bcryptUtils.js';
+import { createSession, deleteSession } from '../../utils/security/session.js';
+import { generateAccessToken, generateRefreshToken } from '../../utils/security/token.js';
 
 const loginController = async (req, res) => {
   const { data, password } = req.body;
@@ -23,15 +26,44 @@ const loginController = async (req, res) => {
   }
 
   //TODO: Criar refresh token e apagar os antigos(se tiver)
-
+  const deviceId = req.cookies?.deviceId;
+  await deleteSession(deviceId)
   //TODO: Criar access token
-
+  const accessToken = generateAccessToken(deviceId,user.id)
+  const sessionId = crypto.randomUUID();
+  const refreshToken = generateRefreshToken(deviceId, user.id, sessionId);
   //TODO: Criar salvar novo refresh token no banco
+  const expiredAt = dayjs()
+      .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
+      .toDate();
 
-  //TODO: Criar enviar access token
+  const sessionData = {
+    userId: user.userId,
+    deviceId: deviceId,
+    sessionId,
+    expiredAt
+  }
+
+  const session = await createSession(sessionData);
+  if (!session) {
+    res.status(500).json({
+      message: 'Error creating session',
+      error: 'session creation failed',
+    });
+  }
+ 
+
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    expiresIn: expiredAt,
+    path: '/refresh',
+  });
 
   res.status(200).json({
     message: 'Success true',
+    accessToken
   });
 };
 
