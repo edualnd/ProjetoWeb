@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import deviceIdGenerator from './middlewares/deviceIdMiddleware.js';
 import visitorRoutes from './routes/visitorRouter.js';
 import userRoutes from './routes/userRouter.js';
+import postRoutes from './routes/post/postRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.use('/', visitorRoutes);
 //verificação
 
 app.use('/user', userRoutes);
+app.use('/post', postRoutes)
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
