@@ -23,16 +23,21 @@ const validateAccessToken = (token) => {
     if (err) {
       return {
         success: false,
-        error: err.cause,
+        error: err.message,
+        decoded: decoded
       };
     }
     return {
-      sucess: true,
+      success: true,
       data: decoded,
     };
   });
   return isValid;
 };
+const decodeAccessToken = (token) =>{
+  const decodedToken = jwt.decode(token);
+  return decodedToken;
+}
 
 const validateRefreshToken = (token) => {
   const isValid = jwt.verify(token, process.env.RT_SECRET, (err, decoded) => {
@@ -50,9 +55,11 @@ const validateRefreshToken = (token) => {
   return isValid;
 };
 
+
 export {
   generateAccessToken,
   generateRefreshToken,
   validateAccessToken,
   validateRefreshToken,
+  decodeAccessToken
 };

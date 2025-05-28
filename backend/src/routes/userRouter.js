@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
-//TODO: Cadastro
-//TODO: Login
-
+router.get('/', (req, res) => {
+  return res.status(200).json({
+    message: 'User route is working',
+  });
+});
 export default router;
