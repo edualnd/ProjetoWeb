@@ -18,7 +18,7 @@ const findSession = async (deviceId, sessionId) => {
 
 const deleteSession = async (deviceId) => {
   try{
-    const session = await prisma.session.delete({
+    const session = await prisma.session.deleteMany({
       where: {
         deviceId,
       },

@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(deviceIdGenerator);
 
 app.use('/', visitorRoutes);
-app.use("/refresh", refreshTokenController);
+app.post("/refresh", refreshTokenController);
 
 //verificação
 app.use("/auth", checkToken)

@@ -29,9 +29,9 @@ const loginController = async (req, res) => {
   const deviceId = req.cookies?.deviceId;
   await deleteSession(deviceId)
   //TODO: Criar access token
-  const accessToken = generateAccessToken(deviceId,user.id)
+  const accessToken = generateAccessToken(deviceId,user.userId)
   const sessionId = crypto.randomUUID();
-  const refreshToken = generateRefreshToken(deviceId, user.id, sessionId);
+  const refreshToken = generateRefreshToken(deviceId, user.userId, sessionId);
   //TODO: Criar salvar novo refresh token no banco
   const expiredAt = dayjs()
       .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
@@ -52,8 +52,6 @@ const loginController = async (req, res) => {
     });
   }
  
-
-
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'strict',
@@ -65,6 +63,7 @@ const loginController = async (req, res) => {
     message: 'Success true',
     accessToken
   });
+
 };
 
 export default loginController;
