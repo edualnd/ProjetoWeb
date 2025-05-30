@@ -48,7 +48,7 @@ const validateRefreshToken = (token) => {
       };
     }
     return {
-      sucess: true,
+      success: true,
       data: decoded,
     };
   });

@@ -7,10 +7,10 @@ const createSession = async (data) => {
   return session;
 };
 
-const findSession = async (deviceId, sessionId) => {
+const findSession = async (deviceId) => {
   const session = await prisma.session.findFirst({
     where: {
-      AND: [{ deviceId }, { sessionId }],
+      AND: [{ deviceId }, { expiredAt: { lt: new Date() }}],
     },
   });
   return session;
@@ -39,12 +39,17 @@ const deleteAllSessions = async (userId) => {
   return session;
 };
 const deleteExpiredSession = async (userId) => {
-  const session = await prisma.session.deleteMany({
+  try {
+    const session = await prisma.session.deleteMany({
     where: {
       AND: [{ userId }, { expiredAt: { lt: new Date() } }],
     },
   });
-  return session;
+  return ;
+  } catch (error) {
+    return 
+  }
+  
 };
 
 export {
