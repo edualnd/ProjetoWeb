@@ -36,6 +36,7 @@ model Publication {
   authorId              String                 
   video                 String?             @db.VarChar(255)
   image                 String?             @db.VarChar(255)
+  title                 String              @db.VarChar(255)
   text                  String              @db.VarChar(255)
   createdAt             DateTime            @default(now())
   isEvent               Boolean             @default(false)
