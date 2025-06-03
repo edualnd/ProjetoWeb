@@ -30,3 +30,4 @@ app.use('/auth/post', postRoutes)
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+

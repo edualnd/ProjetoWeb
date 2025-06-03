@@ -81,11 +81,11 @@ model User {
 
 model Follows {
   followingId  String
-  followedById String
-  followedBy   User @relation("followedBy", fields: [followedById], references: [userId], onDelete: Cascade)
+  followerById String
+  followedBy   User @relation("followedBy", fields: [followerById], references: [userId], onDelete: Cascade)
   following    User @relation("following", fields: [followingId], references: [userId], onDelete: Cascade)
 
-  @@id([followedById, followingId])
+  @@id([followerById, followingId])
 }
 
 model Session{
