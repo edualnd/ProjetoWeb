@@ -31,4 +31,16 @@ const checkLoginCredentials = async (data) => {
   return user;
 };
 
-export { checkRegisterCredentials, registerUser, checkLoginCredentials };
+//Auth 
+
+const getUserData = async (userId) =>{
+  const user = await prisma.user.findUnique({where:{ userId}, select: {
+    userId: true,
+    username: true,
+    email: true,
+    role: true,
+  }});
+  return user;
+}
+
+export { checkRegisterCredentials, registerUser, checkLoginCredentials, getUserData };
