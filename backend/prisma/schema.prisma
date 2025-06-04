@@ -74,16 +74,16 @@ model User {
   EventSubscription EventSubscription[]
   Publication       Publication[]
   Rating            Rating[]
-  followedBy        Follows[]           @relation("followedBy")
+  followerBy        Follows[]           @relation("followerBy")
   following         Follows[]           @relation("following")
   Session           Session[]
 }
 
 model Follows {
-  followingId  String
-  followerById String
-  followedBy   User @relation("followedBy", fields: [followerById], references: [userId], onDelete: Cascade)
-  following    User @relation("following", fields: [followingId], references: [userId], onDelete: Cascade)
+  followingId  String // que eu estou seguindo
+  followerById String // eu
+  followerBy   User @relation("followerBy", fields: [followingId], references: [userId], onDelete: Cascade)
+  following    User @relation("following", fields: [followerById], references: [userId], onDelete: Cascade)
 
   @@id([followerById, followingId])
 }
