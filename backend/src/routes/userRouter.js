@@ -1,13 +1,14 @@
 import express from 'express';
 import logoutController from '../controllers/user/logoutController.js';
 import roleController from '../controllers/user/roleController.js';
+import usernameController from '../controllers/user/usernameController.js';
 const router = express.Router();
 
 //TODO: Trocar a senha
 //TODO: Trocar email
 //TODO: edit no user (bio, image)
-//TODO: change username 
-//TODO: change role
+
+router.patch('/change-username', usernameController)
 router.patch('/change-role', roleController);
 router.get('/logout', logoutController);
 
