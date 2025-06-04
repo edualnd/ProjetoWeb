@@ -8,6 +8,6 @@ const postRoutes = express.Router();
 
 postRoutes.get('/list', getPostController);
 postRoutes.post('/', createPostController);
-postRoutes.put('/:authorId/:publicationId', updatePostController);
-postRoutes.delete('/:authorId/:publicationId', deletePostController);
+postRoutes.put('/:publicationId', updatePostController);
+postRoutes.delete('/:publicationId', deletePostController);
 export default postRoutes;
