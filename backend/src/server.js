@@ -8,6 +8,7 @@ import userRoutes from './routes/userRouter.js';
 import postRoutes from './routes/post/postRoutes.js'
 import checkToken from './middlewares/checkToken.js';
 import refreshTokenController from './controllers/auth/refreshTokenController.js';
+import followRoutes from './routes/followRouter.js';
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,8 @@ app.use("/auth", checkToken)
 
 app.use('/auth/user', userRoutes);
 app.use('/auth/post', postRoutes)
+
+app.use('/auth/follow', followRoutes)
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
