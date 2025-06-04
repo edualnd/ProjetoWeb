@@ -2,16 +2,17 @@ import { deletePost } from '../../model/postModel.js';
 
 export default async function deletePostController(req, res) {
   try {
-    const { authorId, publicationId } = req.params;
+    const user = req.user.userId
+    const { publicationId } = req.params;
 
-    const result = await deletePost(authorId, +publicationId);
+    const result = await deletePost(user, +publicationId);
 
     return res.json({
       message: 'Post deletado com sucesso!',
       deletedPost: result,
     });
   } catch (error) {
-    console.error('Erro ao deletar post:', error);
-    return res.status(500).json({ error: 'Falha ao deletar post' });
+    console.log('Erro ao deletar post:', error.message);
+    return res.status(500).json({ error: error.message });
   }
 }
