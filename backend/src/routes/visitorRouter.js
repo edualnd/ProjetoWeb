@@ -1,6 +1,6 @@
 import express from 'express';
-import registerController from '../controllers/users/registerController.js';
-import loginController from '../controllers/users/loginController.js';
+import registerController from '../controllers/user/registerController.js';
+import loginController from '../controllers/user/loginController.js';
 import prisma from '../utils/prisma/db.js';
 
 const router = express.Router();
