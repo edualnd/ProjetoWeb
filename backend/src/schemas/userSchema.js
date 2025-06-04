@@ -5,8 +5,7 @@ const userSchema = z.object({
   email: z.string().min(3).max(30).email(),
   password: z.string().min(3).max(20),
   role: z.enum(['COMMON', 'PROFESSIONAL']).default('COMMON').optional(),
-  userImage: z.string().optional(),
-  bio: z.string().min(0).max(100).optional(),
+  
 });
 
 const professionalRoleSchema = z.object(({
@@ -14,4 +13,10 @@ const professionalRoleSchema = z.object(({
   name:z.string().min(3).max(50),
 
 }))
-export {userSchema, professionalRoleSchema};
+
+const profileSchema = z.object(({
+  userImage: z.string(),
+  bio: z.string().min(0).max(100),
+
+}))
+export {userSchema, professionalRoleSchema, profileSchema};
