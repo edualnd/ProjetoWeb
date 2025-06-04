@@ -9,4 +9,9 @@ const userSchema = z.object({
   bio: z.string().min(0).max(100).optional(),
 });
 
-export default userSchema;
+const professionalRoleSchema = z.object(({
+  document: z.string().min(11).max(18),
+  name:z.string().min(3).max(50),
+
+}))
+export {userSchema, professionalRoleSchema};
