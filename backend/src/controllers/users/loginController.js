@@ -2,12 +2,16 @@ import dayjs from 'dayjs';
 import { checkLoginCredentials } from '../../model/userModel.js';
 import { compare } from '../../utils/security/bcryptUtils.js';
 import { createSession, deleteSession } from '../../utils/security/session.js';
-import { generateAccessToken, generateRefreshToken } from '../../utils/security/token.js';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from '../../utils/security/token.js';
 
 const loginController = async (req, res) => {
   const { data, password } = req.body;
 
   const user = await checkLoginCredentials(data);
+
   const typeOfData = data.includes('@') ? 'email' : 'username';
   if (!user) {
     res.status(401).json({
@@ -25,24 +29,24 @@ const loginController = async (req, res) => {
     });
   }
 
-  //TODO: Criar refresh token e apagar os antigos(se tiver)
+  //Criar refresh token e apagar os antigos(se tiver)
   const deviceId = req.cookies?.deviceId;
-  await deleteSession(deviceId)
-  //TODO: Criar access token
-  const accessToken = generateAccessToken(deviceId,user.userId)
+  await deleteSession(deviceId);
+  //Criar access token e refresh token
+  const accessToken = generateAccessToken(deviceId, user.userId);
   const sessionId = crypto.randomUUID();
   const refreshToken = generateRefreshToken(deviceId, user.userId, sessionId);
-  //TODO: Criar salvar novo refresh token no banco
+  //Criar salvar novo refresh token no banco
   const expiredAt = dayjs()
-      .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
-      .toDate();
+    .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
+    .toDate();
 
   const sessionData = {
     userId: user.userId,
     deviceId: deviceId,
     sessionId,
-    expiredAt
-  }
+    expiredAt,
+  };
 
   const session = await createSession(sessionData);
   if (!session) {
@@ -51,20 +55,19 @@ const loginController = async (req, res) => {
       error: 'session creation failed',
     });
   }
- 
+
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'strict',
-    expiresIn: expiredAt,
-    path: '/refresh',
+    expires: expiredAt,
+    path: '/',
   });
 
   res.status(200).json({
     message: 'Success true',
     user,
-    accessToken
+    accessToken,
   });
-
 };
 
 export default loginController;

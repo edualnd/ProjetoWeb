@@ -10,7 +10,7 @@ const createSession = async (data) => {
 const findSession = async (deviceId) => {
   const session = await prisma.session.findFirst({
     where: {
-      AND: [{ deviceId }, { expiredAt: { lt: new Date() }}],
+      deviceId
     },
   });
   return session;

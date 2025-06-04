@@ -38,6 +38,10 @@ const decodeAccessToken = (token) =>{
   const decodedToken = jwt.decode(token);
   return decodedToken;
 }
+const decodeRefreshToken = (token) =>{
+  const decodedToken = jwt.decode(token);
+  return decodedToken;
+}
 
 const validateRefreshToken = (token) => {
   const isValid = jwt.verify(token, process.env.RT_SECRET, (err, decoded) => {
@@ -61,5 +65,6 @@ export {
   generateRefreshToken,
   validateAccessToken,
   validateRefreshToken,
-  decodeAccessToken
+  decodeAccessToken,
+  decodeRefreshToken
 };

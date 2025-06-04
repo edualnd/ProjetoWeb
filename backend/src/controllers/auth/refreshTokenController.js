@@ -1,4 +1,6 @@
+import dayjs from 'dayjs';
 import {
+  createSession,
   deleteExpiredSession,
   deleteSession,
   findSession,
@@ -27,7 +29,7 @@ const refreshTokenController = async (req, res) => {
 
   const { success } = validateRefreshToken(req.cookies?.refreshToken);
   if (!success) {
-    await deleteSession(deviceId);
+     await deleteSession(deviceId);
     return res.status(401).json({
       message: 'Faça login',
       error: 'Refresh token invalido',
@@ -70,7 +72,7 @@ const refreshTokenController = async (req, res) => {
   res.cookie('refreshToken', newRefreshToken, {
     httpOnly: true,
     sameSite: 'strict',
-    expiresIn: expiredAt,
+    expires: expiredAt,
     path: '/refresh',
   });
   return res.status(200).json({

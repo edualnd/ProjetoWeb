@@ -12,3 +12,5 @@ export default async function createPostController(req, res){
             post: result
         })
 }
+
+              

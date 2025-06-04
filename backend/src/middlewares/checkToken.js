@@ -1,10 +1,14 @@
 import { getUserData } from '../model/userModel.js';
-import { validateAccessToken } from '../utils/security/token.js';
+import { decodeRefreshToken, validateAccessToken } from '../utils/security/token.js';
 
 const checkToken = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
   const { success, data, error } = validateAccessToken(token);
-  if (!success) {
+  console.log(req.cookies?.refreshToken);
+  
+  const date =  decodeRefreshToken(req.cookies?.refreshToken);
+  console.log(date)
+  if (!success || data.sub != date.userId) {
     return res.status(401).json({
       message: 'Unauthorized',
       error: error || 'Invalid token',
