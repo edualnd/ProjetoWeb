@@ -5,9 +5,11 @@ import usernameController from '../controllers/user/usernameController.js';
 import editUserController from '../controllers/user/editUserController.js';
 import deleteController from '../controllers/user/deleteController.js';
 import autheticateMiddleware from '../middlewares/autheticateMiddleware.js';
+import passwordController from '../controllers/user/passwordController.js';
 const router = express.Router();
 
 //TODO: Trocar a senha 
+router.patch('/change-password', passwordController);
 //TODO: Trocar email 
 
 
@@ -20,7 +22,6 @@ router.patch('/change-username', usernameController)
 
 router.patch('/change-role', roleController);
 
-//ToDO: delete account
 router.delete('/delete/me', autheticateMiddleware, deleteController)
 
 router.get('/logout', logoutController);

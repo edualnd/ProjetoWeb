@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const userSchema = z.object({
-  username: z.string().min(3).max(30),
+  username: z.string().min(3, "Username muito curto").max(30, "Username muito longo"),
   email: z.string().min(3).max(30).email(),
   password: z.string().min(3).max(20),
   role: z.enum(['COMMON', 'PROFESSIONAL']).default('COMMON').optional(),

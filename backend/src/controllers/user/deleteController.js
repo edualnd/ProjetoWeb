@@ -3,7 +3,7 @@ import { deleteUser } from "../../model/userModel.js";
 
 const deleteController = async(req, res) => {
   const userId = req.user.userId;
-  const deleteUser = await deleteUser(userId);
+  const deletedUser = await deleteUser(userId);
   if(!deleteUser){
     return res.status(404).json({
       message: 'erro ao deletar',
@@ -17,7 +17,8 @@ const deleteController = async(req, res) => {
     path: '/auth',
   });
   return res.status(200).json({
-    message: 'User deleted'
+    message: 'User deleted',
+    deletedUser
   })
 }
 
