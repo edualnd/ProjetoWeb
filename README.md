@@ -4,6 +4,16 @@
 
 **Sincronize sua cópia local com o repositório remoto** para evitar conflitos e garantir que está trabalhando na versão mais atual do projeto.
 
+Para começar a editar o projeto use na pasta ProjetoWeb:
+git fetch  e git pull
+
+Antes de mandar para o github de na pasta ProjetoWeb:
+git fetch -> se houver alguma atualização de:
+git stash
+git pull
+git stash pop
+
+
 ```bash
 git pull
 ```
