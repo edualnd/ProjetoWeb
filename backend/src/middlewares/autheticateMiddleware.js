@@ -1,5 +1,5 @@
 import { checkLoginCredentials } from '../model/userModel.js';
-import { compare } from '..//utils/security/bcryptUtils.js';
+import { compare } from '../utils/security/bcrypt/bcryptUtils.js';
 
 const autheticateMiddleware = async (req, res, next) => {
   const password = req.body.password;

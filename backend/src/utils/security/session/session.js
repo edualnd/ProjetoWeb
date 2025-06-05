@@ -1,4 +1,4 @@
-import prisma from '../prisma/db.js';
+import prisma from '../../prisma/db.js';
 
 const createSession = async (data) => {
   const session = await prisma.session.create({
@@ -10,24 +10,23 @@ const createSession = async (data) => {
 const findSession = async (deviceId) => {
   const session = await prisma.session.findFirst({
     where: {
-      deviceId
+      deviceId,
     },
   });
   return session;
 };
 
 const deleteSession = async (deviceId) => {
-  try{
+  try {
     const session = await prisma.session.deleteMany({
       where: {
         deviceId,
       },
     });
-    return session
-  }catch(e){
-    return false
+    return session;
+  } catch (e) {
+    return false;
   }
-  
 };
 
 const deleteAllSessions = async (userId) => {
@@ -41,15 +40,14 @@ const deleteAllSessions = async (userId) => {
 const deleteExpiredSession = async (userId) => {
   try {
     const session = await prisma.session.deleteMany({
-    where: {
-      AND: [{ userId }, { expiredAt: { lt: new Date() } }],
-    },
-  });
-  return ;
+      where: {
+        AND: [{ userId }, { expiredAt: { lt: new Date() } }],
+      },
+    });
+    return;
   } catch (error) {
-    return 
+    return;
   }
-  
 };
 
 export {

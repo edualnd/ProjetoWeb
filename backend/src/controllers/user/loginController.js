@@ -1,11 +1,14 @@
 import dayjs from 'dayjs';
 import { checkLoginCredentials } from '../../model/userModel.js';
-import { compare } from '../../utils/security/bcryptUtils.js';
-import { createSession, deleteSession } from '../../utils/security/session.js';
+import { compare } from '../../utils/security/bcrypt/bcryptUtils.js';
+import {
+  createSession,
+  deleteSession,
+} from '../../utils/security/session/session.js';
 import {
   generateAccessToken,
   generateRefreshToken,
-} from '../../utils/security/token.js';
+} from '../../utils/security/jwt/token.js';
 
 const loginController = async (req, res) => {
   const { data, password } = req.body;

@@ -24,7 +24,7 @@ const validateAccessToken = (token) => {
       return {
         success: false,
         error: err.message,
-        decoded: decoded
+        decoded: decoded,
       };
     }
     return {
@@ -34,14 +34,14 @@ const validateAccessToken = (token) => {
   });
   return isValid;
 };
-const decodeAccessToken = (token) =>{
+const decodeAccessToken = (token) => {
   const decodedToken = jwt.decode(token);
   return decodedToken;
-}
-const decodeRefreshToken = (token) =>{
+};
+const decodeRefreshToken = (token) => {
   const decodedToken = jwt.decode(token);
   return decodedToken;
-}
+};
 
 const validateRefreshToken = (token) => {
   const isValid = jwt.verify(token, process.env.RT_SECRET, (err, decoded) => {
@@ -59,12 +59,11 @@ const validateRefreshToken = (token) => {
   return isValid;
 };
 
-
 export {
   generateAccessToken,
   generateRefreshToken,
   validateAccessToken,
   validateRefreshToken,
   decodeAccessToken,
-  decodeRefreshToken
+  decodeRefreshToken,
 };

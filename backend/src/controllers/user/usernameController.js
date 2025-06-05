@@ -22,8 +22,7 @@ const usernameController = async (req, res) => {
   );
   if (checkUsername || !success) {
     return res.status(400).json({
-      message:  error?.issues[0].message || 'Username já em uso',
-      
+      message: error?.issues[0].message || 'Username já em uso',
     });
   }
   const user = await changeUsername(userId, newUsername);

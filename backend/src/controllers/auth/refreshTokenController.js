@@ -4,13 +4,13 @@ import {
   deleteExpiredSession,
   deleteSession,
   findSession,
-} from '../../utils/security/session.js';
+} from '../../utils/security/session/session.js';
 import {
   decodeAccessToken,
   generateAccessToken,
   generateRefreshToken,
   validateRefreshToken,
-} from '../../utils/security/token.js';
+} from '../../utils/security/jwt/token.js';
 
 const refreshTokenController = async (req, res) => {
   const accessToken = req.body.accessToken;

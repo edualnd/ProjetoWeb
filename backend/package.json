@@ -10,7 +10,6 @@
     "Kevin Abmael"
   ],
   "license": "ISC",
-  
   "scripts": {
     "format": "prettier --write .",
     "prisma": "npx prisma generate && npx prisma db push",
@@ -27,6 +26,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.2",
+    "otplib": "^12.0.1",
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.24.3"
   },

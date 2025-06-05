@@ -5,10 +5,16 @@ import cookieParser from 'cookie-parser';
 import deviceIdGenerator from './middlewares/deviceIdMiddleware.js';
 import visitorRoutes from './routes/visitorRouter.js';
 import userRoutes from './routes/userRouter.js';
-import postRoutes from './routes/post/postRoutes.js'
+import postRoutes from './routes/post/postRoutes.js';
 import checkToken from './middlewares/checkToken.js';
 import refreshTokenController from './controllers/auth/refreshTokenController.js';
 import followRoutes from './routes/followRouter.js';
+import { sendEmail } from './utils/security/Email/config.js';
+import {
+  createSecret,
+  generateOTP,
+  verifyOTP,
+} from './utils/security/otplib/otp.js';
 
 dotenv.config();
 const app = express();
@@ -20,18 +26,17 @@ app.use(cookieParser());
 app.use(deviceIdGenerator);
 
 app.use('/', visitorRoutes);
-app.post("/refresh", refreshTokenController);
+app.post('/refresh', refreshTokenController);
 
 //verificação
-app.use("/auth", checkToken)
+app.use('/auth', checkToken);
 
 app.use('/auth/user', userRoutes);
 
-app.use('/auth/post', postRoutes)
+app.use('/auth/post', postRoutes);
 
-app.use('/auth/follow', followRoutes)
+app.use('/auth/follow', followRoutes);
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
-

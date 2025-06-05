@@ -1,7 +1,3 @@
+const editUserController = (req, res) => {};
 
-
-const editUserController = (req, res) => {
-  
-}
-
-export default editUserController
+export default editUserController;

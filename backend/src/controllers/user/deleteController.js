@@ -1,10 +1,9 @@
-import { deleteUser } from "../../model/userModel.js";
+import { deleteUser } from '../../model/userModel.js';
 
-
-const deleteController = async(req, res) => {
+const deleteController = async (req, res) => {
   const userId = req.user.userId;
   const deletedUser = await deleteUser(userId);
-  if(!deleteUser){
+  if (!deleteUser) {
     return res.status(404).json({
       message: 'erro ao deletar',
       error: 'erro ao deletar',
@@ -18,8 +17,8 @@ const deleteController = async(req, res) => {
   });
   return res.status(200).json({
     message: 'User deleted',
-    deletedUser
-  })
-}
+    deletedUser,
+  });
+};
 
-export default deleteController
+export default deleteController;

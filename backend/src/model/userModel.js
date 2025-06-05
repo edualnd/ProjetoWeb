@@ -57,7 +57,7 @@ const changeUserRole = async (userId, role, document, name) => {
 //Change USERNAME
 const changeUsername = async (userId, username) => {
   const user = await prisma.user.update({
-    where: {userId},
+    where: { userId },
     data: {
       username,
     },
@@ -76,9 +76,19 @@ const deleteUser = async (userId) => {
 //Change PASSWORD
 const changePassword = async (userId, password) => {
   const user = await prisma.user.update({
-    where: {userId},
+    where: { userId },
     data: {
       password,
+    },
+  });
+  return user;
+};
+//Change EMAIL
+const changeEmail = async (userId, email) => {
+  const user = await prisma.user.update({
+    where: { userId },
+    data: {
+      email,
     },
   });
   return user;
@@ -92,4 +102,5 @@ export {
   changeUsername,
   deleteUser,
   changePassword,
+  changeEmail,
 };
