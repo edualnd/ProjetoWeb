@@ -70,6 +70,8 @@ model User {
   email             String              @unique @db.VarChar(30)
   password          String              @db.VarChar(100)
   role              User_role           @default(COMMON)
+  name              String?             @db.VarChar(50)
+  document          String?             @db.VarChar(18) @unique
   Comments          Comments[]
   EventSubscription EventSubscription[]
   Publication       Publication[]

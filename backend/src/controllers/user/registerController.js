@@ -2,7 +2,7 @@ import {
   checkRegisterCredentials,
   registerUser,
 } from '../../model/userModel.js';
-import userSchema from '../../schemas/userSchema.js';
+import {userSchema} from '../../schemas/userSchema.js';
 import { hashPass } from '../../utils/security/bcryptUtils.js';
 
 import validateSchema from '../../utils/validators/schemaValidator.js';

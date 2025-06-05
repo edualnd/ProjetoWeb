@@ -60,9 +60,14 @@ const loginController = async (req, res) => {
     httpOnly: true,
     sameSite: 'strict',
     expires: expiredAt,
-    path: '/',
+    path: '/refresh',
   });
-
+  res.cookie('id', user.userId, {
+    httpOnly: true,
+    sameSite: 'strict',
+    expires: expiredAt,
+    path: '/auth',
+  });
   res.status(200).json({
     message: 'Success true',
     user,
