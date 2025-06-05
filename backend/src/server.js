@@ -26,6 +26,7 @@ app.post("/refresh", refreshTokenController);
 app.use("/auth", checkToken)
 
 app.use('/auth/user', userRoutes);
+
 app.use('/auth/post', postRoutes)
 
 app.use('/auth/follow', followRoutes)
