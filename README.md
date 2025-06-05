@@ -4,14 +4,25 @@
 
 **Sincronize sua cópia local com o repositório remoto** para evitar conflitos e garantir que está trabalhando na versão mais atual do projeto.
 
-Para começar a editar o projeto use na pasta ProjetoWeb:
-git fetch  e git pull
-
-Antes de mandar para o github de na pasta ProjetoWeb:
-git fetch -> se houver alguma atualização de:
-git stash
+Para começar a editar o projeto use na pasta **ProjetoWeb**:
+```bash
+git fetch
 git pull
+```
+
+Antes de mandar para o github de na pasta **ProjetoWeb**:
+```bash
+git fetch
+```
+se houver alguma atualização de:
+```bash
+git stash
+git pull ou o SyncChanges do VsCode
 git stash pop
+```
+se não existir atualizções de:
+git pull
+```
 
 
 ```bash
