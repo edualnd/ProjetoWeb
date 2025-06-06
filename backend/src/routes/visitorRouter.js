@@ -2,6 +2,7 @@ import express from 'express';
 import registerController from '../controllers/user/registerController.js';
 import loginController from '../controllers/user/loginController.js';
 import prisma from '../utils/prisma/db.js';
+import profileController from '../controllers/user/profileController.js';
 
 const router = express.Router();
 
@@ -9,6 +10,12 @@ const router = express.Router();
 router.post('/register', registerController);
 //TODO: Login
 router.post('/login', loginController);
+
+//TODO:Forgot password
+
+//TODO: Perfil do usuario
+router.get('/:username', profileController)
+
 
 //TODO: Visualizar perfil
 router.get('/profiles', async (req, res) => {

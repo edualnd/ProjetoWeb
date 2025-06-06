@@ -93,6 +93,27 @@ const changeEmail = async (userId, email) => {
   });
   return user;
 };
+
+//Find profile
+const findUserByUsername = async (username) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    omit: {
+      email: true,
+      password: true,
+      role: true,
+      name: true,
+      document: true,
+    },
+    include: {
+      Publication: true,
+      followerBy: true,
+      following: true,
+    },
+  });
+
+  return user;
+};
 export {
   checkRegisteredCredentials,
   registerUser,
@@ -103,4 +124,5 @@ export {
   deleteUser,
   changePassword,
   changeEmail,
+  findUserByUsername,
 };
