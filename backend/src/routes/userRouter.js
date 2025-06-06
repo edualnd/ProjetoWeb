@@ -9,22 +9,26 @@ import passwordController from '../controllers/user/passwordController.js';
 import emailController from '../controllers/user/emailController.js';
 const router = express.Router();
 
-router.patch('/change-password', passwordController);
 
-//TODO: Trocar email
-router.patch('/change-email', autheticateMiddleware, emailController);
+
+
 
 //TODO: edit no user (bio, image)
-
 router.patch('/edit', editUserController);
 
 router.patch('/change-username', usernameController);
 
 router.patch('/change-role', roleController);
 
-router.delete('/delete/me', autheticateMiddleware, deleteController);
+router.patch('/change-password', passwordController);
+
+//TODO: Trocar email
+router.patch('/change-email', autheticateMiddleware, emailController);
 
 router.get('/logout', logoutController);
+
+router.delete('/delete/me', autheticateMiddleware, deleteController);
+
 
 router.get('/', (req, res) => {
   return res.status(200).json({
