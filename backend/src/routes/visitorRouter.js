@@ -17,7 +17,7 @@ router.post('/register', registerController);
 
 router.post('/login', loginController);
 
-router.get('/:username', profileController);
+router.get('/profile/:username', profileController);
 
 router.post('/forgot-password', forgotPasswordController);
 router.post('/reset-password/:token',checkForgotPassTokenMiddleware, resetPasswordController);

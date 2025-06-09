@@ -9,10 +9,11 @@ import emailController from '../controllers/user/ChangeEmail/emailController.js'
 import verifyOTPMiddleware from '../middlewares/verifyOTPMiddleware.js';
 import emailOtpController from '../controllers/user/ChangeEmail/emailOtpController.js';
 import logoutController from '../controllers/user/auth/logoutController.js';
+import upload from '../utils/multer/config.js';
 const router = express.Router();
 
 //TODO: edit no user (bio, image)
-router.patch('/edit', editUserController);
+router.patch('/edit', upload.single('avatar'), editUserController);
 
 router.patch('/change-username', usernameController);
 

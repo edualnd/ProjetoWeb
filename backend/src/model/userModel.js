@@ -65,6 +65,28 @@ const changeUsername = async (userId, username) => {
   return user;
 };
 
+//Edit USER PROFILE
+const editUserProfile = async (userId, data) => {
+  const user = await prisma.user.update({
+    where: { userId },
+    data: {
+      ...data,
+    },
+  });
+  return user;
+};
+
+const profilePicture = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { userId },
+    select: {
+      userImage: true,
+    },
+  })
+  return user.userImage;
+};
+
+
 //DELETE
 const deleteUser = async (userId) => {
   const user = await prisma.user.delete({
@@ -83,6 +105,7 @@ const changePassword = async (userId, password) => {
   });
   return user;
 };
+
 //Change EMAIL
 const changeEmail = async (userId, email) => {
   const user = await prisma.user.update({
@@ -114,6 +137,11 @@ const findUserByUsername = async (username) => {
 
   return user;
 };
+
+
+
+
+
 export {
   checkRegisteredCredentials,
   registerUser,
@@ -125,4 +153,6 @@ export {
   changePassword,
   changeEmail,
   findUserByUsername,
+  profilePicture,
+  editUserProfile,
 };

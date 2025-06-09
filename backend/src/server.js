@@ -9,6 +9,9 @@ import postRoutes from './routes/post/postRoutes.js';
 import checkAccessTokenMiddleware from './middlewares/checkAccessTokenMiddleware.js';
 
 import followRoutes from './routes/followRouter.js';
+import upload from './utils/multer/config.js';
+import { uploadCloud } from './utils/cloudinary/config.js';
+
 
 
 dotenv.config();
@@ -19,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(deviceIdGenerator);
+
 
 app.use('/', visitorRoutes);
 
