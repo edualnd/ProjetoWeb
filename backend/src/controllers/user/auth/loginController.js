@@ -1,20 +1,24 @@
 import dayjs from 'dayjs';
-import { checkLoginCredentials } from '../../model/userModel.js';
-import { compare } from '../../utils/security/bcryptUtils.js';
-import { createSession, deleteSession } from '../../utils/security/session.js';
+import { checkLoginCredentials } from '../../../model/userModel.js';
+import { compare } from '../../../utils/security/bcrypt/bcryptUtils.js';
+import {
+  createSession,
+  deleteSession,
+} from '../../../utils/security/session/session.js';
 import {
   generateAccessToken,
   generateRefreshToken,
-} from '../../utils/security/token.js';
+} from '../../../utils/security/jwt/token.js';
 
 const loginController = async (req, res) => {
   const { data, password } = req.body;
 
   const user = await checkLoginCredentials(data);
 
+
   const typeOfData = data.includes('@') ? 'email' : 'username';
   if (!user) {
-    res.status(401).json({
+    return res.status(401).json({
       message: `Success false, ${typeOfData} or password incorrect`,
       error: 'not found',
     });
@@ -23,7 +27,7 @@ const loginController = async (req, res) => {
   const isValidPassword = await compare(password, user.password);
 
   if (!isValidPassword) {
-    res.status(401).json({
+    return res.status(401).json({
       message: `Success false, ${typeOfData} or password incorrect`,
       error: 'psw',
     });
@@ -50,7 +54,7 @@ const loginController = async (req, res) => {
 
   const session = await createSession(sessionData);
   if (!session) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Error creating session',
       error: 'session creation failed',
     });
@@ -68,7 +72,7 @@ const loginController = async (req, res) => {
     expires: expiredAt,
     path: '/auth',
   });
-  res.status(200).json({
+  return res.status(200).json({
     message: 'Success true',
     user,
     accessToken,

@@ -5,10 +5,14 @@ import cookieParser from 'cookie-parser';
 import deviceIdGenerator from './middlewares/deviceIdMiddleware.js';
 import visitorRoutes from './routes/visitorRouter.js';
 import userRoutes from './routes/userRouter.js';
-import postRoutes from './routes/post/postRoutes.js'
-import checkToken from './middlewares/checkToken.js';
-import refreshTokenController from './controllers/auth/refreshTokenController.js';
+import postRoutes from './routes/post/postRoutes.js';
+import checkAccessTokenMiddleware from './middlewares/checkAccessTokenMiddleware.js';
+
 import followRoutes from './routes/followRouter.js';
+import upload from './utils/multer/config.js';
+import { uploadCloud } from './utils/cloudinary/config.js';
+
+
 
 dotenv.config();
 const app = express();
@@ -19,19 +23,19 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(deviceIdGenerator);
 
+
 app.use('/', visitorRoutes);
-app.post("/refresh", refreshTokenController);
+
 
 //verificação
-app.use("/auth", checkToken)
+app.use('/auth', checkAccessTokenMiddleware);
 
 app.use('/auth/user', userRoutes);
 
-app.use('/auth/post', postRoutes)
+app.use('/auth/post', postRoutes);
 
-app.use('/auth/follow', followRoutes)
+app.use('/auth/follow', followRoutes);
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
-

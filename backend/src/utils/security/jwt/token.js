@@ -18,13 +18,20 @@ const generateAccessToken = (deviceId, userId) => {
   return token;
 };
 
+const generateForgotPassWordToken = (userId, email) => {
+  const token = jwt.sign({ sub: userId, email }, process.env.PASST_SECRET, {
+    expiresIn: process.env.PASST_EXPIRESIN,
+  });
+  return token;
+};
+
 const validateAccessToken = (token) => {
   const isValid = jwt.verify(token, process.env.AT_SECRET, (err, decoded) => {
     if (err) {
       return {
         success: false,
         error: err.message,
-        decoded: decoded
+        decoded: decoded,
       };
     }
     return {
@@ -34,15 +41,6 @@ const validateAccessToken = (token) => {
   });
   return isValid;
 };
-const decodeAccessToken = (token) =>{
-  const decodedToken = jwt.decode(token);
-  return decodedToken;
-}
-const decodeRefreshToken = (token) =>{
-  const decodedToken = jwt.decode(token);
-  return decodedToken;
-}
-
 const validateRefreshToken = (token) => {
   const isValid = jwt.verify(token, process.env.RT_SECRET, (err, decoded) => {
     if (err) {
@@ -58,13 +56,38 @@ const validateRefreshToken = (token) => {
   });
   return isValid;
 };
+const validateForgotPassToken = (token) => {
+  const isValid = jwt.verify(
+    token,
+    process.env.PASST_SECRET,
+    (err, decoded) => {
+      if (err) {
+        return {
+          success: false,
+          error: err.message,
+          decoded: decoded,
+        };
+      }
+      return {
+        success: true,
+        data: decoded,
+      };
+    },
+  );
+  return isValid;
+};
 
+const decodeToken = (token) => {
+  const decodedToken = jwt.decode(token);
+  return decodedToken;
+};
 
 export {
   generateAccessToken,
   generateRefreshToken,
+  generateForgotPassWordToken,
   validateAccessToken,
   validateRefreshToken,
-  decodeAccessToken,
-  decodeRefreshToken
+  validateForgotPassToken,
+  decodeToken,
 };

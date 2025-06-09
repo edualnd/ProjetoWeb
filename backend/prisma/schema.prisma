@@ -14,7 +14,7 @@ model Comments {
   comment       String      @db.VarChar(200)
   createdAt     DateTime    @default(now())
   User          User        @relation(fields: [authorId], references: [userId], onDelete: Cascade)
-  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId], onDelete: Cascade)
 
   @@index([authorId], map: "Comments_authorId_fkey")
   @@index([publicationId], map: "Comments_publicationId_fkey")
@@ -24,7 +24,7 @@ model EventSubscription {
   userId        String      
   publicationId Int
   createdAt     DateTime    @default(now())
-  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId], onDelete: Cascade)
   User          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@id([publicationId, userId])
@@ -56,7 +56,7 @@ model Rating {
   publicationId Int
   rating        Float
   User          User        @relation(fields: [authorId], references: [userId], onDelete: Cascade)
-  Publication   Publication @relation(fields: [publicationId], references: [publicationId])
+  Publication   Publication @relation(fields: [publicationId], references: [publicationId], onDelete: Cascade)
 
   @@id([publicationId, authorId])
   @@index([authorId], map: "Rating_authorId_fkey")

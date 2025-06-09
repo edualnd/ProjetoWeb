@@ -4,17 +4,17 @@ import {
   deleteExpiredSession,
   deleteSession,
   findSession,
-} from '../../utils/security/session.js';
+} from '../../utils/security/session/session.js';
 import {
-  decodeAccessToken,
+  decodeToken,
   generateAccessToken,
   generateRefreshToken,
   validateRefreshToken,
-} from '../../utils/security/token.js';
+} from '../../utils/security/jwt/token.js';
 
 const refreshTokenController = async (req, res) => {
   const accessToken = req.body.accessToken;
-  const { deviceId, exp, sub } = decodeAccessToken(accessToken);
+  const { deviceId, exp, sub } = decodeToken(accessToken);
   const date = Math.floor(Date.now() / 1000);
   const isValid = date <= exp + 3600;
   if (deviceId != req.cookies?.deviceId || !isValid) {

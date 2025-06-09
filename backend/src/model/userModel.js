@@ -1,7 +1,7 @@
 import prisma from '../utils/prisma/db.js';
 
 // REGISTER
-const checkRegisterCredentials = async (email, username) => {
+const checkRegisteredCredentials = async (email, username) => {
   const user = await prisma.user.findFirst({
     where: {
       OR: [{ email: email }, { username: username }],
@@ -32,7 +32,6 @@ const checkLoginCredentials = async (data) => {
 };
 
 //AUTH
-
 const getUserData = async (userId) => {
   const user = await prisma.user.findUnique({
     where: { userId },
@@ -45,8 +44,8 @@ const getUserData = async (userId) => {
   });
   return user;
 };
-//Change ROLE
 
+//Change ROLE
 const changeUserRole = async (userId, role, document, name) => {
   const user = await prisma.user.update({
     where: { userId },
@@ -56,10 +55,9 @@ const changeUserRole = async (userId, role, document, name) => {
 };
 
 //Change USERNAME
-
 const changeUsername = async (userId, username) => {
   const user = await prisma.user.update({
-    where: userId,
+    where: { userId },
     data: {
       username,
     },
@@ -67,11 +65,94 @@ const changeUsername = async (userId, username) => {
   return user;
 };
 
+//Edit USER PROFILE
+const editUserProfile = async (userId, data) => {
+  const user = await prisma.user.update({
+    where: { userId },
+    data: {
+      ...data,
+    },
+  });
+  return user;
+};
+
+const profilePicture = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { userId },
+    select: {
+      userImage: true,
+    },
+  })
+  return user.userImage;
+};
+
+
+//DELETE
+const deleteUser = async (userId) => {
+  const user = await prisma.user.delete({
+    where: { userId },
+  });
+  return user;
+};
+
+//Change PASSWORD
+const changePassword = async (userId, password) => {
+  const user = await prisma.user.update({
+    where: { userId },
+    data: {
+      password,
+    },
+  });
+  return user;
+};
+
+//Change EMAIL
+const changeEmail = async (userId, email) => {
+  const user = await prisma.user.update({
+    where: { userId },
+    data: {
+      email,
+    },
+  });
+  return user;
+};
+
+//Find profile
+const findUserByUsername = async (username) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    omit: {
+      email: true,
+      password: true,
+      role: true,
+      name: true,
+      document: true,
+    },
+    include: {
+      Publication: true,
+      followerBy: true,
+      following: true,
+    },
+  });
+
+  return user;
+};
+
+
+
+
+
 export {
-  checkRegisterCredentials,
+  checkRegisteredCredentials,
   registerUser,
   checkLoginCredentials,
   getUserData,
   changeUserRole,
   changeUsername,
+  deleteUser,
+  changePassword,
+  changeEmail,
+  findUserByUsername,
+  profilePicture,
+  editUserProfile,
 };
