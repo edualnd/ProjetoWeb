@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async ({ to, subject, text, html = null }) => {
   const email = transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from: `LitSport ${process.env.EMAIL_USER}`,
     to,
     subject,
     text,

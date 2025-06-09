@@ -1,23 +1,27 @@
 import express from 'express';
-import registerController from '../controllers/user/registerController.js';
-import loginController from '../controllers/user/loginController.js';
+
 import prisma from '../utils/prisma/db.js';
 import profileController from '../controllers/user/profileController.js';
 
+import loginController from '../controllers/user/auth/loginController.js';
+import registerController from '../controllers/user/auth/registerController.js';
+import forgotPasswordController from '../controllers/user/auth/forgotPasswordController.js';
+import resetPasswordController from '../controllers/user/auth/resetPasswordController.js';
+import checkForgotPassTokenMiddleware from '../middlewares/checkForgotPassTokenMiddleware.js';
+import refreshTokenController from '../controllers/auth/refreshTokenController.js';
 const router = express.Router();
 
-//TODO: Cadastro
+router.post('/refresh', refreshTokenController);
+
 router.post('/register', registerController);
-//TODO: Login
+
 router.post('/login', loginController);
 
-//TODO:Forgot password
+router.get('/:username', profileController);
 
-//TODO: Perfil do usuario
-router.get('/:username', profileController)
+router.post('/forgot-password', forgotPasswordController);
+router.post('/reset-password/:token',checkForgotPassTokenMiddleware, resetPasswordController);
 
-
-//TODO: Visualizar perfil
 router.get('/profiles', async (req, res) => {
   const profiles = await prisma.user.findMany({
     omit: {

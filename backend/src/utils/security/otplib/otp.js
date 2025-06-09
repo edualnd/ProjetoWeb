@@ -2,8 +2,8 @@ import { totp } from 'otplib';
 
 totp.options = { digits: 6, step: 300, window: 1 };
 
-const createSecret = (email, userId) => {
-  return `${process.env.OTP_SECRET}+${email}+${userId}`;
+const createSecret = (text, userId) => {
+  return `${process.env.OTP_SECRET}+${text}+${userId}`;
 };
 
 const generateOTP = (secret) => {

@@ -1,4 +1,4 @@
-import { deleteSession } from '../../utils/security/session/session.js';
+import { deleteSession } from '../../../utils/security/session/session.js';
 
 const logoutController = async (req, res) => {
   const { userId, deviceId } = req.user;
