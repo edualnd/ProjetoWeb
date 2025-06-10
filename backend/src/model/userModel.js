@@ -84,7 +84,7 @@ const currentUserProfile = async (userId) => {
       bio: true,
     },
   })
-  return user.userImage;
+  return user;
 };
 
 

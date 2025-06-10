@@ -17,4 +17,17 @@ const uploadCloud = (filePath) =>{
 
   return file;
 }
-export {uploadCloud};
+
+const deleteFromCloud = (publicId) =>{
+  const file = cloudinary.uploader.destroy(publicId, (err, result) =>{
+    if(err){
+      console.log(err)
+      return res.status(500).json({ message: 'Erro ao fazer upload da imagem' });
+    }
+    return result;
+  })
+
+  return file;
+}
+
+export {uploadCloud, deleteFromCloud};

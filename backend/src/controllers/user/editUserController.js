@@ -1,13 +1,14 @@
 import { editUserProfile, currentUserProfile } from '../../model/userModel.js';
-import { uploadCloud } from '../../utils/cloudinary/config.js';
+import { deleteFromCloud, uploadCloud } from '../../utils/cloudinary/config.js';
 
 const editUserController = async (req, res) => {
   const { userId } = req.user;
   const currentProfile = await currentUserProfile(userId);
-
   const { bio, deletePhoto } = req.body;
-  const newBio = (!bio) ? currentProfile.bio: bio
-  let imageUrl = currentProfile.imageUrl;
+  const newBio = (bio) ? bio: currentProfile.bio;
+  
+
+  let imageUrl = currentProfile.userImage;
   
   if(req.file){
     const cloudData = await uploadCloud(req.file.path);
@@ -17,10 +18,14 @@ const editUserController = async (req, res) => {
       });
     }
     imageUrl = cloudData.public_id + "." + cloudData.format;
+
+    if(currentProfile.userImage != null){
+      const oldPhoto = currentProfile.userImage.split(".")[0]
+      await deleteFromCloud(oldPhoto)
+    }
   }else if(!req.file && deletePhoto == "true") {
     imageUrl = null;
   }
- 
 
   const editProfile = await editUserProfile(userId, {bio: newBio, userImage:imageUrl});
 
