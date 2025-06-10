@@ -22,7 +22,7 @@ const fillProfile = (user) => {
   if(!user.userImage) {
     avatar.innerHTML = `<img src="" alt="Avatar" class="avatar">`;
   }else{
-    avatar.innerHTML = `<img src="../backend/uploads/${user.userImage}" alt="Avatar" class="avatar">`;
+    avatar.innerHTML = `<img src="http://res.cloudinary.com/dzkegljd1/image/upload/v1749592457/${user.userImage}" alt="Avatar" class="avatar">`;
 
   }
   return
