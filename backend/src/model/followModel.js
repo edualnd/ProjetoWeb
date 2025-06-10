@@ -10,4 +10,19 @@ const createSeguindo = async (followingId, followerById) => {
     return { success: false, error: error.message };
   }
 };
-export { createSeguindo };
+
+const block = async (followingId, followerById) => {
+  try {
+    const bloquear = await prisma.follows.delete({
+       where: {
+        followingId_followerById: {followingId,followerById},
+      },
+    });
+    return { success: true, bloquear};
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+
+export {createSeguindo, block};
