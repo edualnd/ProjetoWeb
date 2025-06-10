@@ -20,7 +20,11 @@ router.post('/login', loginController);
 router.get('/profile/:username', profileController);
 
 router.post('/forgot-password', forgotPasswordController);
-router.post('/reset-password/:token',checkForgotPassTokenMiddleware, resetPasswordController);
+router.post(
+  '/reset-password/:token',
+  checkForgotPassTokenMiddleware,
+  resetPasswordController,
+);
 
 router.get('/profiles', async (req, res) => {
   const profiles = await prisma.user.findMany({

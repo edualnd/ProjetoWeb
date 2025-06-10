@@ -76,11 +76,12 @@ const editUserProfile = async (userId, data) => {
   return user;
 };
 
-const profilePicture = async (userId) => {
+const currentUserProfile = async (userId) => {
   const user = await prisma.user.findUnique({
     where: { userId },
     select: {
       userImage: true,
+      bio: true,
     },
   })
   return user.userImage;
@@ -153,6 +154,6 @@ export {
   changePassword,
   changeEmail,
   findUserByUsername,
-  profilePicture,
+  currentUserProfile,
   editUserProfile,
 };
