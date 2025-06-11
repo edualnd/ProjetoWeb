@@ -1,22 +1,30 @@
+const username = document.getElementById("username");
+  const bio = document.getElementById("bio");
+  const avatar = document.getElementById("avatar");
 const getData = async (event) => {
   event.preventDefault();
-  const username = event.target.username.value;
+  const user = event.target.data.value;
   
-  const data = await fetch(`http://localhost:3000/profile/${username}`, {
+  const data = await fetch(`http://localhost:3000/profile/${user}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     }})
   const response = await data.json();
+  if(response.sucess){
+    return fillProfile(response.user);
+  }  
+  username.innerText = "Not found";
+  bio.innerText = "";
+  avatar.innerHTML = ``;
+  return
   
-  return fillProfile(response.user);
+  
   
 }
 
 const fillProfile = (user) => {
-  const username = document.getElementById("username");
-  const bio = document.getElementById("bio");
-  const avatar = document.getElementById("avatar");
+  
   username.innerText = user.username;
   bio.innerText = user.bio;
   if(!user.userImage) {

@@ -6,10 +6,12 @@ const profileController = async (req, res) => {
 
   if (!user) {
     return res.status(404).json({
+      sucess:false,
       message: 'User not found',
     });
   }
   return res.status(200).json({
+    sucess:true,
     message: 'User profile retrieved successfully',
     user
   });

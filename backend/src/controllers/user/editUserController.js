@@ -5,6 +5,13 @@ const editUserController = async (req, res) => {
   const { userId } = req.user;
   const currentProfile = await currentUserProfile(userId);
   const { bio, deletePhoto } = req.body;
+  if(bio.length > 100){
+    return res.status(400).json({
+      success: false,
+      message: "Bio grande demais. Limite de 100 caracteres"
+    })
+  }
+
   const newBio = (bio) ? bio: currentProfile.bio;
   
 
