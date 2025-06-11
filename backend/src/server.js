@@ -6,9 +6,11 @@ import deviceIdGenerator from './middlewares/deviceIdMiddleware.js';
 import visitorRoutes from './routes/visitorRouter.js';
 import userRoutes from './routes/userRouter.js';
 import postRoutes from './routes/post/postRoutes.js';
+import eventRoutes from './routes/event/eventRoutes.js';
 import checkAccessTokenMiddleware from './middlewares/checkAccessTokenMiddleware.js';
 
 import followRoutes from './routes/followRouter.js';
+
 
 
 dotenv.config();
@@ -30,6 +32,8 @@ app.use('/auth/user', userRoutes);
 app.use('/auth/post', postRoutes);
 
 app.use('/auth/follow', followRoutes);
+
+app.use('/auth/event', eventRoutes)
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

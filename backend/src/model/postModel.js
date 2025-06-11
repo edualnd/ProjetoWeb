@@ -43,3 +43,10 @@ export async function getList() {
   const result = await prisma.publication.findMany();
   return result;
 }
+
+export async function createEvent(post){
+  const result = await prisma.publication.create({
+    data: post,
+  });
+    return result;
+}
