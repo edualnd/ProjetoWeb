@@ -15,7 +15,20 @@ const block = async (followingId, followerById) => {
   try {
     const bloquear = await prisma.follows.delete({
        where: {
-        followingId, followerById
+        followerById_followingId: {followerById, followingId}
+      },
+    });
+    return { success: true, bloquear};
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+const stopFollow = async (followingId, followerById) => {
+  try {
+    const bloquear = await prisma.follows.delete({
+       where: {
+        followerById_followingId: {followerById, followingId}
       },
     });
     return { success: true, bloquear};
