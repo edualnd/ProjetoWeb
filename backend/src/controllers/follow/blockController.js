@@ -2,10 +2,10 @@ import { block } from '../../model/followModel.js';
 
 const blockController = async (req, res) => {
 
-  const usuario = req.user.userId;
-  const seguindo = req.body.seguindo;
+  const obloqueado = req.user.obloqueado;
+  const bloqueia = req.body.bloqueia;
 
-  const bloqueado = await block(seguindo, usuario);
+  const bloqueado = await block(bloqueia, obloqueado);
 
     //TO DO: Verificar se ja me segue
   if (block.success) {
