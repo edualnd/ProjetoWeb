@@ -1,41 +1,38 @@
-import prisma from '../utils/prisma/db.js'
-
-
+import prisma from '../utils/prisma/db.js';
 
 //Get
-const getComment = async (commentId) =>{
+const getComment = async (commentId) => {
   const comment = await prisma.comments.findUnique({
-    where:{commentId},
-    select:{
+    where: { commentId },
+    select: {
       authorId: true,
-      Publication: true
-    }
-  }
-)
+      Publication: true,
+    },
+  });
   return comment;
-}
+};
 //Create
-const createComment = async (data) =>{
+const createComment = async (data) => {
   const comment = await prisma.comments.create({
-    data
-  })
+    data,
+  });
   return comment;
-}
+};
 //Delete
-const deleteComment = async (commentId) =>{
+const deleteComment = async (commentId) => {
   const comment = await prisma.comments.delete({
-    where:{commentId}
-  })
+    where: { commentId },
+  });
   return comment;
-}
+};
 
 //Update
-const updateComment = async (commentId, data) =>{
+const updateComment = async (commentId, data) => {
   const comment = await prisma.comments.update({
-    where:{commentId},
-    data
-  })
+    where: { commentId },
+    data,
+  });
   return comment;
-}
+};
 
-export {getComment, createComment, deleteComment,updateComment}
+export { getComment, createComment, deleteComment, updateComment };

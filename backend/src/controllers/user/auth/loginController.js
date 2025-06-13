@@ -15,7 +15,6 @@ const loginController = async (req, res) => {
 
   const user = await checkLoginCredentials(data);
 
-
   const typeOfData = data.includes('@') ? 'email' : 'username';
   if (!user) {
     return res.status(401).json({

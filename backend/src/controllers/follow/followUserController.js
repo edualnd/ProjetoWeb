@@ -6,8 +6,8 @@ const followUserController = async (req, res) => {
   const usuario = req.user.userId;
   const seguindo = req.body.seguindo;
 
-  if (usuario == seguindo){
-  return res.status(400).json({
+  if (usuario == seguindo) {
+    return res.status(400).json({
       message: 'Não pode seguir a si mesmo',
     });
   }

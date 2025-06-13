@@ -6,7 +6,7 @@ import { generateForgotPassWordToken } from '../../../utils/security/jwt/token.j
 const forgotPasswordController = async (req, res) => {
   const { email } = req.body;
   const user = await checkLoginCredentials(email);
-  
+
   if (!user) {
     return res.status(404).json({
       message: 'Success false, user not found',

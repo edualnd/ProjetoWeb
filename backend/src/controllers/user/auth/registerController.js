@@ -37,7 +37,6 @@ const registerController = async (req, res) => {
       message: 'Success true, user created',
     });
   } catch (e) {
-    
     return res.status(500).json({
       message: 'Success false, server error',
       error: e.message,

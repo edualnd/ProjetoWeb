@@ -1,7 +1,4 @@
-
-import {
-  validateForgotPassToken,
-} from '../utils/security/jwt/token.js';
+import { validateForgotPassToken } from '../utils/security/jwt/token.js';
 
 const checkForgotPassTokenMiddleware = async (req, res, next) => {
   const token = req.params?.token;
@@ -13,7 +10,7 @@ const checkForgotPassTokenMiddleware = async (req, res, next) => {
       error: error || 'Invalid token',
     });
   }
-  req.user = {userId: data.sub};
+  req.user = { userId: data.sub };
   next();
 };
 

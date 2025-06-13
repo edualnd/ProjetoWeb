@@ -83,10 +83,9 @@ const currentUserProfile = async (userId) => {
       userImage: true,
       bio: true,
     },
-  })
+  });
   return user;
 };
-
 
 //DELETE
 const deleteUser = async (userId) => {
@@ -138,10 +137,6 @@ const findUserByUsername = async (username) => {
 
   return user;
 };
-
-
-
-
 
 export {
   checkRegisteredCredentials,

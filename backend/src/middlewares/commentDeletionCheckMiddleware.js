@@ -2,10 +2,9 @@ import { getComment } from '../model/commentModel.js';
 
 const commentDeletionCheckMiddleware = async (req, res, next) => {
   const commentId = req.params.commentId;
-  
 
   const comment = await getComment(+commentId);
-  if(!comment){
+  if (!comment) {
     return res.status(404).json({
       message: 'Comentario não achado',
     });
@@ -21,6 +20,6 @@ const commentDeletionCheckMiddleware = async (req, res, next) => {
       message: 'Apagar esse comentario',
     });
   }
-  next()
+  next();
 };
 export default commentDeletionCheckMiddleware;

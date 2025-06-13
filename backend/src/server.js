@@ -11,7 +11,7 @@ import checkAccessTokenMiddleware from './middlewares/checkAccessTokenMiddleware
 
 import followRoutes from './routes/followRouter.js';
 
-import commentRoutes from './routes/commentRoutes.js'
+import commentRoutes from './routes/commentRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -33,9 +33,9 @@ app.use('/auth/post', postRoutes);
 
 app.use('/auth/follow', followRoutes);
 
-app.use('/auth/event/', eventRoutes)
+app.use('/auth/event/', eventRoutes);
 
-app.use('/auth/comments/', commentRoutes)
+app.use('/auth/comments/', commentRoutes);
 
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

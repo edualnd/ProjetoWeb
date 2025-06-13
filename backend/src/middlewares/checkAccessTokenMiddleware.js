@@ -1,7 +1,5 @@
 import { getUserData } from '../model/userModel.js';
-import {
-  validateAccessToken,
-} from '../utils/security/jwt/token.js';
+import { validateAccessToken } from '../utils/security/jwt/token.js';
 
 const checkAccessTokenMiddleware = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];

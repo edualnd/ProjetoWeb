@@ -12,7 +12,6 @@ import logoutController from '../controllers/user/auth/logoutController.js';
 import upload from '../utils/multer/config.js';
 const router = express.Router();
 
-
 router.patch('/edit', upload.single('avatar'), editUserController);
 
 router.patch('/change-username', usernameController);
@@ -20,7 +19,6 @@ router.patch('/change-username', usernameController);
 router.patch('/change-role', roleController);
 
 router.patch('/change-password', passwordController);
-
 
 router.post('/send-email-otp', autheticateMiddleware, emailOtpController);
 router.patch('/change-email', verifyOTPMiddleware, emailController);
