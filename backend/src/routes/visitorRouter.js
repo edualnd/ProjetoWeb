@@ -28,6 +28,19 @@ router.post(
 
 //TODO: Visualizar posts
 
+router.get("/post", async (req, res) =>{
+  const post = await prisma.publication.findMany({
+    where: {Comments:{some:{}}},
+    select:{
+      publicationId: true,
+      Comments: true
+    }
+  })
+  return res.status(200).json({
+    post
+  })
+})
+
 //TODO: Visualizar seguidores e seguindo
 
 //TODO: Visualizar comentarios
