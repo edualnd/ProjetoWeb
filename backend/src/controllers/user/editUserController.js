@@ -1,16 +1,12 @@
 import { editUserProfile, currentUserProfile } from '../../model/userModel.js';
+import { profileSchema } from '../../schemas/userSchema.js';
 import { deleteFromCloud, uploadCloud } from '../../utils/cloudinary/config.js';
+import validateSchema from '../../utils/validators/schemaValidator.js';
 
 const editUserController = async (req, res) => {
   const { userId } = req.user;
   const currentProfile = await currentUserProfile(userId);
   const { bio, deletePhoto } = req.body;
-  if(bio.length > 100){
-    return res.status(400).json({
-      success: false,
-      message: "Bio grande demais. Limite de 100 caracteres"
-    })
-  }
 
   const newBio = (bio) ? bio: currentProfile.bio;
   
@@ -32,6 +28,15 @@ const editUserController = async (req, res) => {
     }
   }else if(!req.file && deletePhoto == "true") {
     imageUrl = null;
+  }
+
+  const {success, error, data} = await validateSchema(profileSchema, {bio: newBio, userImage:imageUrl})
+
+  if (!success) {
+    return res.status(404).json({
+      message: 'Dados invalidos',
+      error,
+    });
   }
 
   const editProfile = await editUserProfile(userId, {bio: newBio, userImage:imageUrl});
