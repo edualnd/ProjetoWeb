@@ -9,6 +9,7 @@ import forgotPasswordController from '../controllers/user/auth/forgotPasswordCon
 import resetPasswordController from '../controllers/user/auth/resetPasswordController.js';
 import checkForgotPassTokenMiddleware from '../middlewares/checkForgotPassTokenMiddleware.js';
 import refreshTokenController from '../controllers/auth/refreshTokenController.js';
+import getCommentsController from '../controllers/comment/getCommentsController.js';
 const router = express.Router();
 
 router.post('/refresh', refreshTokenController);
@@ -28,21 +29,11 @@ router.post(
 
 //TODO: Visualizar posts
 
-router.get('/post', async (req, res) => {
-  const post = await prisma.publication.findMany({
-    select: {
-      publicationId: true,
-      Comments: true,
-    },
-  });
-  return res.status(200).json({
-    post,
-  });
-});
-
 //TODO: Visualizar seguidores e seguindo
 
 //TODO: Visualizar comentarios
+
+router.get('/:postId/comments', getCommentsController);
 
 //TODO: Visualizar avaliações
 
