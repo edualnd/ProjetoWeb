@@ -1,25 +1,25 @@
 import { getComment } from '../model/commentModel.js';
-
+import CustomError from '../errors/CustomErrors.js';
 const commentDeletionCheckMiddleware = async (req, res, next) => {
-  const commentId = req.params.commentId;
+  try {
+    const commentId = req.params.commentId;
 
-  const comment = await getComment(+commentId);
-  if (!comment) {
-    return res.status(404).json({
-      message: 'Comentario não achado',
-    });
-  }
-  const {
-    authorId,
-    Publication: { authorId: postAuthor },
-  } = comment;
+    const comment = await getComment(+commentId);
+    if (!comment) {
+      throw new CustomError(404, 'Comentário não encontrado');
+    }
+    const {
+      authorId,
+      Publication: { authorId: postAuthor },
+    } = comment;
 
-  const userId = req.user.userId;
-  if (authorId != userId && postAuthor != userId) {
-    return res.status(404).json({
-      message: 'Apagar esse comentario',
-    });
+    const userId = req.user.userId;
+    if (authorId != userId && postAuthor != userId) {
+      throw new CustomError(401, 'Você não pode deletar esse comentário');
+    }
+    next();
+  } catch (e) {
+    next(e);
   }
-  next();
 };
 export default commentDeletionCheckMiddleware;

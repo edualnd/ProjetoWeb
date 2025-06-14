@@ -30,7 +30,6 @@ router.post(
 
 router.get('/post', async (req, res) => {
   const post = await prisma.publication.findMany({
-    where: { Comments: { some: {} } },
     select: {
       publicationId: true,
       Comments: true,

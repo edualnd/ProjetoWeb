@@ -5,8 +5,8 @@ const userSchema = z.object({
     .string()
     .min(3, 'Username muito curto')
     .max(30, 'Username muito longo'),
-  email: z.string().min(3).max(30).email(),
-  password: z.string().min(3).max(20),
+  email: z.string().min(3).max(30).email('Email não é válido'),
+  password: z.string().min(3, 'Senha muita curta').max(20, 'Senha muito longa'),
   role: z.enum(['COMMON', 'PROFESSIONAL']).default('COMMON').optional(),
 });
 

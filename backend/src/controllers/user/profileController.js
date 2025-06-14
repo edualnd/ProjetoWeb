@@ -1,20 +1,21 @@
 import { findUserByUsername } from '../../model/userModel.js';
-
+import CustomError from '../../errors/CustomErrors.js';
 const profileController = async (req, res) => {
-  const { username } = req.params;
-  const user = await findUserByUsername(username);
+  try {
+    const { username } = req.params;
+    const user = await findUserByUsername(username);
 
-  if (!user) {
-    return res.status(404).json({
-      sucess: false,
-      message: 'User not found',
+    if (!user) {
+      throw new CustomError(404, 'Não encontrado');
+    }
+    return res.status(200).json({
+      sucess: true,
+      message: 'Perfil encontrado',
+      user,
     });
+  } catch (e) {
+    next(e);
   }
-  return res.status(200).json({
-    sucess: true,
-    message: 'User profile retrieved successfully',
-    user,
-  });
 };
 
 export default profileController;

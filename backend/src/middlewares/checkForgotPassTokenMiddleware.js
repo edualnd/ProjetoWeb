@@ -1,17 +1,18 @@
 import { validateForgotPassToken } from '../utils/security/jwt/token.js';
-
+import CustomError from '../errors/CustomErrors.js';
 const checkForgotPassTokenMiddleware = async (req, res, next) => {
-  const token = req.params?.token;
-  const { success, data, error } = validateForgotPassToken(token);
+  try {
+    const token = req.params?.token;
+    const { success, data, error } = validateForgotPassToken(token);
 
-  if (!success) {
-    return res.status(401).json({
-      message: 'Unauthorized',
-      error: error || 'Invalid token',
-    });
+    if (!success) {
+      throw new CustomError(401, 'Token invalido');
+    }
+    req.user = { userId: data.sub };
+    next();
+  } catch (e) {
+    next(e);
   }
-  req.user = { userId: data.sub };
-  next();
 };
 
 export default checkForgotPassTokenMiddleware;

@@ -4,38 +4,43 @@ import {
 } from '../../model/userModel.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import { userSchema } from '../../schemas/userSchema.js';
-
+import CustomError from '../../errors/CustomErrors.js';
 const usernameController = async (req, res) => {
-  const { userId, username } = req.user;
-  const newUsername = req.body.username;
-  if (username == newUsername) {
-    return res.status(400).json({
-      message: 'Mesmo username',
-    });
-  }
+  try {
+    const { userId, username } = req.user;
+    const newUsername = req.body.username;
+    if (username == newUsername) {
+      throw new CustomError(400, 'Mesmo username');
+    }
 
-  const checkUsername = await checkRegisteredCredentials('', newUsername);
-  const { success, error, data } = await validateSchema(
-    userSchema,
-    { username: newUsername },
-    { email: true, password: true },
-  );
-  if (checkUsername || !success) {
-    return res.status(400).json({
-      message: error?.issues[0].message || 'Username já em uso',
-    });
-  }
-  const user = await changeUsername(userId, newUsername);
+    const checkUsername = await checkRegisteredCredentials('', newUsername);
+    if (checkUsername) {
+      throw new CustomError(409, 'Já em uso');
+    }
+    const { success, error, data } = await validateSchema(
+      userSchema,
+      { username: newUsername },
+      { email: true, password: true },
+    );
+    if (!success) {
+      throw new CustomError(
+        400,
+        'Dados inválidos: verifique e tente novamente',
+      );
+    }
+    const user = await changeUsername(userId, newUsername);
 
-  if (!user) {
-    return res.status(500).json({
-      message: 'Erro ao mudar o username',
-    });
-  }
+    if (!user) {
+      throw new Error();
+    }
 
-  return res.status(200).json({
-    message: 'username mudado com sucesso',
-  });
+    return res.status(200).json({
+      success: true,
+      message: 'Username alterado com sucesso',
+    });
+  } catch (e) {
+    next(e);
+  }
 };
 
 export default usernameController;

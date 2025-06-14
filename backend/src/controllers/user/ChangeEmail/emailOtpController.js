@@ -7,38 +7,49 @@ import {
 } from '../../../utils/security/otplib/otp.js';
 import { sendEmail } from '../../../utils/security/Email/config.js';
 import { emailChangeTemplate } from '../../../utils/security/Email/emailTemplates.js';
+
+import CustomError from '../../../errors/CustomErrors.js';
 const emailOtpController = async (req, res) => {
-  const { newEmail } = req.body;
-  const { email, userId, username } = req.user;
+  try {
+    const { newEmail } = req.body;
+    const { email, userId, username } = req.user;
 
-  const { success, error, data } = await validateSchema(
-    userSchema,
-    { email: newEmail },
-    { username: true, password: true },
-  );
-  if (!success) {
-    return res.status(400).json({
-      message: error?.issues[0].message || 'Email inválido',
-    });
-  }
-  const checkEmail = await checkRegisteredCredentials(newEmail, '');
-  if (checkEmail) {
-    return res.status(400).json({
-      message: 'Email já em uso',
-    });
-  }
+    const { success, error, data } = await validateSchema(
+      userSchema,
+      { email: newEmail },
+      { username: true, password: true },
+    );
+    if (!success) {
+      throw new CustomError(
+        400,
+        'Dados inválidos: verifique e tente novamente',
+      );
+    }
+    const checkEmail = await checkRegisteredCredentials(newEmail, '');
+    if (checkEmail) {
+      throw new CustomError(409, 'Email já cadastrado');
+    }
 
-  const secret = createSecret(`${email}-${newEmail}`, userId);
-  const otp = generateOTP(secret);
-  const emailContent = emailChangeTemplate(username, otp);
-  const emailData = {
-    to: `${username} ${newEmail}`,
-    ...emailContent,
-  };
-  const emailSent = await sendEmail(emailData);
-  return res.status(200).json({
-    message: `Um email foi enviado para ${newEmail}, para continuar acesse o link gerado`,
-    otp,
-  });
+    const secret = createSecret(`${email}-${newEmail}`, userId);
+    const otp = generateOTP(secret);
+    const emailContent = emailChangeTemplate(username, otp);
+    const emailData = {
+      to: `${username} ${newEmail}`,
+      ...emailContent,
+    };
+    const emailSent = await sendEmail(emailData);
+    if (!emailSent) {
+      throw new CustomError(
+        400,
+        'Dados inválidos: verifique e tente novamente',
+      );
+    }
+    return res.status(200).json({
+      success: true,
+      message: `Um email foi enviado para ${newEmail}, para continuar acesse o link gerado`,
+    });
+  } catch (e) {
+    next(e);
+  }
 };
 export default emailOtpController;

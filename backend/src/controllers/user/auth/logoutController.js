@@ -1,21 +1,26 @@
 import { deleteSession } from '../../../utils/security/session/session.js';
 
 const logoutController = async (req, res) => {
-  const { userId, deviceId } = req.user;
+  try {
+    const { userId, deviceId } = req.user;
 
-  await deleteSession(deviceId);
+    await deleteSession(deviceId);
 
-  res.clearCookie('refreshToken', {
-    path: '/refresh',
-  });
-  res.clearCookie('id', {
-    path: '/auth',
-  });
-  return res.status(200).json({
-    message: 'Logout successful',
-    userId,
-    deviceId,
-  });
+    res.clearCookie('refreshToken', {
+      path: '/refresh',
+    });
+    res.clearCookie('id', {
+      path: '/auth',
+    });
+    return res.status(200).json({
+      sucess: true,
+      message: 'Logout com sucesso',
+      userId,
+      deviceId,
+    });
+  } catch (e) {
+    next(e);
+  }
 };
 
 export default logoutController;

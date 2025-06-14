@@ -17,16 +17,12 @@ const findSession = async (deviceId) => {
 };
 
 const deleteSession = async (deviceId) => {
-  try {
-    const session = await prisma.session.deleteMany({
-      where: {
-        deviceId,
-      },
-    });
-    return session;
-  } catch (e) {
-    return false;
-  }
+  const session = await prisma.session.deleteMany({
+    where: {
+      deviceId,
+    },
+  });
+  return session || null;
 };
 
 const deleteAllSessions = async (userId) => {
@@ -38,16 +34,12 @@ const deleteAllSessions = async (userId) => {
   return session;
 };
 const deleteExpiredSession = async (userId) => {
-  try {
-    const session = await prisma.session.deleteMany({
-      where: {
-        AND: [{ userId }, { expiredAt: { lt: new Date() } }],
-      },
-    });
-    return;
-  } catch (error) {
-    return;
-  }
+  const session = await prisma.session.deleteMany({
+    where: {
+      AND: [{ userId }, { expiredAt: { lt: new Date() } }],
+    },
+  });
+  return session;
 };
 
 export {

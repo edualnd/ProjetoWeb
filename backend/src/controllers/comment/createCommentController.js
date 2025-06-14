@@ -1,33 +1,41 @@
 import { createComment } from '../../model/commentModel.js';
 import { commentSchema } from '../../schemas/commentSchema.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
+import CustomError from '../../errors/CustomErrors.js';
 
 const createCommentController = async (req, res) => {
-  const publicationId = +req.params.postId;
-  const authorId = req.user.userId;
-  const comment = req.body.comment;
+  try {
+    const publicationId = +req.params.postId;
+    const authorId = req.user.userId;
+    const comment = req.body.comment;
 
-  const { success, error, data } = await validateSchema(commentSchema, {
-    comment,
-  });
-  if (!success) {
-    return res.status(404).json({
-      message: 'Comentario invalido',
-      error,
+    const { success, error, data } = await validateSchema(commentSchema, {
+      comment,
     });
-  }
+    if (!success) {
+      throw new CustomError(
+        400,
+        'Dados inválidos: verifique e tente novamente',
+      );
+    }
 
-  const newComment = await createComment({ comment, authorId, publicationId });
-
-  if (!newComment) {
-    return res.status(400).json({
-      message: 'Erro ao criar comentario',
+    const newComment = await createComment({
+      comment,
+      authorId,
+      publicationId,
     });
+
+    if (!newComment) {
+      throw new Error();
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'Comentário criado com sucesso',
+      newComment,
+    });
+  } catch (e) {
+    next(e);
   }
-  return res.status(200).json({
-    message: 'sucesso',
-    newComment,
-  });
 };
 
 export default createCommentController;

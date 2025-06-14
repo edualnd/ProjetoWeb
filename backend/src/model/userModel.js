@@ -50,6 +50,13 @@ const changeUserRole = async (userId, role, document, name) => {
   const user = await prisma.user.update({
     where: { userId },
     data: { role, document, name },
+    select: {
+      document: true,
+      name: true,
+      username: true,
+      role: true,
+      email: true,
+    },
   });
   return user;
 };
@@ -135,7 +142,7 @@ const findUserByUsername = async (username) => {
     },
   });
 
-  return user;
+  return user || null;
 };
 
 export {
