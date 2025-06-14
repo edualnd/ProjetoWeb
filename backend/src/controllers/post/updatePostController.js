@@ -1,6 +1,6 @@
 import { update } from '../../model/postModel.js';
 
-export default async function updatePostController(req, res) {
+export default async function updatePostController(req, res, next) {
   try {
     const { authorId, publicationId } = req.params;
     const post = req.body;

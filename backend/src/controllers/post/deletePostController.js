@@ -1,6 +1,6 @@
 import { deletePost } from '../../model/postModel.js';
 
-export default async function deletePostController(req, res) {
+export default async function deletePostController(req, res, next) {
   try {
     const user = req.user.userId;
     const { publicationId } = req.params;

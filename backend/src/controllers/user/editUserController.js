@@ -3,7 +3,7 @@ import { profileSchema } from '../../schemas/userSchema.js';
 import { deleteFromCloud, uploadCloud } from '../../utils/cloudinary/config.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
-const editUserController = async (req, res) => {
+const editUserController = async (req, res, next) => {
   try {
     const { userId } = req.user;
     const currentProfile = await currentUserProfile(userId);

@@ -3,7 +3,7 @@ import { sendEmail } from '../../../utils/security/Email/config.js';
 import { forgotPasswordTemplate } from '../../../utils/security/Email/emailTemplates.js';
 import { generateForgotPassWordToken } from '../../../utils/security/jwt/token.js';
 import CustomError from '../../../errors/CustomErrors.js';
-const forgotPasswordController = async (req, res) => {
+const forgotPasswordController = async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await checkLoginCredentials(email);

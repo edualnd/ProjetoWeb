@@ -5,7 +5,7 @@ import {
 import validateSchema from '../../../utils/validators/schemaValidator.js';
 import { userSchema } from '../../../schemas/userSchema.js';
 import CustomError from '../../../errors/CustomErrors.js';
-const emailController = async (req, res) => {
+const emailController = async (req, res, next) => {
   try {
     const { newEmail } = req.body;
     const { userId } = req.user;

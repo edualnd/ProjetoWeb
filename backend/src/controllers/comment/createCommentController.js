@@ -3,7 +3,7 @@ import { commentSchema } from '../../schemas/commentSchema.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
 
-const createCommentController = async (req, res) => {
+const createCommentController = async (req, res, next) => {
   try {
     const publicationId = +req.params.postId;
     const authorId = req.user.userId;

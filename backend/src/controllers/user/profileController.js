@@ -1,6 +1,6 @@
 import { findUserByUsername } from '../../model/userModel.js';
 import CustomError from '../../errors/CustomErrors.js';
-const profileController = async (req, res) => {
+const profileController = async (req, res, next) => {
   try {
     const { username } = req.params;
     const user = await findUserByUsername(username);

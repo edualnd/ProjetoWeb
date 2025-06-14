@@ -4,7 +4,7 @@ import {
 } from '../../model/userModel.js';
 import { compare, hashPass } from '../../utils/security/bcrypt/bcryptUtils.js';
 import CustomError from '../../errors/CustomErrors.js';
-const passwordController = async (req, res) => {
+const passwordController = async (req, res, next) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const { email, userId } = req.user;

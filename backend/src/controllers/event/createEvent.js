@@ -1,6 +1,6 @@
 import { createEvent } from '../../model/postModel.js';
 
-export default async function createEventController(req, res) {
+export default async function createEventController(req, res, next) {
   try {
     console.log('user');
     const user = req.user.userId;

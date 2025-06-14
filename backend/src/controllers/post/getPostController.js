@@ -1,6 +1,6 @@
 import { getList } from '../../model/postModel.js';
 
-export default async function getPostController(req, res) {
+export default async function getPostController(req, res, next) {
   try {
     const result = await getList();
     return res.json(result);

@@ -2,7 +2,7 @@ import { changeUserRole } from '../../model/userModel.js';
 import { professionalRoleSchema } from '../../schemas/userSchema.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
-const roleController = async (req, res) => {
+const roleController = async (req, res, next) => {
   try {
     const { userId, role } = req.user;
     let changeRole, newRole;

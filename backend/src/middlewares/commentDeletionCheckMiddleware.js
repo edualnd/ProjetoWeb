@@ -1,10 +1,10 @@
-import { getComment } from '../model/commentModel.js';
+import { getCommentData } from '../model/commentModel.js';
 import CustomError from '../errors/CustomErrors.js';
 const commentDeletionCheckMiddleware = async (req, res, next) => {
   try {
     const commentId = req.params.commentId;
 
-    const comment = await getComment(+commentId);
+    const comment = await getCommentData(+commentId);
     if (!comment) {
       throw new CustomError(404, 'Comentário não encontrado');
     }

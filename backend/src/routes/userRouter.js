@@ -27,7 +27,7 @@ router.get('/logout', logoutController);
 
 router.delete('/delete/me', autheticateMiddleware, deleteController);
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   return res.status(200).json({
     data: req.user,
     userId: req.user.userId,

@@ -1,6 +1,6 @@
 import { create } from '../../model/postModel.js';
 
-export default async function createPostController(req, res) {
+export default async function createPostController(req, res, next) {
   const user = req.user.userId;
   console.log(user);
 

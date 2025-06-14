@@ -11,7 +11,7 @@ import validateSchema from '../../../utils/validators/schemaValidator.js';
 const registerController = async (req, res, next) => {
   try {
     const user = req.body;
-    const { success, error, data } = await validateSchema(userSchema, user);
+    const { success, data } = await validateSchema(userSchema, user);
     if (!success) {
       throw new CustomError(
         400,

@@ -11,7 +11,7 @@ import {
 } from '../../../utils/security/jwt/token.js';
 import CustomError from '../../../errors/CustomErrors.js';
 
-const loginController = async (req, res) => {
+const loginController = async (req, res, next) => {
   try {
     const { data, password } = req.body;
 

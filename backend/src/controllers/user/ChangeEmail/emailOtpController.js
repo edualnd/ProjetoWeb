@@ -9,12 +9,12 @@ import { sendEmail } from '../../../utils/security/Email/config.js';
 import { emailChangeTemplate } from '../../../utils/security/Email/emailTemplates.js';
 
 import CustomError from '../../../errors/CustomErrors.js';
-const emailOtpController = async (req, res) => {
+const emailOtpController = async (req, res, next) => {
   try {
     const { newEmail } = req.body;
     const { email, userId, username } = req.user;
 
-    const { success, error, data } = await validateSchema(
+    const { success } = await validateSchema(
       userSchema,
       { email: newEmail },
       { username: true, password: true },

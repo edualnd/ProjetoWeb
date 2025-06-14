@@ -5,7 +5,7 @@ import {
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import { userSchema } from '../../schemas/userSchema.js';
 import CustomError from '../../errors/CustomErrors.js';
-const usernameController = async (req, res) => {
+const usernameController = async (req, res, next) => {
   try {
     const { userId, username } = req.user;
     const newUsername = req.body.username;

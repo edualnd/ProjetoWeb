@@ -1,14 +1,14 @@
-import { getComment, updateComment } from '../../model/commentModel.js';
+import { getCommentData, updateComment } from '../../model/commentModel.js';
 import { commentSchema } from '../../schemas/commentSchema.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
-const updateCommentController = async (req, res) => {
+const updateCommentController = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const commentId = req.params.commentId;
     const newComment = req.body.comment;
 
-    const comment = await getComment(+commentId);
+    const comment = await getCommentData(+commentId);
     if (!comment) {
       throw new CustomError(404, 'Comentário não encontrado');
     }

@@ -31,7 +31,7 @@ app.use('/', visitorRoutes);
 //verificação
 app.use('/auth', checkAccessTokenMiddleware);
 
-app.get('/auth', (req, res) => {
+app.get('/auth', (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: 'logado',

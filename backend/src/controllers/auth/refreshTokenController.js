@@ -13,7 +13,7 @@ import {
 } from '../../utils/security/jwt/token.js';
 import CustomError from '../../errors/CustomErrors.js';
 
-const refreshTokenController = async (req, res) => {
+const refreshTokenController = async (req, res, next) => {
   try {
     const accessToken = req.body.accessToken;
     const { deviceId, exp, sub } = decodeToken(accessToken);

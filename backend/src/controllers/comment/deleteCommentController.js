@@ -1,6 +1,6 @@
 import { deleteComment } from '../../model/commentModel.js';
 
-const deleteCommentController = async (req, res) => {
+const deleteCommentController = async (req, res, next) => {
   try {
     const commentId = req.params.commentId;
 

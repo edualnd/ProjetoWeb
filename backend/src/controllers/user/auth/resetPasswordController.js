@@ -1,7 +1,7 @@
 import { changePassword } from '../../../model/userModel.js';
 import { hashPass } from '../../../utils/security/bcrypt/bcryptUtils.js';
 
-const resetPasswordController = async (req, res) => {
+const resetPasswordController = async (req, res, next) => {
   try {
     const { newPassword } = req.body;
     const userId = req.user.userId;

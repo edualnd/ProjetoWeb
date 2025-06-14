@@ -1,6 +1,6 @@
 import { deleteUser } from '../../model/userModel.js';
 
-const deleteController = async (req, res) => {
+const deleteController = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const deletedUser = await deleteUser(userId);

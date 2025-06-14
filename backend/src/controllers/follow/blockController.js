@@ -1,6 +1,6 @@
 import { block } from '../../model/followModel.js';
 
-const blockController = async (req, res) => {
+const blockController = async (req, res, next) => {
   const bloqueia = req.user.userId;
   const obloqueado = req.body.bloqueia;
 
