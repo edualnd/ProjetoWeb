@@ -13,7 +13,7 @@ const findSession = async (deviceId) => {
       deviceId,
     },
   });
-  return session;
+  return session || null;
 };
 
 const deleteSession = async (deviceId) => {

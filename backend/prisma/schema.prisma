@@ -67,7 +67,7 @@ model User {
   bio String? @db.VarChar(100)
   userId            String              @id  @default(uuid())
   username          String              @unique @db.VarChar(30)
-  email             String              @unique @db.VarChar(30)
+  email             String              @unique @db.VarChar(50)
   password          String              @db.VarChar(100)
   role              User_role           @default(COMMON)
   name              String?             @db.VarChar(50)

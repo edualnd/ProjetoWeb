@@ -15,11 +15,9 @@ import CustomError from '../../errors/CustomErrors.js';
 
 const refreshTokenController = async (req, res, next) => {
   try {
-    const accessToken = req.body.accessToken;
-    const { deviceId, exp, sub } = decodeToken(accessToken);
-    const date = Math.floor(Date.now() / 1000);
-    const isValid = date <= exp + 3600;
-    if (deviceId != req.cookies?.deviceId || !isValid) {
+    const refreshToken = req.cookies?.refreshToken;
+    const { deviceId, userId } = decodeToken(refreshToken);
+    if (deviceId != req.cookies?.deviceId) {
       await deleteSession(req.cookies?.deviceId);
       res.clearCookie('refreshToken', {
         path: '/refresh',
@@ -30,8 +28,8 @@ const refreshTokenController = async (req, res, next) => {
       throw new CustomError(401, 'Faça login');
     }
 
-    const { success, data } = validateRefreshToken(req.cookies?.refreshToken);
-    if (!success || data.userId != sub || data.deviceId != deviceId) {
+    const { success } = validateRefreshToken(refreshToken);
+    if (!success) {
       await deleteSession(deviceId);
       res.clearCookie('refreshToken', {
         path: '/refresh',
@@ -55,14 +53,14 @@ const refreshTokenController = async (req, res, next) => {
     }
 
     await deleteSession(deviceId);
-    const newAccessToken = generateAccessToken(deviceId, sub);
+    const newAccessToken = generateAccessToken(deviceId, userId);
     const sessionId = crypto.randomUUID();
-    const newRefreshToken = generateRefreshToken(deviceId, sub, sessionId);
+    const newRefreshToken = generateRefreshToken(deviceId, userId, sessionId);
     const expiredAt = dayjs()
       .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
       .toDate();
     const sessionData = {
-      userId: sub,
+      userId,
       deviceId,
       sessionId,
       expiredAt,
@@ -78,7 +76,7 @@ const refreshTokenController = async (req, res, next) => {
       expires: expiredAt,
       path: '/refresh',
     });
-    res.cookie('id', user.userId, {
+    res.cookie('id', userId, {
       httpOnly: true,
       sameSite: 'strict',
       expires: expiredAt,
