@@ -21,7 +21,7 @@ git pull ou o SyncChanges do VsCode
 git stash pop
 ```
 se não existir atualizções de:
-git pull
+git push
 ```
 
 
