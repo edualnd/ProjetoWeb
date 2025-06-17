@@ -50,3 +50,34 @@ export async function createEvent(post) {
   });
   return result;
 }
+
+export async function updateEvent(authorId, publicationId, post) {
+  const result = await prisma.publication.update({
+    where: {
+      publicationId: Number(publicationId),
+      authorId: authorId,
+      isEvent: true,
+    },
+    data: {post},
+  });
+  return result;
+}
+
+export async function deleteEvent(authorId, publicationId) {
+  const result = await prisma.publication.delete({
+    where: {
+      publicationId: Number(publicationId),
+      authorId: authorId,
+    },
+  });
+  return result;
+}
+
+export async function getEventList() {
+  const result = await prisma.publication.findMany({
+    where: {
+      isEvent: true,
+    }
+  });
+  return result;
+}
