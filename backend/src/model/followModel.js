@@ -38,30 +38,50 @@ const stopFollow = async (followerById, followingId) => {
   }
 };
 
-const listFolling = async (followerById, followingId) => {
+const listFollowing = async (userId) => {
   try {
-    const pararSeguir = await prisma.follows.delete({
+    const following = await prisma.follows.findMany({
       where: {
-        followerById_followingId: { followerById, followingId },
+        followerById: userId, // quem eu estou seguindo
+      },
+      include: {
+        following: {
+          select: {
+            userId: true,
+            username: true,
+            name: true,
+            userImage: true,
+          },
+        },
       },
     });
-    return { success: true, pararSeguir };
+    return { success: true, following };
   } catch (error) {
     return { success: false, error: error.message };
   }
 };
 
-const listFollowers = async (followerById, followingId) => {
+const listFollowers = async (userId) => {
   try {
-    const pararSeguir = await prisma.follows.delete({
+    const followers = await prisma.follows.findMany({
       where: {
-        followerById_followingId: { followerById, followingId },
+        followingId: userId, // quem me segue
+      },
+      include: {
+        followerBy: {
+          select: {
+            userId: true,
+            username: true,
+            name: true,
+            userImage: true,
+          },
+        },
       },
     });
-    return { success: true, pararSeguir };
+    return { success: true, followers };
   } catch (error) {
     return { success: false, error: error.message };
   }
 };
 
-export { createSeguindo, block, stopFollow, listFolling, listFollowers };
+export { createSeguindo, block, stopFollow, listFollowing, listFollowers };

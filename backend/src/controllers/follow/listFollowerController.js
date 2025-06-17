@@ -1,23 +1,22 @@
-import { listFolling } from '../../model/followModel.js';
+import { listFollowers } from '../../model/followModel.js';
 
-const followUserController = async (req, res, next) => {
-  //TO DO: Verificar se não sao iguais (usuario e seguido)
+const listFollowerController = async (req, res) => {
+const userId = req.user.userId;
 
-  const usuario = req.user.userId;
-  const seguindo = req.body.seguindo;
+  const result = await listFollowers(userId);
 
-  const seguir = await createSeguindo(seguindo, usuario);
-
-  //TO DO: Verificar se ja esta seguindo
-  if (!seguir.success || req.user.userId == req.user.userId) {
+  if (!result.success) {
     return res.status(400).json({
-      message: 'Já esta seguindo',
-      error: seguir.error,
+      message: 'Erro ao buscar seguidores',
+      error: result.error,
     });
   }
+
   return res.status(200).json({
-    message: 'Seguindo',
-    seguir,
+    message: 'Seguidores',
+    //followers: result.followers.map((item) => item.followerBy), ou
+    //followers: result,
   });
 };
-export default followUserController;
+
+export default listFollowerController;
