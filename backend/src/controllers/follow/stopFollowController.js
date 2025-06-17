@@ -1,23 +1,20 @@
-import { createSeguindo } from '../../model/followModel.js';
+import { stopFollow } from '../../model/followModel.js';
 
-const followUserController = async (req, res, next) => {
-  //TO DO: Verificar se não sao iguais (usuario e seguido)
+const stopFollowController = async (req, res, next) => {
+  const daUnfollow = req.user.userId;
+  const recebeunfollow = req.body.daUnfollow;
 
-  const usuario = req.user.userId;
-  const seguindo = req.body.seguindo;
+  const pararSeguir = await stopFollow(daUnfollow, recebeunfollow);
 
-  const seguir = await createSeguindo(seguindo, usuario);
-
-  //TO DO: Verificar se ja esta seguindo
-  if (!seguir.success || req.user.userId == req.user.userId) {
+  if (!pararSeguir.success) {
     return res.status(400).json({
-      message: 'Já esta seguindo',
-      error: seguir.error,
+      message: 'Você não segue esse usuario',
+      error: pararSeguir.error,
     });
   }
   return res.status(200).json({
-    message: 'Seguindo',
-    seguir,
+    message: 'Parou de seguir',
+    pararSeguir,
   });
 };
-export default followUserController;
+export default stopFollowController;

@@ -1,4 +1,4 @@
-import { createSeguindo } from '../../model/followModel.js';
+import { listFollowers } from '../../model/followModel.js';
 
 const followUserController = async (req, res, next) => {
   //TO DO: Verificar se não sao iguais (usuario e seguido)

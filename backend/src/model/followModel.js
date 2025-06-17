@@ -24,17 +24,44 @@ const block = async (followingId, followerById) => {
   }
 };
 
-const stopFollow = async (followingId, followerById) => {
+//folowerbyid = eu(quem esta seguind) following = quem eu quero deixar de seguir
+const stopFollow = async (followerById, followingId) => {
   try {
-    const bloquear = await prisma.follows.delete({
+    const pararSeguir = await prisma.follows.delete({
       where: {
         followerById_followingId: { followerById, followingId },
       },
     });
-    return { success: true, bloquear };
+    return { success: true, pararSeguir };
   } catch (error) {
     return { success: false, error: error.message };
   }
 };
 
-export { createSeguindo, block };
+const listFolling = async (followerById, followingId) => {
+  try {
+    const pararSeguir = await prisma.follows.delete({
+      where: {
+        followerById_followingId: { followerById, followingId },
+      },
+    });
+    return { success: true, pararSeguir };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+const listFollowers = async (followerById, followingId) => {
+  try {
+    const pararSeguir = await prisma.follows.delete({
+      where: {
+        followerById_followingId: { followerById, followingId },
+      },
+    });
+    return { success: true, pararSeguir };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export { createSeguindo, block, stopFollow, listFolling, listFollowers };

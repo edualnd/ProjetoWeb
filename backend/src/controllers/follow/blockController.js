@@ -6,8 +6,7 @@ const blockController = async (req, res, next) => {
 
   const bloqueado = await block(bloqueia, obloqueado);
 
-  //TO DO: Verificar se ja me segue
-  if (block.success) {
+  if (!bloqueado.success) {
     return res.status(400).json({
       message: 'Esse usuario não te segue',
       error: bloqueado.error,
