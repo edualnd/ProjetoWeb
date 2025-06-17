@@ -70,17 +70,21 @@ const PostCard = ({ imagens }) => {
           }}
         >
           {imagens.map((img, index) => (
-            <ImageListItem key={index}>
-              <img
-                src={img}
-                alt=""
-                style={{
-                  maxHeight: "250px",
-                  height: "250px",
-                  width: "100%",
-                }}
-              />
-            </ImageListItem>
+            <>
+              {img && (
+                <ImageListItem key={index}>
+                  <img
+                    src={img || null}
+                    alt=""
+                    style={{
+                      maxHeight: "250px",
+                      height: "250px",
+                      width: "100%",
+                    }}
+                  />
+                </ImageListItem>
+              )}
+            </>
           ))}
         </ImageList>
         <Stack

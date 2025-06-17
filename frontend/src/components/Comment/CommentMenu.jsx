@@ -34,20 +34,12 @@ export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
     }
   };
 
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => {
-    setOpenModal(!openModal);
-  };
-  const handleSubmit = (event) => {
-    console.log("Editando");
-    setOpenModal(!openModal);
-  };
   return (
     <>
       {canEdit || canDelete ? (
         <>
           <Box>
-            <Tooltip title="more">
+            <Tooltip title="more" aria-hidden="false">
               <IconButton
                 type="button"
                 onClick={(event) => handleOpenMenu(event)}
@@ -82,12 +74,7 @@ export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
                   py: 0,
                 }}
               >
-                <IconButton
-                  type="button"
-                  onClick={() => handleOpenModal()}
-                >
-                  <EditIcon sx={{ fontSize: 20 }}></EditIcon>
-                </IconButton>
+                <CommentEditForm></CommentEditForm>
               </MenuItem>
             )}
             {canEdit && canDelete && <Divider />}
@@ -118,15 +105,6 @@ export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
       ) : (
         ""
       )}
-      <Dialog open={openModal} onClose={handleOpenModal}>
-        <CommentEditForm></CommentEditForm>
-        <DialogActions>
-          <Button onClick={handleOpenModal}>Cancel</Button>
-          <Button type="submit" onClick={(event) => handleSubmit(event)}>
-            Editar
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

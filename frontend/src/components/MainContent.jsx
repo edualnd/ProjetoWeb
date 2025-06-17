@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import PostCard from "./Post/PostCard.jsx";
 import EventCard from "./Post/EventCard.jsx";
+
+import CreatePostModal from "./Post/CreatePostModal.jsx";
 const imgEx = "https://abre.ai/mXzv";
 const imgEx2 = "https://abre.ai/mXzz";
 const MainContent = () => {
-  
   return (
     <>
       <Box
@@ -25,6 +26,22 @@ const MainContent = () => {
         >
           Próximos eventos
         </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          height: "60px",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
+        <Tooltip title="Criar Post">
+          <CreatePostModal></CreatePostModal>
+        </Tooltip>
       </Box>
 
       <Typography

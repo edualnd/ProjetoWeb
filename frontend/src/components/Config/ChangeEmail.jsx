@@ -1,5 +1,17 @@
-import { Stack, Typography, Box, TextField, Button } from "@mui/material";
-const ChangeEmail = () => {
+import {
+  Stack,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Dialog,
+  DialogActions,
+} from "@mui/material";
+import OTPModal from "./OTPModal.jsx";
+
+const ChangeEmail = ({ openModal }) => {
+  console.log("aqui");
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -24,6 +36,7 @@ const ChangeEmail = () => {
           >
             <TextField
               label="Senha atual"
+              id="password"
               sx={{
                 width: "100%",
               }}
@@ -37,20 +50,13 @@ const ChangeEmail = () => {
           >
             <TextField
               label="Novo email"
+              id="novoEmail"
               sx={{
                 width: "100%",
               }}
             ></TextField>
           </Box>
-          <Button
-            variant="contained"
-            sx={{
-              width: "50%",
-              height: "50px",
-            }}
-          >
-            Mudar
-          </Button>
+          <OTPModal open={openModal}></OTPModal>
         </Stack>
       </Box>
     </>

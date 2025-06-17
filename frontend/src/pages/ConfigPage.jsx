@@ -7,6 +7,7 @@ import EditProfile from "../components/Config/EditProfile.jsx";
 import DeleteAccount from "../components/Config/DeleteAccount.jsx";
 import SideBar from "../components/Config/SideBar.jsx";
 import { Stack, Box } from "@mui/material";
+import OTPModal from "../components/Config/OTPModal.jsx";
 const ConfigPage = () => {
   const [section, setSection] = useState("editProfile");
 
@@ -41,7 +42,11 @@ const RenderComponent = ({ section }) => {
       ret = <ChangePass></ChangePass>;
       break;
     case "changeEmail":
-      ret = <ChangeEmail></ChangeEmail>;
+      ret = (
+        <>
+          <ChangeEmail></ChangeEmail>
+        </>
+      );
       break;
     case "changeRole":
       ret = <ChangeRole></ChangeRole>;
