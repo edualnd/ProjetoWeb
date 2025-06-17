@@ -9,7 +9,6 @@ const MainLayout = ({ children }) => {
       <Container
         sx={{
           maxWidth: { lg: "800px" },
-          
         }}
       >
         {children}

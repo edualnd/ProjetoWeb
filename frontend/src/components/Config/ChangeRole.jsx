@@ -29,32 +29,38 @@ const ChangeRole = () => {
             mt: 3,
           }}
         >
-          <Box
-            sx={{
-              mx: 5,
-              width: "100%",
-            }}
-          >
-            <TextField
-              label="Senha atual"
-              sx={{
-                width: "100%",
-              }}
-            ></TextField>
-          </Box>
-          <Box
-            sx={{
-              mx: 5,
-              width: "100%",
-            }}
-          >
-            <TextField
-              label="Novo email"
-              sx={{
-                width: "100%",
-              }}
-            ></TextField>
-          </Box>
+          {role == "commom" ? (
+            <>
+              <Box
+                sx={{
+                  mx: 5,
+                  width: "100%",
+                }}
+              >
+                <TextField
+                  label="Nome"
+                  sx={{
+                    width: "100%",
+                  }}
+                ></TextField>
+              </Box>
+              <Box
+                sx={{
+                  mx: 5,
+                  width: "100%",
+                }}
+              >
+                <TextField
+                  label="CPF ou CNPJ"
+                  sx={{
+                    width: "100%",
+                  }}
+                ></TextField>
+              </Box>
+            </>
+          ) : (
+            ""
+          )}
           <Button
             variant="contained"
             onClick={handleChangeRole}

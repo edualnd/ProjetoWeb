@@ -2,46 +2,18 @@ import {
   Box,
   Avatar,
   Typography,
-  IconButton,
-  Tooltip,
-  Link,
-  Menu,
-  MenuItem,
-  Divider,
   List,
   ListItem,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+
 import { useState } from "react";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+
+import { CommentMenu } from "./CommentMenu.jsx";
 const CommentCard = ({ comments }) => {
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
-  const handleMenuClick = (event, id) => {
-    if (selectedCommentId === id) {
-      setMenuAnchor(null);
-      setSelectedCommentId(null);
-    } else {
-      setMenuAnchor(event.currentTarget);
-      setSelectedCommentId(id);
-    }
-  };
   const [card, setCard] = useState(comments);
-  const [confirm, setConfirm] = useState([]);
-  const handleClick = (id) => {
-    if (confirm.includes(id)) {
-      setCard((prev) => prev.filter((c) => c.id !== id));
-      setConfirm((prev) => prev.filter((c) => c !== id) || []);
-    } else {
-      setConfirm((prev) => [...prev, id]);
-      setTimeout(() => {
-        setConfirm((prev) => prev.filter((c) => c !== id) || []);
-      }, 3000);
-    }
-  };
-  card.map((comment) => console.log(comment));
+
+  
+ 
   return (
     <>
       <List>
@@ -90,69 +62,11 @@ const CommentCard = ({ comments }) => {
                 </Box>
                 {comment.canEdit || comment.canDelete ? (
                   <>
-                    <Box>
-                      <Tooltip title="more">
-                        <IconButton
-                          onClick={(event) =>
-                            handleMenuClick(event, comment.id)
-                          }
-                          sx={{
-                            ":hover": {
-                              cursor: "pointer",
-                            },
-                          }}
-                        >
-                          <MoreVertIcon></MoreVertIcon>
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                    <Menu
-                      open={selectedCommentId === comment.id}
-                      anchorEl={menuAnchor}
-                      onClose={handleMenuClick}
-                      PaperProps={{
-                        sx: {
-                          height: "auto",
-                          py: 0,
-                          mt: "1px",
-                        },
-                      }}
-                    >
-                      {comment.canEdit && (
-                        <MenuItem
-                          sx={{
-                            height: 20,
-                            minHeight: 20,
-                            py: 0,
-                          }}
-                        >
-                          <IconButton>
-                            <EditIcon sx={{ fontSize: 20 }}></EditIcon>
-                          </IconButton>
-                        </MenuItem>
-                      )}
-                      {comment.canEdit && comment.canDelete && <Divider />}
-                      {comment.canDelete && (
-                        <MenuItem
-                          sx={{
-                            height: 20,
-                            minHeight: 20,
-                            py: 0,
-                          }}
-                        >
-                          <IconButton onClick={() => handleClick(comment.id)}>
-                            <DeleteIcon
-                              sx={{
-                                fontSize: 20,
-                                color: confirm.includes(comment.id)
-                                  ? "red"
-                                  : "",
-                              }}
-                            ></DeleteIcon>
-                          </IconButton>
-                        </MenuItem>
-                      )}
-                    </Menu>
+                    <CommentMenu
+                      canDelete={comment.canDelete}
+                      canEdit={comment.canEdit}
+                      commentId={comment.id}
+                    ></CommentMenu>
                   </>
                 ) : (
                   ""

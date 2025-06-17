@@ -4,6 +4,7 @@ import EventCard from "./Post/EventCard.jsx";
 const imgEx = "https://abre.ai/mXzv";
 const imgEx2 = "https://abre.ai/mXzz";
 const MainContent = () => {
+  
   return (
     <>
       <Box

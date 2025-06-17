@@ -1,4 +1,3 @@
-
 import { Box, Stack, Typography, Button } from "@mui/material";
 const EventInfo = ({ content, subscribe }) => {
   return (
@@ -58,47 +57,6 @@ const EventInfo = ({ content, subscribe }) => {
               <Typography>12/12/2025 08:00</Typography>
             </Box>
           </Box>
-          {subscribe && (
-            <Stack direction={"row"} spacing={2}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography>Vagas disponiveis</Typography>
-                <Box
-                  sx={{
-                    bgcolor: "#d9d9d9",
-                    borderRadius: 2,
-                    textAlign: "center",
-                    height: "30px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography>0</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography>Vagas Totais</Typography>
-                <Box
-                  sx={{
-                    bgcolor: "#d9d9d9",
-                    borderRadius: 2,
-                    textAlign: "center",
-                    height: "30px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography>10</Typography>
-                </Box>
-              </Box>
-            </Stack>
-          )}
         </Stack>
         {subscribe && (
           <Box>
