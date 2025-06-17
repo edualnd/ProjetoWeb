@@ -1,6 +1,5 @@
 import express from 'express';
 import roleController from '../controllers/user/roleController.js';
-import usernameController from '../controllers/user/usernameController.js';
 import editUserController from '../controllers/user/editUserController.js';
 import deleteController from '../controllers/user/deleteController.js';
 import autheticateMiddleware from '../middlewares/autheticateMiddleware.js';
@@ -13,8 +12,6 @@ import upload from '../utils/multer/config.js';
 const router = express.Router();
 
 router.patch('/edit', upload.single('avatar'), editUserController);
-
-router.patch('/change-username', usernameController);
 
 router.patch('/change-role', roleController);
 

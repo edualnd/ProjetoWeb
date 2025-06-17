@@ -61,17 +61,6 @@ const changeUserRole = async (userId, role, document, name) => {
   return user;
 };
 
-//Change USERNAME
-const changeUsername = async (userId, username) => {
-  const user = await prisma.user.update({
-    where: { userId },
-    data: {
-      username,
-    },
-  });
-  return user;
-};
-
 //Edit USER PROFILE
 const editUserProfile = async (userId, data) => {
   const user = await prisma.user.update({
@@ -151,7 +140,6 @@ export {
   checkLoginCredentials,
   getUserData,
   changeUserRole,
-  changeUsername,
   deleteUser,
   changePassword,
   changeEmail,

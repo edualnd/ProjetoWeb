@@ -1,5 +1,9 @@
-import { editUserProfile, currentUserProfile } from '../../model/userModel.js';
-import { profileSchema } from '../../schemas/userSchema.js';
+import {
+  editUserProfile,
+  currentUserProfile,
+  checkRegisteredCredentials,
+} from '../../model/userModel.js';
+import { profileSchema, userSchema } from '../../schemas/userSchema.js';
 import { deleteFromCloud, uploadCloud } from '../../utils/cloudinary/config.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
@@ -7,8 +11,32 @@ const editUserController = async (req, res, next) => {
   try {
     const { userId } = req.user;
     const currentProfile = await currentUserProfile(userId);
-    const { bio, deletePhoto } = req.body;
+    const { bio, deletePhoto, newUsername } = req.body;
 
+    if (username == newUsername) {
+      throw new CustomError(400, 'Mesmo username');
+    }
+
+    const checkUsername = await checkRegisteredCredentials('', newUsername);
+    if (checkUsername) {
+      throw new CustomError(409, 'Username já em uso');
+    }
+
+    const {
+      success: ValidadeSuccess,
+      error,
+      data,
+    } = await validateSchema(
+      userSchema,
+      { username: newUsername },
+      { email: true, password: true },
+    );
+    if (!ValidadeSuccess) {
+      throw new CustomError(
+        400,
+        'Dados inválidos: verifique e tente novamente',
+      );
+    }
     const newBio = bio ? bio : currentProfile.bio;
 
     let imageUrl = currentProfile.userImage;
@@ -45,6 +73,7 @@ const editUserController = async (req, res, next) => {
     const editProfile = await editUserProfile(userId, {
       bio: newBio,
       userImage: imageUrl,
+      username: newUsername,
     });
 
     if (!editProfile) {
