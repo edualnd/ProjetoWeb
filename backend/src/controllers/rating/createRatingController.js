@@ -2,9 +2,6 @@ import { createRating } from "../../model/ratingModel.js";
 import validateSchema from '../../utils/validators/schemaValidator.js';
 import ratingSchema from "../../schemas/ratingSchema.js";
 
-
-// TO DO adicionar validador para o valor da nota no zod
-
 export default async function createRatingController(req, res, next) {
 
   try{
@@ -12,8 +9,13 @@ export default async function createRatingController(req, res, next) {
     const {publicationId} = req.params;
     const {rating} = req.body;
 
-    if (rating < 1 || rating > 5) {
-      throw new Error('A nota deve estar entre 1 e 5');
+    const {success, error, data} = await validateSchema(ratingSchema, {
+      rating
+    });
+
+    if(!success){
+      console.log(error)
+      return res.status(500).json({ error: error });
     }
 
       const result = await createRating(rating, authorId , +publicationId);
@@ -23,10 +25,8 @@ export default async function createRatingController(req, res, next) {
       });
     }catch(error){
     if (error.code === 'P2002') {
-      throw new Error('Este usuário já avaliou este produto');
+      throw new Error('Este usuário já avaliou este evento');
     }
     throw error;
-    //console.log('Erro ao registrar avaliação', error);
-    //return res.status(500).json({ error: error.message });
   }
 }
