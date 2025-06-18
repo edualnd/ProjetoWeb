@@ -81,3 +81,13 @@ export async function getEventList() {
   });
   return result;
 }
+
+export async function getEventUserList(authorId) {
+  const result = await prisma.publication.findMany({
+    where: {
+      isEvent: true,
+      authorId: authorId
+    }
+  });
+  return result;
+}
