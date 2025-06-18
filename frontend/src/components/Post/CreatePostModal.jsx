@@ -10,10 +10,15 @@ import {
   Box,
   ImageList,
   Typography,
+  ToggleButton,
+  Checkbox,
+  FormControlLabel,
+  Divider,
 } from "@mui/material";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import { useRef, useState } from "react";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CustomToggleButton from "../CustomToggleButton.jsx";
 const CreatePostModal = () => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
@@ -27,8 +32,7 @@ const CreatePostModal = () => {
     event.preventDefault();
     const token = document.getElementById("tokenOTP");
     const email = document.getElementById("novoEmail");
-    console.log("Token OTP");
-    console.log(token.value, email.value);
+
     handleOpenModal();
   };
 
@@ -44,6 +48,7 @@ const CreatePostModal = () => {
 
     if (file) {
       const url = file.map((f) => URL.createObjectURL(f));
+      console.log(url);
       if (fileUrl.length == 2) {
         setFileUrl([url[0], url[1]]);
       } else if (fileUrl.length == 1) {
@@ -54,6 +59,12 @@ const CreatePostModal = () => {
     }
   };
 
+  const [categoryView, setCategoryView] = useState("Publicação");
+
+  const [inscritos, setInscritos] = useState(false);
+  const handleCheckboxChange = (event) => {
+    setInscritos(event.target.checked);
+  };
   return (
     <>
       <IconButton onClick={handleOpenModal}>
@@ -73,49 +84,139 @@ const CreatePostModal = () => {
         }}
       >
         <DialogTitle>Postar</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2}>
-            <TextField
-              aria-label="Texto"
-              placeholder="Digite aqui"
-              multiline
-              rows={5}
-              sx={{ width: "100%", fontSize: "16px" }}
-              inputProps={{ maxLength: 255 }}
-            ></TextField>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          <CustomToggleButton
+            categories={["Publicação", "Evento"]}
+            selected={categoryView}
+            onChange={(e, category) =>
+              setCategoryView((prev) => category || prev)
+            }
+          ></CustomToggleButton>
 
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <input
-                type="file"
-                ref={fileInput}
-                multiple
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <IconButton onClick={handleIconClick} sx={{ borderRadius: 0 }}>
-                <Typography>Maximo 2 imagens</Typography>
-                <FileUploadIcon sx={{ width: "25px", height: "25px" }} />
-              </IconButton>
-            </Box>
-            <ImageList>
-              {fileUrl.map((img, index) => (
-                <>
-                  <img
-                    src={img}
-                    alt=""
-                    key={index}
-                    style={{ maxWidth: "100%" }}
+          {categoryView == "Evento" ? (
+            <>
+              <Stack spacing={2}>
+                <TextField
+                  aria-label="Titulo"
+                  placeholder="Titulo"
+                  multiline
+                  rows={2}
+                  sx={{ width: "100%", fontSize: "16px" }}
+                  inputProps={{ maxLength: 50 }}
+                ></TextField>
+                <TextField
+                  aria-label="Texto"
+                  placeholder="Digite aqui"
+                  multiline
+                  rows={5}
+                  sx={{ width: "100%", fontSize: "16px" }}
+                  inputProps={{ maxLength: 255 }}
+                ></TextField>
+                <Typography>Dia do evento</Typography>
+                <TextField type="date"></TextField>
+                <FormControlLabel
+                  control={<Checkbox></Checkbox>}
+                  label="Precisa se inscrever"
+                  checked={inscritos}
+                  onChange={handleCheckboxChange}
+                ></FormControlLabel>
+
+                {inscritos && (
+                  <>
+                    <Typography>Inicio das inscrições </Typography>
+                    <TextField type="date"></TextField>
+                    <Typography>Fim das inscrições</Typography>
+                    <TextField type="date"></TextField>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <input
+                        type="file"
+                        ref={fileInput}
+                        multiple
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                      <IconButton
+                        onClick={handleIconClick}
+                        sx={{ borderRadius: 0 }}
+                      >
+                        <Typography>Maximo 2 imagens</Typography>
+                        <FileUploadIcon
+                          sx={{ width: "25px", height: "25px" }}
+                        />
+                      </IconButton>
+                    </Box>
+                  </>
+                )}
+                <ImageList>
+                  {fileUrl.map((img, index) => (
+                    <>
+                      <img
+                        src={img}
+                        alt=""
+                        key={index}
+                        style={{ maxWidth: "100%" }}
+                      />
+                    </>
+                  ))}
+                </ImageList>
+              </Stack>
+            </>
+          ) : (
+            <>
+              <Stack spacing={2}>
+                <TextField
+                  aria-label="Texto"
+                  placeholder="Digite aqui"
+                  multiline
+                  rows={5}
+                  sx={{ width: "100%", fontSize: "16px" }}
+                  inputProps={{ maxLength: 255 }}
+                ></TextField>
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <input
+                    type="file"
+                    ref={fileInput}
+                    multiple
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
                   />
-                </>
-              ))}
-            </ImageList>
-          </Stack>
+                  <IconButton
+                    onClick={handleIconClick}
+                    sx={{ borderRadius: 0 }}
+                  >
+                    <Typography>Maximo 2 imagens</Typography>
+                    <FileUploadIcon sx={{ width: "25px", height: "25px" }} />
+                  </IconButton>
+                </Box>
+                <ImageList>
+                  {fileUrl.map((img, index) => (
+                    <>
+                      <img
+                        src={img}
+                        alt=""
+                        key={index}
+                        style={{ maxWidth: "100%" }}
+                      />
+                    </>
+                  ))}
+                </ImageList>
+              </Stack>
+            </>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpenModal}>Cancel</Button>
@@ -127,16 +228,11 @@ const CreatePostModal = () => {
     </>
   );
 };
+/*
+
+ */
 /**
- * <Stack spacing={2}>
-            <TextField label="Imagem ou video"></TextField>
-            <TextField label="Text"></TextField>
-            <TextField label="Title"></TextField>
-            <TextField label="Data"></TextField>
-            <TextField label="Inscriçao"></TextField>
-            <TextField label="Data da Inscriçao"></TextField>
-            <TextField label="data final da inscriçao"></TextField>
-          </Stack>
+ *
  */
 
 export default CreatePostModal;

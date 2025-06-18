@@ -1,18 +1,30 @@
-import React from "react";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Avatar, Box, Typography, Link } from "@mui/material";
+import PostMenu from "./PostMenu.jsx";
 const PostInfo = ({ content }) => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-        <Avatar sx={{ width: "54px", height: "54px" }}></Avatar>
-        <Box>
-          <Typography variant="h5" color="ocean.dark">
-            {content.username}
-          </Typography>
-          <Typography variant="body2" color="ocean.dark">
-            {content.date}
-          </Typography>
-        </Box>
+        <Link
+          component={RouterLink}
+          to="/profile/a"
+          underline="none"
+          sx={{ flex: 1 }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+            <Avatar sx={{ width: "54px", height: "54px" }}></Avatar>
+            <Box sx={{ flex: 2 }}>
+              <Typography variant="h5" color="ocean.dark">
+                {content.username}
+              </Typography>
+              <Typography variant="body2" color="ocean.dark">
+                {content.date}
+              </Typography>
+            </Box>
+          </Box>
+        </Link>
+
+        <PostMenu></PostMenu>
       </Box>
       <Box>
         <Typography
@@ -22,9 +34,6 @@ const PostInfo = ({ content }) => {
             whiteSpace: "pre-line",
             wordBreak: "break-word",
             textAlign: "justify",
-            display: "-webkit-box",
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: "vertical",
             overflow: "hidden",
             px: 2,
           }}
@@ -37,3 +46,13 @@ const PostInfo = ({ content }) => {
 };
 
 export default PostInfo;
+/*
+Interface Iproduto -> Produtos comprados
+
+Interface IProdutosFabricados filho de Iproduto ->(Produto Fabricado)
+
+
+IProdutosFabricados p -> ProdutoComrado e ProdutoFabricado
+
+Gerente
+*/

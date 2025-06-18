@@ -1,5 +1,9 @@
-import { Box, Stack, Typography, Button } from "@mui/material";
+import { Box, Stack, Typography, Button, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
 const EventInfo = ({ content, subscribe }) => {
+  const [inscricao, setInscricao] = useState(false);
+  
   return (
     <>
       <Stack spacing={4}>
@@ -22,10 +26,6 @@ const EventInfo = ({ content, subscribe }) => {
               whiteSpace: "pre-line",
               wordBreak: "break-word",
               textAlign: "justify",
-              display: "-webkit-box",
-              WebkitLineClamp: 4,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
               px: 2,
             }}
           >
@@ -66,8 +66,10 @@ const EventInfo = ({ content, subscribe }) => {
                 width: "100%",
                 bgcolor: "ocean.dark",
               }}
+              onClick={(e) => setInscricao(!inscricao)}
+              disabled={inscricao}
             >
-              Inscrever
+              {inscricao ? "Inscrito" : "Inscrever"}
             </Button>
           </Box>
         )}

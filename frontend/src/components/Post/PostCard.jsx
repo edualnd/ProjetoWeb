@@ -5,12 +5,14 @@ import {
   Stack,
   Divider,
   ToggleButton,
+  Link,
 } from "@mui/material";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 import { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import CommentCard from "../Comment/CommentCard.jsx";
 
 import PostInfo from "./PostInfo.jsx";
@@ -77,8 +79,8 @@ const PostCard = ({ imagens }) => {
                     src={img || null}
                     alt=""
                     style={{
-                      maxHeight: "250px",
-                      height: "250px",
+                      maxHeight: "500px",
+                      height: "500px",
                       width: "100%",
                     }}
                   />
@@ -98,7 +100,7 @@ const PostCard = ({ imagens }) => {
             content={{
               username: "User",
               date: "12/12/2012",
-              text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, sunt?",
+              text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, sunt? ",
             }}
           ></PostInfo>
           <Divider></Divider>

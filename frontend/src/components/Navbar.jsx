@@ -105,7 +105,7 @@ const Navbar = ({ logged }) => {
                     variant="p"
                     underline="none"
                     component={RouterLink}
-                    to="/"
+                    to="/profile/me"
                     color="ocean.dark"
                   >
                     Meu perfil

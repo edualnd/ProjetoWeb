@@ -14,6 +14,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import FollowsPage from "./pages/FollowsPage.jsx";
 import ConfigPage from "./pages/ConfigPage.jsx";
 import Navbar from "./components/Navbar.jsx";
+import { PostPage } from "./pages/PostPage.jsx";
 
 function App() {
   const theme = createTheme({
@@ -69,6 +70,15 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/post/postId"
+            element={
+              <>
+                <Navbar logged={true}></Navbar>
+                <PostPage></PostPage>
+              </>
+            }
+          ></Route>
         </Routes>
       </ThemeProvider>
     </>

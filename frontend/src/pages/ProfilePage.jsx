@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Post from "../components/Post/PostsProfileCard.jsx";
 import ProfileInfo from "../components/ProfileInfo.jsx";
+import PostCard from "../components/Post/PostCard.jsx";
 
 const imagensEx = [
   "https://i.pinimg.com/236x/9e/41/d3/9e41d39158a0e30da1ab9b25f29b8b9d.jpg",
@@ -41,7 +42,11 @@ const ProfilePage = () => {
         </Typography>
       </Box>
 
-      <Post list={imagensEx}></Post>
+      <>
+        {imagensEx.map((imagem) => (
+          <PostCard imagens={[imagem]} />
+        ))}
+      </>
     </>
   );
 };
