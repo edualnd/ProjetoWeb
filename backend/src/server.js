@@ -14,6 +14,7 @@ import followRoutes from './routes/followRouter.js';
 import commentRoutes from './routes/commentRoutes.js';
 import logger from './middlewares/logger.js';
 import errorsHandler from './middlewares/errorHandler.js';
+import ratingRoutes from './routes/rating/ratingRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -47,6 +48,8 @@ app.use('/auth/follow', followRoutes);
 app.use('/auth/event/', eventRoutes);
 
 app.use('/auth/comments/', commentRoutes);
+
+app.use('/auth/rating', ratingRoutes);
 
 app.use(errorsHandler);
 app.listen(PORT, (req, res) => {
