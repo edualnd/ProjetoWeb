@@ -6,13 +6,11 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET,
 });
 
-const uploadCloud = (filePath) => {
-  const file = cloudinary.uploader.upload(filePath, (err, result) => {
+const uploadCloud = async (filePath) => {
+  const file = await cloudinary.uploader.upload(filePath, (err, result) => {
     if (err) {
       console.log(err);
-      return res
-        .status(500)
-        .json({ message: 'Erro ao fazer upload da imagem' });
+      return null
     }
     return result;
   });
@@ -20,18 +18,41 @@ const uploadCloud = (filePath) => {
   return file;
 };
 
-const deleteFromCloud = (publicId) => {
-  const file = cloudinary.uploader.destroy(publicId, (err, result) => {
+const deleteFromCloud = async (publicId) => {
+  const file = await cloudinary.uploader.destroy(publicId, (err, result) => {
     if (err) {
       console.log(err);
-      return res
-        .status(500)
-        .json({ message: 'Erro ao fazer upload da imagem' });
+      return null
     }
     return result;
   });
 
   return file;
 };
+const deleteVideo = async (publicId) => {
+  const file = await cloudinary.uploader.destroy(publicId,{
+      resource_type: "video",  
+    }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return null
+    }
+    return result;
+  });
+}
+const uploadVideo = async (videoPath) => {
 
-export { uploadCloud, deleteFromCloud };
+    const result = await cloudinary.uploader.upload(videoPath, {
+      resource_type: "video", 
+      folder: "videos",     
+    }, (err, result) =>{
+    if (err) {
+      console.log(err);
+      return null
+    }
+    return result;
+    });
+return result
+};
+
+export { uploadCloud, deleteFromCloud, uploadVideo,deleteVideo };
