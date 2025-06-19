@@ -7,13 +7,14 @@ import {
   Divider,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 
-import { EditPost } from "./EditPost.jsx";
+import EditEvent from "./EditEvent.jsx";
+import GetInscricoes from "./GetInscricoes.jsx";
 
-export const PostMenu = () => {
+const EventMenu = () => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleOpenMenu = (event) => {
@@ -31,7 +32,6 @@ export const PostMenu = () => {
       setConfirm(false);
     }
   };
-
   return (
     <>
       <>
@@ -70,7 +70,7 @@ export const PostMenu = () => {
               py: 0,
             }}
           >
-            <EditPost></EditPost>
+            <EditEvent></EditEvent>
           </MenuItem>
 
           <Divider />
@@ -92,10 +92,16 @@ export const PostMenu = () => {
               ></DeleteIcon>
             </IconButton>
           </MenuItem>
+          {/*Verificar se pode se inscrever */}
+
+          <Divider></Divider>
+          <MenuItem>
+            <GetInscricoes></GetInscricoes>
+          </MenuItem>
         </Menu>
       </>
     </>
   );
 };
 
-export default PostMenu;
+export default EventMenu;

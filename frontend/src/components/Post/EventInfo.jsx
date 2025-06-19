@@ -1,21 +1,29 @@
-import { Box, Stack, Typography, Button, Link } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Box, Stack, Typography, Button, Link, Rating } from "@mui/material";
+import RateMenu from "./RateMenu.jsx";
 import { useState } from "react";
+import EventMenu from "./EventMenu.jsx";
 const EventInfo = ({ content, subscribe }) => {
   const [inscricao, setInscricao] = useState(false);
-  
+
   return (
     <>
       <Stack spacing={4}>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-          <Box>
+          <Box sx={{ flex: 1 }}>
             <Typography variant="h5" color="ocean.dark">
               {content.title}
             </Typography>
             <Typography variant="body2" color="ocean.dark">
               {content.date}
             </Typography>
+            <Rating
+              name="half-rating-read"
+              defaultValue={2.5}
+              precision={0.5}
+              readOnly
+            />
           </Box>
+          <EventMenu></EventMenu>
         </Box>
 
         <Box>
@@ -40,24 +48,44 @@ const EventInfo = ({ content, subscribe }) => {
             height: "60px",
           }}
         >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography>Data</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+
+              width: "100%",
+            }}
+          >
+            <Box sx={{ flex: 1 }}>
+              <Typography>Data</Typography>
+              <Box
+                sx={{
+                  bgcolor: "#d9d9d9",
+                  borderRadius: 2,
+                  textAlign: "center",
+                  height: "30px",
+                  width: "fit-content",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  px: 2,
+                }}
+              >
+                <Typography>12/12/2025 08:00</Typography>
+              </Box>
+            </Box>
             <Box
               sx={{
-                bgcolor: "#d9d9d9",
-                borderRadius: 2,
-                textAlign: "center",
-                height: "30px",
-                display: "flex",
-                alignItems: "center",
                 justifyContent: "center",
-                px: 2,
+                alignItems: "center",
+                display: "flex",
               }}
             >
-              <Typography>12/12/2025 08:00</Typography>
+              <RateMenu></RateMenu>
             </Box>
           </Box>
         </Stack>
+
         {subscribe && (
           <Box>
             <Button

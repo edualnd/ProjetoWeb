@@ -30,8 +30,8 @@ const CreatePostModal = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    const token = document.getElementById("tokenOTP");
-    const email = document.getElementById("novoEmail");
+    //const token = document.getElementById("tokenOTP");
+    //const email = document.getElementById("novoEmail");
 
     handleOpenModal();
   };
@@ -48,13 +48,13 @@ const CreatePostModal = () => {
 
     if (file) {
       const url = file.map((f) => URL.createObjectURL(f));
-      console.log(url);
+
       if (fileUrl.length == 2) {
-        setFileUrl([url[0], url[1]]);
+        setFileUrl((prev) => [prev[0], url[0]]);
       } else if (fileUrl.length == 1) {
         setFileUrl((prev) => [...prev, url[0]]);
       } else {
-        setFileUrl([url]);
+        setFileUrl([url[0], url[1]]);
       }
     }
   };

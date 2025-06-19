@@ -1,11 +1,28 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import PostCard from "./Post/PostCard.jsx";
 import EventCard from "./Post/EventCard.jsx";
 
 import CreatePostModal from "./Post/CreatePostModal.jsx";
+import Carossel from "./Carossel.jsx";
 const imgEx = "https://abre.ai/mXzv";
 const imgEx2 = "https://abre.ai/mXzz";
 const MainContent = () => {
+  /**
+   * const scrollToPost = (postId) => {
+    const element = document.getElementById(`ijk`);
+    console.log(element);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+   */
   return (
     <>
       <Box
@@ -26,8 +43,12 @@ const MainContent = () => {
         >
           Próximos eventos
         </Typography>
+        <div style={{ padding: "20px" }}>
+          <h1>Meu Primeiro Carrossel</h1>
+          <Carossel />
+        </div>
       </Box>
-
+      <Divider></Divider>
       <Box
         sx={{
           display: "flex",
@@ -57,7 +78,11 @@ const MainContent = () => {
 
       <PostCard imagens={[imgEx]}></PostCard>
       <EventCard imagens={[imgEx, imgEx2]} subscribe={true}></EventCard>
-      <EventCard imagens={[imgEx, imgEx2]} subscribe={false}></EventCard>
+      <EventCard
+        id="ijk"
+        imagens={[imgEx, imgEx2]}
+        subscribe={false}
+      ></EventCard>
     </>
   );
 };

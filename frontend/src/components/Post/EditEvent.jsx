@@ -10,6 +10,8 @@ import {
   Box,
   ImageList,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useRef, useState } from "react";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
-export const EditPost = () => {
+const EditEvent = () => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(!openModal);
@@ -54,6 +56,10 @@ export const EditPost = () => {
       }
     }
   };
+  const [inscritos, setInscritos] = useState(false);
+  const handleCheckboxChange = (event) => {
+    setInscritos(event.target.checked);
+  };
   return (
     <>
       <IconButton type="button" onClick={handleOpenModal}>
@@ -69,12 +75,20 @@ export const EditPost = () => {
           },
         }}
       >
-        <DialogTitle>Postar</DialogTitle>
+        <DialogTitle>Editar</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <>
             <Stack spacing={2}>
+              <TextField
+                aria-label="Titulo"
+                placeholder="Titulo"
+                multiline
+                rows={2}
+                sx={{ width: "100%", fontSize: "16px" }}
+                inputProps={{ maxLength: 50 }}
+              ></TextField>
               <TextField
                 aria-label="Texto"
                 placeholder="Digite aqui"
@@ -83,6 +97,22 @@ export const EditPost = () => {
                 sx={{ width: "100%", fontSize: "16px" }}
                 inputProps={{ maxLength: 255 }}
               ></TextField>
+              <Typography>Dia do evento</Typography>
+              <TextField type="date"></TextField>
+              <FormControlLabel
+                control={<Checkbox></Checkbox>}
+                label="Precisa se inscrever"
+                checked={inscritos}
+                onChange={handleCheckboxChange}
+              ></FormControlLabel>
+              {inscritos && (
+                <>
+                  <Typography>Inicio das inscrições </Typography>
+                  <TextField type="date"></TextField>
+                  <Typography>Fim das inscrições</Typography>
+                  <TextField type="date"></TextField>
+                </>
+              )}
               <Box
                 sx={{
                   width: "100%",
@@ -127,3 +157,5 @@ export const EditPost = () => {
     </>
   );
 };
+
+export default EditEvent;

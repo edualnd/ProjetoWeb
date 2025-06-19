@@ -42,7 +42,7 @@ const commentsEx = [
   },
 ];
 
-const EventCard = ({ imagens, subscribe }) => {
+const EventCard = ({ id, imagens, subscribe }) => {
   const tam = imagens.length > 1 ? 2 : 1;
   const [openComments, setOpenComments] = useState(false);
   const [comment, setComment] = useState(false);
@@ -57,6 +57,7 @@ const EventCard = ({ imagens, subscribe }) => {
   return (
     <>
       <Box
+        id={id}
         sx={{
           width: "100%",
           borderRadius: 4,
