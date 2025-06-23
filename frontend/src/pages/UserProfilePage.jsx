@@ -9,7 +9,6 @@ import { userStore } from "../../store/userStore.js";
 import { useNavigate } from "react-router-dom";
 
 const UserProfilePage = () => {
-  const imagensEx = [];
   const { userData, getProfile } = userStore();
   const [categoryView, setCategoryView] = useState("Publicações");
   const [data, setData] = useState({});
@@ -27,9 +26,9 @@ const UserProfilePage = () => {
     };
     get();
   }, []);
+  console.log(data);
   const posts = data.Publication || [];
 
-  
   return (
     <>
       <ProfileInfo
@@ -60,8 +59,8 @@ const UserProfilePage = () => {
       ) : (
         <>
           <ImageList cols={2} rowHeight={150}>
-            {imagensEx.map(() => (
-              <InscriçoesCard  event={event} />
+            {data.EventSubscription.map((e) => (
+              <InscriçoesCard post={e} />
             ))}
           </ImageList>
         </>

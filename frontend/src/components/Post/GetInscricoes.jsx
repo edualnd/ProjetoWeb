@@ -40,7 +40,7 @@ const GetInscricoes = ({ id }) => {
     x();
   }, []);
   const navigate = useNavigate();
-  console.log(subs);
+
   return (
     <>
       <IconButton

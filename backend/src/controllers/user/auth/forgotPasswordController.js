@@ -14,10 +14,10 @@ const forgotPasswordController = async (req, res, next) => {
         'Dados inválidos: verifique e tente novamente',
       );
     }
-    const token = generateForgotPassWordToken(user.userId, user.email);
+    const token = generateForgotPassWordToken(user.userId, email);
     const emailContent = forgotPasswordTemplate(user.username, token);
     const emailData = {
-      to: user.email,
+      to: email,
       ...emailContent,
     };
     const emailSent = await sendEmail(emailData);

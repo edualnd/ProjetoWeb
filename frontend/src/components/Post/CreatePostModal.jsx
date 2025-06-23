@@ -10,30 +10,161 @@ import {
   Box,
   ImageList,
   Typography,
-  ToggleButton,
   Checkbox,
   FormControlLabel,
-  Divider,
+  FormHelperText,
 } from "@mui/material";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CustomToggleButton from "../CustomToggleButton.jsx";
+import { userStore } from "../../../store/userStore.js";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+const eventSchema = z
+  .object({
+    text: z
+      .string()
+      .min(1, "Deve ter no minimo 1 caracteres.")
+      .max(255, "Deve ter no máximo 255 caracteress."),
+    title: z
+      .string()
+      .min(10, "Deve ter no minimo 10 caracteres.")
+      .max(100, "Deve ter no máximo 100 caracteress."),
+    eventDate: z.coerce.date().refine((date) => {
+      return date > new Date();
+    }, "A data deve ser no futuro."),
+    subs: z.boolean(),
+    registrationStartDate: z.coerce.date("Deve ser data").optional(),
+    registrationEndDate: z.coerce.date("Deve ser data").optional(),
+  })
+  .superRefine((data, ctx) => {
+    const now = new Date();
+
+    if (data.subs) {
+      if (!data.registrationStartDate) {
+        ctx.addIssue({
+          path: ["registrationStartDate"],
+          message: "Campo obrigatório quando inscrições estão ativadas",
+        });
+      } else {
+        if (data.registrationStartDate < now) {
+          ctx.addIssue({
+            path: ["registrationStartDate"],
+            message: "Não pode ser no passado",
+          });
+        }
+        if (data.eventDate && data.registrationStartDate > data.eventDate) {
+          ctx.addIssue({
+            path: ["registrationStartDate"],
+            message: "Não pode ser depois da data do evento",
+          });
+        }
+      }
+
+      if (!data.registrationEndDate) {
+        ctx.addIssue({
+          path: ["registrationEndDate"],
+          message: "Campo obrigatório quando inscrições estão ativadas",
+        });
+      } else {
+        if (
+          data.registrationStartDate &&
+          data.registrationEndDate < data.registrationStartDate
+        ) {
+          ctx.addIssue({
+            path: ["registrationEndDate"],
+            message: "Não pode ser antes da data de início",
+          });
+        }
+
+        if (data.eventDate && data.registrationEndDate > data.eventDate) {
+          ctx.addIssue({
+            path: ["registrationEndDate"],
+            message: "Não pode ser depois da data do evento",
+          });
+        }
+      }
+    }
+  });
+
+const postSchema = z.object({
+  text: z
+    .string()
+    .min(1, "Deve ter no minimo 1 caracteres.")
+    .max(255, "Deve ter no máximo 255 caracteress."),
+});
+
 const CreatePostModal = () => {
+  const {
+    register: eventRegister,
+    handleSubmit: handleSubmitEvent,
+    reset: resetE,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors: eventErrors, isValid: isValidEvent },
+  } = useForm({
+    resolver: zodResolver(eventSchema),
+    mode: "all",
+    reValidateMode: "onChange",
+  });
+  const {
+    register: postRegister,
+    handleSubmit: handleSubmitPost,
+    reset: resetP,
+    formState: { errors: postError, isValid: isValidPost },
+  } = useForm({
+    resolver: zodResolver(postSchema),
+    mode: "all",
+    defaultValues: { subs: false },
+  });
+
+  const { userData } = userStore();
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(!openModal);
+    resetE();
+    resetP();
     if (!openModal) {
       fileInput.current = null;
       setFileUrl([]);
     }
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    //const token = document.getElementById("tokenOTP");
-    //const email = document.getElementById("novoEmail");
-
-    handleOpenModal();
+  const { createPost, createEvent } = userStore();
+  const handleSubmitClick = async (data) => {
+    delete data.subs;
+    data = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => {
+        if (value instanceof Date) {
+          return [key, value.toISOString()];
+        }
+        return [key, value];
+      })
+    );
+    const sendFormData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      sendFormData.append(key, value);
+    });
+    fileUrl.forEach((f) => {
+      sendFormData.append("photos", f.file);
+    });
+    let res;
+    if (categoryView == "Evento") {
+      sendFormData.append("isEvent", "true");
+      res = await createEvent(sendFormData);
+    } else {
+      res = await createPost(sendFormData);
+    }
+    if (res.success) {
+      console.log("Postado");
+      handleOpenModal();
+      return;
+    }
+    alert(res.message);
+    return;
   };
 
   const fileInput = useRef(null);
@@ -45,26 +176,40 @@ const CreatePostModal = () => {
 
   const handleFileChange = (event) => {
     const file = Array.from(event.target.files);
+    let newFiles;
+    if (file && file.length > 0) {
+      newFiles = file.slice(0, 2).map((f) => ({
+        url: URL.createObjectURL(f),
+        type: f.type,
+        size: f.size,
+        file: f,
+      }));
 
-    if (file) {
-      const url = file.map((f) => URL.createObjectURL(f));
+      setFileUrl((prev) => {
+        let files;
 
-      if (fileUrl.length == 2) {
-        setFileUrl((prev) => [prev[0], url[0]]);
-      } else if (fileUrl.length == 1) {
-        setFileUrl((prev) => [...prev, url[0]]);
-      } else {
-        setFileUrl([url[0], url[1]]);
-      }
+        if (file.length === 2) {
+          files = newFiles;
+        } else {
+          files = [...prev, ...newFiles].slice(0, 2);
+        }
+
+        return files;
+      });
     }
   };
 
   const [categoryView, setCategoryView] = useState("Publicação");
 
-  const [inscritos, setInscritos] = useState(false);
-  const handleCheckboxChange = (event) => {
-    setInscritos(event.target.checked);
-  };
+  const subsValue = watch("subs", false);
+
+  useEffect(() => {
+    if (!subsValue) {
+      setValue("registrationStartDate", undefined);
+      setValue("registrationEndDate", undefined);
+    }
+    trigger();
+  }, [subsValue, setValue, trigger]);
   return (
     <>
       <IconButton onClick={handleOpenModal}>
@@ -88,7 +233,11 @@ const CreatePostModal = () => {
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <CustomToggleButton
-            categories={["Publicação", "Evento"]}
+            categories={
+              userData.role == "COMMON"
+                ? ["Publicação"]
+                : ["Publicação", "Evento"]
+            }
             selected={categoryView}
             onChange={(e, category) =>
               setCategoryView((prev) => category || prev)
@@ -105,6 +254,11 @@ const CreatePostModal = () => {
                   rows={2}
                   sx={{ width: "100%", fontSize: "16px" }}
                   inputProps={{ maxLength: 50 }}
+                  error={eventErrors?.title}
+                  {...eventRegister("title")}
+                  helperText={
+                    eventErrors?.title ? `${eventErrors?.title?.message}` : ""
+                  }
                 ></TextField>
                 <TextField
                   aria-label="Texto"
@@ -113,53 +267,96 @@ const CreatePostModal = () => {
                   rows={5}
                   sx={{ width: "100%", fontSize: "16px" }}
                   inputProps={{ maxLength: 255 }}
+                  error={eventErrors?.text}
+                  {...eventRegister("text")}
+                  helperText={
+                    eventErrors?.text ? `${eventErrors?.text?.message}` : ""
+                  }
                 ></TextField>
                 <Typography>Dia do evento</Typography>
-                <TextField type="date"></TextField>
+                <TextField
+                  type="datetime-local"
+                  error={eventErrors?.eventDate}
+                  {...eventRegister("eventDate")}
+                  helperText={
+                    eventErrors?.eventDate
+                      ? `${eventErrors?.eventDate?.message}`
+                      : ""
+                  }
+                ></TextField>
                 <FormControlLabel
-                  control={<Checkbox></Checkbox>}
+                  control={
+                    <Checkbox
+                      {...eventRegister("subs", {
+                        onClick: async () => await trigger(),
+                      })}
+                      checked={subsValue}
+                    ></Checkbox>
+                  }
                   label="Precisa se inscrever"
-                  checked={inscritos}
-                  onChange={handleCheckboxChange}
-                ></FormControlLabel>
+                  error={eventErrors?.subs}
+                >
+                  {eventErrors?.subs && (
+                    <FormHelperText error>
+                      {eventErrors.subs.message}
+                    </FormHelperText>
+                  )}
+                </FormControlLabel>
 
-                {inscritos && (
+                {subsValue && (
                   <>
                     <Typography>Inicio das inscrições </Typography>
-                    <TextField type="date"></TextField>
+                    <TextField
+                      type="datetime-local"
+                      error={eventErrors?.registrationStartDate}
+                      {...eventRegister("registrationStartDate")}
+                      helperText={
+                        eventErrors?.registrationStartDate
+                          ? `${eventErrors?.registrationStartDate?.message}`
+                          : ""
+                      }
+                    ></TextField>
                     <Typography>Fim das inscrições</Typography>
-                    <TextField type="date"></TextField>
-                    <Box
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <input
-                        type="file"
-                        ref={fileInput}
-                        multiple
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
-                      />
-                      <IconButton
-                        onClick={handleIconClick}
-                        sx={{ borderRadius: 0 }}
-                      >
-                        <Typography>Maximo 2 imagens</Typography>
-                        <FileUploadIcon
-                          sx={{ width: "25px", height: "25px" }}
-                        />
-                      </IconButton>
-                    </Box>
+                    <TextField
+                      type="datetime-local"
+                      error={eventErrors?.registrationEndDate}
+                      {...eventRegister("registrationEndDate")}
+                      helperText={
+                        eventErrors?.registrationEndDate
+                          ? `${eventErrors?.registrationEndDate?.message}`
+                          : ""
+                      }
+                    ></TextField>
                   </>
                 )}
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <input
+                    type="file"
+                    ref={fileInput}
+                    multiple
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                    accept="image/*, video/*"
+                  />
+                  <IconButton
+                    onClick={handleIconClick}
+                    sx={{ borderRadius: 0 }}
+                  >
+                    <Typography>Maximo 2 imagens</Typography>
+                    <FileUploadIcon sx={{ width: "25px", height: "25px" }} />
+                  </IconButton>
+                </Box>
                 <ImageList>
                   {fileUrl.map((img, index) => (
                     <>
                       <img
-                        src={img}
+                        src={img.url}
                         alt=""
                         key={index}
                         style={{ maxWidth: "100%" }}
@@ -179,6 +376,11 @@ const CreatePostModal = () => {
                   rows={5}
                   sx={{ width: "100%", fontSize: "16px" }}
                   inputProps={{ maxLength: 255 }}
+                  error={postError?.text}
+                  {...postRegister("text")}
+                  helperText={
+                    postError?.text ? `${postError?.text?.message}` : ""
+                  }
                 ></TextField>
                 <Box
                   sx={{
@@ -193,6 +395,7 @@ const CreatePostModal = () => {
                     multiple
                     style={{ display: "none" }}
                     onChange={handleFileChange}
+                    accept="image/*, video/*"
                   />
                   <IconButton
                     onClick={handleIconClick}
@@ -203,16 +406,24 @@ const CreatePostModal = () => {
                   </IconButton>
                 </Box>
                 <ImageList>
-                  {fileUrl.map((img, index) => (
-                    <>
+                  {fileUrl.map((img, index) =>
+                    img.type.startsWith("image") ? (
                       <img
-                        src={img}
+                        src={img.url}
                         alt=""
                         key={index}
                         style={{ maxWidth: "100%" }}
                       />
-                    </>
-                  ))}
+                    ) : (
+                      <video
+                        src={img.url}
+                        alt=""
+                        key={index}
+                        style={{ maxWidth: "100%" }}
+                        controls
+                      ></video>
+                    )
+                  )}
                 </ImageList>
               </Stack>
             </>
@@ -220,7 +431,15 @@ const CreatePostModal = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpenModal}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit}>
+          <Button
+            type="submit"
+            disabled={categoryView == "Evento" ? !isValidEvent : !isValidPost}
+            onClick={
+              categoryView == "Evento"
+                ? handleSubmitEvent(handleSubmitClick)
+                : handleSubmitPost(handleSubmitClick)
+            }
+          >
             Postar
           </Button>
         </DialogActions>

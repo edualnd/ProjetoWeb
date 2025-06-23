@@ -7,13 +7,16 @@ import {
   Divider,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
-
+import { userStore } from "../../../store/userStore.js";
 import { EditPost } from "./EditPost.jsx";
+import { postStore } from "../../../store/postsStore.js";
 
-export const PostMenu = () => {
+export const PostMenu = ({id}) => {
+  const { deletePost } = userStore();
+  const { fetchData } = postStore();
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleOpenMenu = (event) => {
@@ -24,11 +27,19 @@ export const PostMenu = () => {
     setMenuAnchor(null);
   };
   const [confirm, setConfirm] = useState(null);
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!confirm) {
       setConfirm(true);
     } else {
-      setConfirm(false);
+      const res = await deletePost(id);
+      if (res.success) {
+        console.log("Deletado");
+        await fetchData();
+        setConfirm(false);
+        return;
+      }
+      alert(res.message);
+      return;
     }
   };
 

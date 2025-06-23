@@ -13,8 +13,12 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
+import { userStore } from "../../../store/userStore.js";
 
-const InscriçoesCard = ({ imagens }) => {
+const InscriçoesCard = ({ post }) => {
+  const imagens = [post.Publication.image, post.Publication.video].filter(
+    (item) => item !== null
+  );
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleOpenMenu = (event) => {
@@ -25,13 +29,27 @@ const InscriçoesCard = ({ imagens }) => {
     setMenuAnchor(null);
   };
   const [confirm, setConfirm] = useState(null);
-  const handleClick = () => {
-    if (!confirm) {
-      setConfirm(true);
+  const { deleteSubscribeEvent } = userStore();
+  
+  const handleClick = async () => {
+    if (confirm) {
+      const res = await deleteSubscribeEvent(post.Publication.publicationId);
+      if (res.success) {
+        setConfirm(false);
+        handleCloseMenu();
+        console.log("Deletado");
+        return;
+      }
+      alert(res.message);
+      return;
     } else {
-      setConfirm(false);
+      setConfirm(true);
+      setTimeout(() => {
+        setConfirm(false);
+      }, 3000);
     }
   };
+  const dataEvento = new Date(post.Publication.eventDate).toLocaleDateString();
   return (
     <>
       <Box
@@ -41,16 +59,17 @@ const InscriçoesCard = ({ imagens }) => {
           },
           height: "100%",
         }}
+        key={post.Publication.publicationId}
       >
         <Stack direction={"row"} sx={{ borderRadius: 2, overflow: "hidden" }}>
-          {imagens && (
+          {imagens.length != 0 && (
             <ImageListItem
               sx={{
                 width: "40%",
               }}
             >
               <img
-                src={imagens}
+                src={imagens[0]}
                 alt="tez"
                 style={{
                   height: "150px",
@@ -72,10 +91,15 @@ const InscriçoesCard = ({ imagens }) => {
           >
             <Box sx={{ flex: 1 }}>
               <Typography variant="h6" component={"p"} color="ocean.dark">
-                Titulo
+                {post.Publication.title}
               </Typography>
-              <Typography variant="p" component={"p"} color="ocean.dark">
-                26/06
+              <Typography
+                variant="p"
+                component={"p"}
+                color="ocean.dark"
+                sx={{ fontFamily: "inter" }}
+              >
+                {dataEvento}
               </Typography>
             </Box>
             <Box>
@@ -114,10 +138,7 @@ const InscriçoesCard = ({ imagens }) => {
                     py: 0,
                   }}
                 >
-                  <IconButton
-                    type="button"
-                    onClick={() => handleClick(commentId)}
-                  >
+                  <IconButton type="button" onClick={handleClick}>
                     <DeleteIcon
                       sx={{
                         fontSize: 20,

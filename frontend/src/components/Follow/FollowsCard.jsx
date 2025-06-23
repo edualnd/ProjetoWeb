@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userStore } from "../../../store/userStore.js";
 const FollowsCard = ({ perfis, canEdit, follow, category }) => {
   const [confirm, setConfirm] = useState([]);

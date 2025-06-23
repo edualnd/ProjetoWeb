@@ -44,6 +44,16 @@ export async function getList() {
   return result;
 }
 
+export async function getImages(publicationId) {
+  const result = await prisma.publication.findFirst({
+    where: { publicationId },
+    select: {
+      image: true,
+      video: true,
+    },
+  });
+  return result;
+}
 export async function createEvent(post) {
   const result = await prisma.publication.create({
     data: post,

@@ -1,13 +1,5 @@
-import {
-  Paper,
-  Button,
-  Typography,
-  Box,
-  Stack,
-  Divider,
-  IconButton,
-} from "@mui/material";
-import backgroundImage from "../assets/backgroundImage.png";
+import { Box, Stack, IconButton } from "@mui/material";
+
 import "../keen-slider.css";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -56,12 +48,15 @@ const Carossel = () => {
 
 function Item({ item }) {
   const date = new Date(item.eventDate).toLocaleDateString();
+  const image = [item.video, item.image].filter((i) => i != null);
+  const isImagens = image.length != 0;
   const scrollToPost = () => {
     const element = document.getElementById(`${item.publicationId}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
     <>
       <Stack
@@ -91,9 +86,14 @@ function Item({ item }) {
         >
           {date}
         </Box>
+
         <Box sx={{ bgcolor: "blue", width: "100%", height: "70%" }}>
           <img
-            src={backgroundImage}
+            src={
+              isImagens
+                ? `https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${image[0]}`
+                : "/defaultImage.png"
+            }
             style={{
               width: "100%",
               height: "100%",

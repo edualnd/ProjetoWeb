@@ -42,7 +42,7 @@ Recebemos uma solicitação para redefinir sua senha na [Nome da Aplicação].
 
 Para continuar, clique no link abaixo ou copie e cole no seu navegador:
 
-${process.env.API_URL}/reset-password/${link}
+http://localhost:5173/forgot-password/${link}
 
 Esse link é válido por 5 minutos. Se você não solicitou essa alteração, por favor, ignore este email.
 

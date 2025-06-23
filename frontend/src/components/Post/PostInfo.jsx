@@ -22,7 +22,10 @@ const PostInfo = ({ content }) => {
           <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
             <Avatar
               sx={{ width: "54px", height: "54px" }}
-              src={content.userImage}
+              src={
+                content.userImage &&
+                `https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${content.userImage}`
+              }
             ></Avatar>
             <Box sx={{ flex: 2 }}>
               <Typography variant="h5" color="ocean.dark">
@@ -35,7 +38,7 @@ const PostInfo = ({ content }) => {
           </Box>
         </Link>
 
-        {openMenu && <PostMenu></PostMenu>}
+        {openMenu && <PostMenu id={content.publicationId}></PostMenu>}
       </Box>
       <Box>
         <Typography

@@ -26,7 +26,7 @@ const CustomToggleButton = ({ categories, selected, onChange }) => {
             bgcolor: "ocean.light",
             borderRadius: 20,
             border: "none",
-            width: "50%",
+            width: categories[1] ? "50%" : "100%",
             color: "white",
             "&.Mui-selected": {
               color: "white",
@@ -40,27 +40,29 @@ const CustomToggleButton = ({ categories, selected, onChange }) => {
         >
           {categories[0]}
         </ToggleButton>
-        <ToggleButton
-          variant="contained"
-          value={categories[1]}
-          sx={{
-            bgcolor: "ocean.light",
-            color: "white",
-            borderRadius: 20,
-            border: "none",
-            width: "50%",
-            "&.Mui-selected": {
+        {categories[1] && (
+          <ToggleButton
+            variant="contained"
+            value={categories[1]}
+            sx={{
+              bgcolor: "ocean.light",
               color: "white",
               borderRadius: 20,
-              bgcolor: "ocean.dark",
-            },
-            "&.Mui-selected:hover": {
-              bgcolor: "ocean.dark",
-            },
-          }}
-        >
-          {categories[1]}
-        </ToggleButton>
+              border: "none",
+              width: "50%",
+              "&.Mui-selected": {
+                color: "white",
+                borderRadius: 20,
+                bgcolor: "ocean.dark",
+              },
+              "&.Mui-selected:hover": {
+                bgcolor: "ocean.dark",
+              },
+            }}
+          >
+            {categories[1]}
+          </ToggleButton>
+        )}
       </ToggleButtonGroup>
     </>
   );

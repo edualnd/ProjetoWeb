@@ -6,7 +6,7 @@ const eventSchema = z.object({
       required_error: 'O campo de texto é obrigatorio.',
       invalid_type_error: 'O campo deve ser um texto',
     })
-    .min(10,  'O campo de texto deve ter no minimo 10 caracteres.' )
+    .min(1,  'O campo de texto deve ter no minimo 10 caracteres.' )
     .max(255,  'O campo de texto deve ter no máximo 255 caracteress.' ),
 
     title: z

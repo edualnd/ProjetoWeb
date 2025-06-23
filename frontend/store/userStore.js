@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { postStore } from "./postsStore.js";
 
 const userStore = create((set, get) => ({
   userData: { logged: false },
@@ -161,13 +162,11 @@ const userStore = create((set, get) => ({
   changeProfile: async (data) => {
     let token = get().userData?.accessToken;
     let res = await fetch("http://localhost:3000/auth/user/edit", {
-      method: "POST",
+      method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: data,
       credentials: "include",
     });
 
@@ -180,13 +179,12 @@ const userStore = create((set, get) => ({
       token = get().userData?.accessToken;
 
       res = await fetch("http://localhost:3000/auth/user/edit", {
-        method: "POST",
+        method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: data,
         credentials: "include",
       });
     }
@@ -194,6 +192,13 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      console.log(response.editProfile);
+      set({
+        userData: {
+          ...get().userData,
+          ...response.editProfile,
+        },
+      });
       return { success: true, message: "Perfil alterado" };
     }
 
@@ -564,11 +569,10 @@ const userStore = create((set, get) => ({
     }
     return { success: false, message: response.message };
   },
-
   subscribeEvent: async (publicationId) => {
     let token = get().userData?.accessToken;
     let res = await fetch(
-      `http://localhost:3000//auth/event-subscription/${publicationId}`,
+      `http://localhost:3000/auth/event-subscription/${publicationId}`,
       {
         method: "POST",
         headers: {
@@ -589,9 +593,67 @@ const userStore = create((set, get) => ({
       token = get().userData?.accessToken;
 
       res = await fetch(
-        `http://localhost:3000//auth/event-subscription/${publicationId}`,
+        `http://localhost:3000/auth/event-subscription/${publicationId}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        }
+      );
+    }
+    const response = await res.json();
+    if (response.success) {
+      const alreadySubscribed = get().userData.EventSubscription.some(
+        (sub) => sub.publicationId === publicationId
+      );
+
+      if (!alreadySubscribed) {
+        set({
+          userData: {
+            ...get().userData,
+            EventSubscription: [
+              ...get().userData.EventSubscription,
+              { publicationId },
+            ],
+          },
+        });
+      }
+      console.log(get().userData);
+      return { success: true, message: "Inscrito" };
+    }
+    return { success: false, message: response.message };
+  },
+  deleteSubscribeEvent: async (publicationId) => {
+    let token = get().userData?.accessToken;
+    let res = await fetch(
+      `http://localhost:3000/auth/event-subscription/${publicationId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    if (res.status === 401) {
+      const refreshResult = await get().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData?.accessToken;
+
+      res = await fetch(
+        `http://localhost:3000/auth/event-subscription/${publicationId}`,
+        {
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -606,13 +668,189 @@ const userStore = create((set, get) => ({
       set(() => ({
         userData: {
           ...get().userData,
-          ...response.user,
-          logged: true,
-          accessToken: token,
+          EventSubscription: get().userData.EventSubscription.filter(
+            (sub) => sub.publicationId !== publicationId
+          ),
         },
       }));
-      return { success: true, message: "Role alterado" };
+      console.log(get().userData);
+      return { success: true, message: "inscrição cancelada" };
     }
+    return { success: false, message: response.message };
+  },
+  forgotPass: async (data) => {
+    let res = await fetch(`http://localhost:3000/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    const response = await res.json();
+    if (response.success) {
+      return { success: true, message: response.message };
+    }
+
+    return { success: false, message: response.message };
+  },
+  resetPass: async (token, data) => {
+    let res = await fetch(`http://localhost:3000/reset-password/${token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    const response = await res.json();
+    if (response.success) {
+      return { success: true, message: response.message };
+    }
+
+    return { success: false, message: response.message };
+  },
+  deletePost: async (id) => {
+    let token = get().userData.accessToken;
+
+    let res = await fetch(`http://localhost:3000/auth/post/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/post/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+    }
+
+    const response = await res.json();
+
+    if (response.success) {
+      const posts = [...postStore.getState().postsData.posts].filter(
+        (p) => p.publicationId != id
+      );
+      set(() => ({
+        postsData: { ...postStore.getState().postsData, posts },
+      }));
+
+      return { success: true, message: response.message };
+    }
+
+    return { success: false, message: response.message };
+  },
+  createPost: async (data) => {
+    let token = get().userData.accessToken;
+
+    let res = await fetch(`http://localhost:3000/auth/post/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: data,
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/post/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: data,
+        credentials: "include",
+      });
+    }
+
+    const response = await res.json();
+
+    if (response.success) {
+      const posts = [...postStore.getState().postsData.posts, response.post];
+
+      set(() => ({
+        postsData: {
+          ...postStore.getState().postsData,
+          posts,
+        },
+      }));
+
+      return { success: true, message: response.message };
+    }
+
+    return { success: false, message: response.message };
+  },
+  createEvent: async (data) => {
+    let token = get().userData.accessToken;
+
+    let res = await fetch(`http://localhost:3000/auth/event/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: data,
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/event/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: data,
+        credentials: "include",
+      });
+    }
+
+    const response = await res.json();
+
+    if (response.success) {
+      const posts = [...postStore.getState().postsData.posts, response.post];
+
+      set(() => ({
+        postsData: {
+          ...postStore.getState().postsData,
+          posts,
+        },
+      }));
+
+      return { success: true, message: response.message };
+    }
+
     return { success: false, message: response.message };
   },
 }));

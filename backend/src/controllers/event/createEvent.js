@@ -28,8 +28,8 @@ export default async function createEventController(req, res, next) {
       isEvent: Boolean(isEvent),
       authorId: user,
       eventDate,
-      registrationEndDate,
-      registrationStartDate,
+      registrationEndDate: registrationEndDate || null,
+      registrationStartDate: registrationStartDate || null,
     };
 
     const { success, error, data } = await validateSchema(eventSchema, {

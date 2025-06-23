@@ -9,18 +9,9 @@ import validateSchema from '../../utils/validators/schemaValidator.js';
 import CustomError from '../../errors/CustomErrors.js';
 const editUserController = async (req, res, next) => {
   try {
-    const { userId } = req.user;
+    const { userId, username } = req.user;
     const currentProfile = await currentUserProfile(userId);
     const { bio, deletePhoto, newUsername } = req.body;
-
-    if (username == newUsername) {
-      throw new CustomError(400, 'Mesmo username');
-    }
-
-    const checkUsername = await checkRegisteredCredentials('', newUsername);
-    if (checkUsername) {
-      throw new CustomError(409, 'Username já em uso');
-    }
 
     const {
       success: ValidadeSuccess,
@@ -37,6 +28,13 @@ const editUserController = async (req, res, next) => {
         'Dados inválidos: verifique e tente novamente',
       );
     }
+    if (username != newUsername) {
+      const checkUsername = await checkRegisteredCredentials('', newUsername);
+      if (checkUsername) {
+        throw new CustomError(409, 'Username já em uso');
+      }
+    }
+
     const newBio = bio ? bio : currentProfile.bio;
 
     let imageUrl = currentProfile.userImage;
@@ -45,7 +43,7 @@ const editUserController = async (req, res, next) => {
       const cloudData = await uploadCloud(req.file.path);
       if (!cloudData) {
         return res.status(400).json({
-          message: 'Error uploading image to cloud',
+          message: 'Erro ao salvar imagem',
         });
       }
       imageUrl = cloudData.public_id + '.' + cloudData.format;
@@ -58,11 +56,14 @@ const editUserController = async (req, res, next) => {
       imageUrl = null;
     }
 
-    const { success } = await validateSchema(profileSchema, {
-      bio: newBio,
-      userImage: imageUrl,
-    });
-
+    const { success, error: errorI } = await validateSchema(
+      profileSchema,
+      {
+        bio: newBio || "",
+      },
+      { userImage: true },
+    );
+  console.log(errorI)
     if (!success) {
       throw new CustomError(
         400,

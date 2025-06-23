@@ -45,52 +45,7 @@ const postStore = create((set, get) => ({
 
     return { success: false, message: response.message };
   },
-  deletePost: async (id) => {
-    let token = userStore.getState().userData.accessToken;
-
-    let res = await fetch(`http://localhost:3000/auth/post/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-
-    if (res.status === 401) {
-      const refreshResult = await userStore.getState().refreshToken();
-      if (!refreshResult.success) {
-        return { success: false, message: "Re-login necessário" };
-      }
-
-      token = userStore.getState().userData.accessToken;
-
-      res = await fetch(`http://localhost:3000/auth/post/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-    }
-
-    const response = await res.json();
-
-    if (response.success) {
-      const posts = [...get().postsData.posts].filter(
-        (p) => p.publicationId != id
-      );
-      set(() => ({
-        postsData: { ...get().postsData, posts },
-      }));
-      return { success: true, message: response.message };
-    }
-
-    return { success: false, message: response.message };
-  },
+  
   ratingPost: async (id) => {
     let res = await fetch(`http://localhost:3000/ratings/${id}`, {
       method: "get",

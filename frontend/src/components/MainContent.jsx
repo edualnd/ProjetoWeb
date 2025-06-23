@@ -13,14 +13,15 @@ import CreatePostModal from "./Post/CreatePostModal.jsx";
 import Carossel from "./Carossel.jsx";
 import { postStore } from "../../store/postsStore.js";
 import { useEffect } from "react";
+import { userStore } from "../../store/userStore.js";
 
 const MainContent = () => {
   const { postsData } = postStore();
 
   const posts = postsData.posts || null;
   const { fetchData } = postStore();
+  const { userData } = userStore();
 
-  
   useEffect(() => {
     fetchData();
   }, []);
@@ -63,9 +64,11 @@ const MainContent = () => {
           gap: 1,
         }}
       >
-        <Tooltip title="Criar Post">
-          <CreatePostModal></CreatePostModal>
-        </Tooltip>
+        {userData.logged && (
+          <Tooltip title="Criar Post">
+            <CreatePostModal></CreatePostModal>
+          </Tooltip>
+        )}
       </Box>
 
       <Typography

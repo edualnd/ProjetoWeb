@@ -60,7 +60,7 @@ const PostCard = ({ post }) => {
               {img && (
                 <ImageListItem key={index}>
                   <img
-                    src={img || null}
+                    src={`https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${img}`}
                     alt=""
                     style={{
                       maxHeight: "500px",

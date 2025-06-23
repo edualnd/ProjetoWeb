@@ -85,7 +85,13 @@ const Navbar = ({ logged, userIamge, username }) => {
                     },
                   }}
                 >
-                  <Avatar alt="Foto de perfil" src={userIamge}></Avatar>
+                  <Avatar
+                    alt="Foto de perfil"
+                    src={
+                      userData.userImage &&
+                      `https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${userData.userImage}`
+                    }
+                  ></Avatar>
                 </IconButton>
               </Tooltip>
             </Box>

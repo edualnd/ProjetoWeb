@@ -54,7 +54,7 @@ function App() {
             }
           >
             <Route index element={<Navigate to="me" replace />} />
-            
+
             <Route
               path=":username"
               element={<ProfilePage></ProfilePage>}
@@ -87,7 +87,7 @@ function App() {
             }
           ></Route>
           <Route
-            path="/forgot-password"
+            path="/forgot-password/:token"
             element={<ForgotPassword></ForgotPassword>}
           ></Route>
         </Routes>

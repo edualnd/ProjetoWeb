@@ -11,22 +11,26 @@ import {
   Checkbox,
   ToggleButton,
 } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userStore } from "../../../store/userStore.js";
 import { isValid, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 const registerSchema = z.object({
-  username: z
+  newUsername: z
     .string()
     .nonempty("O username é obrigatório")
     .min(3, "Username muito curto")
     .max(30, "Username muito longo"),
   bio: z.string().max(100),
 });
+
 const EditProfile = () => {
+  const { userData, changeProfile } = userStore();
   const fileInput = useRef(null);
-  const [fileUrl, setFileUrl] = useState(null);
+  const [fileUrl, setFileUrl] = useState(
+    `https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${userData.userImage}`
+  );
   const [file, setFile] = useState(null);
 
   const handleIconClick = () => {
@@ -37,15 +41,15 @@ const EditProfile = () => {
     const fileC = event.target.files[0];
     setFile(fileC);
     if (fileC) {
-      const url = URL.createObjectURL(file);
+      const url = URL.createObjectURL(fileC);
       setFileUrl(url);
     }
   };
 
-  const { userData, changeProfile } = userStore();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -63,12 +67,21 @@ const EditProfile = () => {
       delete data.bio;
     }
     if (!deletePhoto) {
-      data = { ...data, file };
+      data = { ...data, avatar: file };
     } else {
       data = { ...data, deletePhoto };
     }
-    //const res = await changeProfile(data)
-    console.log(data);
+    const sendFormData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      sendFormData.append(key, value);
+    });
+    const res = await changeProfile(sendFormData);
+    if (res.success) {
+      console.log("Postado");
+      return;
+    }
+    alert(res.message);
+    return;
   };
 
   return (
@@ -98,25 +111,12 @@ const EditProfile = () => {
               type="file"
               ref={fileInput}
               style={{ display: "none" }}
+              accept="image/*"
               onChange={handleFileChange}
             />
             <IconButton onClick={handleIconClick}>
               <Avatar src={fileUrl} sx={{ width: "120px", height: "120px" }} />
             </IconButton>
-            {/* <FormControl>
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Deletar foto"
-                componentsProps={{
-                  typography: {
-                    sx: {
-                      fontFamily: "inter",
-                      width: "100px",
-                    },
-                  },
-                }}
-              />
-            </FormControl> */}
             <ToggleButton
               selected={deletePhoto}
               onClick={handleDeletePhoto}
@@ -136,6 +136,18 @@ const EditProfile = () => {
             >
               Deletar foto
             </ToggleButton>
+            {deletePhoto && (
+              <Typography
+                variant="body2"
+                component={"span"}
+                sx={{
+                  fontFamily: "inter",
+                  fontSize: "10px",
+                }}
+              >
+                Sua foto será deletada
+              </Typography>
+            )}
           </Stack>
           <Stack
             direction={"row"}
@@ -154,10 +166,10 @@ const EditProfile = () => {
               }}
               placeholder="Username"
               defaultValue={userData.username}
-              {...register("username")}
-              error={errors?.username}
+              {...register("newUsername")}
+              error={errors?.newUsername}
               helperText={
-                errors?.username ? `${errors?.username?.message}` : ""
+                errors?.newUsername ? `${errors?.newUsername?.message}` : ""
               }
             ></TextField>
           </Stack>

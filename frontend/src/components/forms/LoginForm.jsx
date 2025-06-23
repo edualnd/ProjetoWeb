@@ -3,7 +3,7 @@ import { Stack, Button, Typography, Box, TextField } from "@mui/material";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userStore } from "../../../store/userStore.js";
-import { redirect, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 const registerSchema = z.object({
   data: z.string().nonempty("Este campo é obrigatório").min(3, "Muito curto"),
   password: z
@@ -73,11 +73,11 @@ const LoginForm = () => {
             Email ou Username
           </Typography>
           <TextField
-            error={errors?.data}
             fullWidth
             type="data"
             name="data"
             id="data"
+            error={errors?.data}
             {...register("data")}
             helperText={errors?.data ? `${errors?.data?.message}` : ""}
           />
@@ -93,11 +93,11 @@ const LoginForm = () => {
             Senha
           </Typography>
           <TextField
-            error={errors?.password}
             fullWidth
             type="password"
             name="password"
             id="password"
+            error={errors?.password}
             {...register("password")}
             helperText={errors?.password ? `${errors?.password?.message}` : ""}
           />

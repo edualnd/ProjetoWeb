@@ -34,7 +34,7 @@ const getUserProfile = async (userId) => {
               eventDate: true,
               image: true,
               video: true,
-              createdAt: true,
+              publicationId: true,
             },
           },
         },
@@ -153,6 +153,11 @@ const editUserProfile = async (userId, data) => {
     where: { userId },
     data: {
       ...data,
+    },
+    select: {
+      userImage: true,
+      username: true,
+      bio: true,
     },
   });
   return user || null;

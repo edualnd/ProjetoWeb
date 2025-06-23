@@ -5,19 +5,39 @@ import EventMenu from "./EventMenu.jsx";
 import { userStore } from "../../../store/userStore.js";
 import { postStore } from "../../../store/postsStore.js";
 const EventInfo = ({ content }) => {
+  const { userData, deleteSubscribeEvent, subscribeEvent } = userStore();
   const [inscricao, setInscricao] = useState(false);
   const data = new Date(content.eventDate).toLocaleDateString();
-  const needSubscribe = content.registrationStartDate != null;
+  const needSubscribe =
+    content.registrationStartDate != null && userData.logged;
   let subscribe = false;
   if (needSubscribe) {
     subscribe =
       new Date() >= new Date(content.registrationStartDate) &&
       new Date() <= new Date(content.registrationEndDate);
   }
-  const handleSubmit = () => {
-    setInscricao(!inscricao);
+
+  const handleSubmit = async () => {
+    if (!inscricao) {
+      const res = await deleteSubscribeEvent(content.publicationId);
+      if (res.success) {
+        setInscricao(!inscricao);
+        console.log("Retirou");
+        return;
+      }
+      alert(res.message);
+      return;
+    } else {
+      const res = await subscribeEvent(content.publicationId);
+      if (res.success) {
+        setInscricao(!inscricao);
+        console.log("Se inscreveu");
+        return;
+      }
+      alert(res.message);
+      return;
+    }
   };
-  const { userData } = userStore();
   const { ratingPost } = postStore();
   let openMenu = false;
 
@@ -45,7 +65,9 @@ const EventInfo = ({ content }) => {
   }, []);
   let canSubscribe = false;
   if (userData.logged) {
-    canSubscribe = userData;
+    canSubscribe = !userData.EventSubscription.some(
+      (p) => p.publicationId == content.publicationId
+    );
   }
 
   return (
@@ -137,13 +159,17 @@ const EventInfo = ({ content }) => {
               variant="contained"
               sx={{
                 width: "100%",
-                bgcolor: "ocean.dark",
+                bgcolor: subscribe
+                  ? !canSubscribe
+                    ? "error.main"
+                    : "ocean.dark"
+                  : "",
               }}
               onClick={() => handleSubmit()}
-              disabled={inscricao || !subscribe}
+              disabled={!subscribe}
             >
               {subscribe
-                ? inscricao
+                ? !canSubscribe
                   ? "Inscrito"
                   : "Inscrever"
                 : "Finalizada"}

@@ -37,7 +37,7 @@ const EventCard = ({ post }) => {
     }
     setOpenComments(!openComments);
   };
-  
+
   return (
     <>
       <Box
@@ -61,7 +61,7 @@ const EventCard = ({ post }) => {
           {image.map((img, index) => (
             <ImageListItem key={index}>
               <img
-                src={img}
+                src={`https://res.cloudinary.com/dzkegljd1/image/upload/v1750689629/${img}`}
                 alt=""
                 style={{
                   maxHeight: "250px",

@@ -9,6 +9,10 @@ const postRoutes = express.Router();
 
 postRoutes.get('/list', getPostController);
 postRoutes.post('/', upload.array('photos', 2), createPostController);
-postRoutes.put('/:publicationId', updatePostController);
+postRoutes.put(
+  '/:publicationId',
+  upload.array('photos', 2),
+  updatePostController,
+);
 postRoutes.delete('/:publicationId', deletePostController);
 export default postRoutes;
