@@ -58,7 +58,7 @@ export async function updateEvent(authorId, publicationId, post) {
       authorId: authorId,
       isEvent: true,
     },
-    data: {post},
+    data: { post },
   });
   return result;
 }
@@ -77,95 +77,102 @@ export async function getEventList() {
   const result = await prisma.publication.findMany({
     where: {
       isEvent: true,
-    }
+    },
   });
   return result;
 }
 
-export async function getEventUserList(authorId) {
+export async function getCloserEvent() {
   const result = await prisma.publication.findMany({
     where: {
       isEvent: true,
-      authorId: authorId
-    }
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: 8,
   });
   return result;
 }
 
-
 export async function getAllPostsVisitor(page = 1, limit = 20) {
-  if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
-    throw new Error('Parâmetros de paginação inválidos');
-  }
-  
-  const parsedPage = Math.max(1, parseInt(page));
-  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit)));
-  const skip = (parsedPage - 1) * parsedLimit;
+  // if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+  //   throw new Error('Parâmetros de paginação inválidos');
+  // }
+
+  // const parsedPage = Math.max(1, parseInt(page));
+  // const parsedLimit = Math.min(100, Math.max(1, parseInt(limit)));
+  // const skip = (parsedPage - 1) * parsedLimit;
 
   try {
     const posts = await prisma.publication.findMany({
-      skip,
-      take: parsedLimit,
+      // skip,
+      // take: parsedLimit,
       include: {
         User: {
           select: {
             userId: true,
             username: true,
-            name: true,
-            userImage: true
-          }
+            userImage: true,
+          },
         },
 
-        _count: {
-          select: {
-            Comments: true,
-            Rating: true
-          }
-        },
+        // _count: {
+        //   select: {
+        //     Comments: true,
+        //     Rating: true,
+        //   },
+        // },
 
         Rating: {
           select: {
-            rating: true
-          }
-        }
+            rating: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
 
-    const totalPosts = await prisma.publication.count();
+    // const totalPosts = await prisma.publication.count();
 
-    const formattedPosts = posts.map(post => {
- 
-      const averageRating = post.Rating.length > 0
-        ? parseFloat((post.Rating.reduce((sum, r) => sum + r.rating, 0) / post.Rating.length).toFixed(2))
-        : 0;
+    // const formattedPosts = posts.map((post) => {
+    //   const averageRating =
+    //     post.Rating.length > 0
+    //       ? parseFloat(
+    //           (
+    //             post.Rating.reduce((sum, r) => sum + r.rating, 0) /
+    //             post.Rating.length
+    //           ).toFixed(2),
+    //         )
+    //       : 0;
 
-      return {
-        publicationId: post.publicationId,
-        title: post.title,
-        text: post.text,
-        image: post.image,
-        video: post.video,
-        isEvent: post.isEvent,
-        eventDate: post.eventDate,
-        registrationStartDate: post.registrationStartDate,
-        registrationEndDate: post.registrationEndDate,
-        createdAt: post.createdAt,
-        author: {
-          userId: post.User.userId,
-          username: post.User.username,
-          name: post.User.name,
-          avatar: post.User.userImage
-        },
-        stats: {
-          commentsCount: post._count.Comments,
-          ratingsCount: post._count.Rating,
-          averageRating
-        }
-      };
-    });
+    // {
+    //     publicationId: post.publicationId,
+    //     title: post.title,
+    //     text: post.text,
+    //     image: post.image,
+    //     video: post.video,
+    //     isEvent: post.isEvent,
+    //     eventDate: post.eventDate,
+    //     registrationStartDate: post.registrationStartDate,
+    //     registrationEndDate: post.registrationEndDate,
+    //     createdAt: post.createdAt,
+    //     author: {
+    //       userId: post.User.userId,
+    //       username: post.User.username,
+    //       name: post.User.name,
+    //       avatar: post.User.userImage,
+    //     },
+    //     stats: {
+    //       commentsCount: post._count.Comments,
+    //       ratingsCount: post._count.Rating,
+    //       averageRating,
+    //     },
+    //   };
+    //})
+    return posts;
 
     return {
       posts: formattedPosts,
@@ -175,10 +182,9 @@ export async function getAllPostsVisitor(page = 1, limit = 20) {
         limit: parsedLimit,
         totalPages: Math.ceil(totalPosts / parsedLimit),
         hasNextPage: parsedPage < Math.ceil(totalPosts / parsedLimit),
-        hasPreviousPage: parsedPage > 1
-      }
+        hasPreviousPage: parsedPage > 1,
+      },
     };
-    
   } catch (error) {
     console.error('Database error in getAllPostsVisitor:', error);
     throw new Error('Falha ao buscar publicações no banco de dados');

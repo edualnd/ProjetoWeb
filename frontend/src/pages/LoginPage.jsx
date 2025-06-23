@@ -1,9 +1,19 @@
 import { Stack, Box, Typography, Link } from "@mui/material";
 import backgroundImage from "../assets/backgroundImage.png";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import LoginForm from "../components/forms/LoginForm.jsx";
+import ForgotPassModal from "../components/ForgotPassModal.jsx";
+import { userStore } from "../../store/userStore.js";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { userData } = userStore();
+  useEffect(() => {
+    if (userData.logged) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <Typography component="h1">
@@ -74,30 +84,28 @@ const LoginPage = () => {
           }}
         >
           <LoginForm></LoginForm>
-          <Stack spacing={3} direction={"row"}>
+          <Stack
+            spacing={3}
+            direction={"row"}
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ForgotPassModal></ForgotPassModal>
             <Link
-              underline="hover"
-              variant="h6"
+              underline="none"
+              variant="body2"
               color="ocean.dark"
               sx={{
                 ":hover": {
-                  color: "ocean.main",
                   cursor: "pointer",
+                  bgcolor: "#d8e5f380",
+                  borderRadius: 1,
                 },
-              }}
-              href="/"
-            >
-              Esqueci a senha
-            </Link>
-            <Link
-              underline="hover"
-              variant="h6"
-              color="ocean.dark"
-              sx={{
-                ":hover": {
-                  color: "ocean.main",
-                  cursor: "pointer",
-                },
+                p: "8px",
+                textTransform: "none",
+                fontFamily: "Inter",
               }}
               href="/register"
             >

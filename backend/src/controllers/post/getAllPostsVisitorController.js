@@ -7,24 +7,24 @@ export default async function getAllPostsVisitorController(req, res) {
     const { isEvent, search } = req.query;
     
     const result = await getAllPostsVisitor(
-      Number(page), 
-      Number(limit),
-      isEvent ? isEvent === 'true' : undefined,
-      search
     );
     
-    if (result.posts.length === 0) {
+    /*Number(page), 
+      Number(limit),
+      isEvent ? isEvent === 'true' : undefined,
+      search */
+    if (result.length === 0) {
       return res.status(200).json({
         success: true,
         message: 'Nenhuma publicação encontrada',
-        pagination: result.pagination
+        // pagination: result.pagination
       });
     }
     
     return res.status(200).json({
       success: true,
-      data: result.posts,
-      pagination: result.pagination
+      data: result,
+      // pagination: result.pagination
     });
     
   } catch (error) {

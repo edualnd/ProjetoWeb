@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
-const FollowsCard = ({ perfis, canEdit }) => {
-  const [card, setCard] = useState(perfis);
+import { useNavigate } from "react-router-dom";
+const FollowsCard = ({ perfis, canEdit, follow }) => {
   const [confirm, setConfirm] = useState([]);
   const handleClick = (id) => {
     if (confirm.includes(id)) {
-      setCard((prev) => prev.filter((c) => c.id !== id));
       setConfirm((prev) => prev.filter((c) => c !== id) || []);
     } else {
       setConfirm((prev) => [...prev, id]);
@@ -24,6 +23,8 @@ const FollowsCard = ({ perfis, canEdit }) => {
       }, 3000);
     }
   };
+  const navigate = useNavigate();
+
   return (
     <>
       <List
@@ -34,7 +35,7 @@ const FollowsCard = ({ perfis, canEdit }) => {
           alignItems: "center",
         }}
       >
-        {card.map((value) => (
+        {perfis.map((value) => (
           <ListItem
             key={value.id}
             sx={{
@@ -44,8 +45,12 @@ const FollowsCard = ({ perfis, canEdit }) => {
               width: "95%",
               borderRadius: 2,
               gap: 2,
+              ":hover": {
+                cursor: "pointer",
+              },
             }}
             alignItems="flex-start"
+            onClick={() => navigate(`/profile/${value[follow].username}`)}
           >
             <ListItemAvatar>
               <Avatar
@@ -53,14 +58,15 @@ const FollowsCard = ({ perfis, canEdit }) => {
                   width: "60px",
                   height: "60px",
                 }}
+                src={value[follow].userImage}
               ></Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary="Username..."
+              primary={value[follow].username}
               secondary={
                 <>
                   <Typography component={"span"} variant="body2">
-                    Bio bio bio bio
+                    {value[follow].bio}
                   </Typography>
                 </>
               }

@@ -11,25 +11,30 @@ import EventCard from "./Post/EventCard.jsx";
 
 import CreatePostModal from "./Post/CreatePostModal.jsx";
 import Carossel from "./Carossel.jsx";
-const imgEx = "https://abre.ai/mXzv";
-const imgEx2 = "https://abre.ai/mXzz";
+import { postStore } from "../../store/postsStore.js";
+import { useEffect } from "react";
+
 const MainContent = () => {
-  /**
-   * const scrollToPost = (postId) => {
-    const element = document.getElementById(`ijk`);
-    console.log(element);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-   */
+  const { postsData } = postStore();
+
+  const posts = postsData.posts || null;
+  const { fetchData } = postStore();
+
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       <Box
         sx={{
           width: "100%",
-          height: "250px",
-          my: 8,
+          height: "400px",
+          mt: 8,
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
         }}
       >
         <Typography
@@ -43,12 +48,10 @@ const MainContent = () => {
         >
           Próximos eventos
         </Typography>
-        <div style={{ padding: "20px" }}>
-          <h1>Meu Primeiro Carrossel</h1>
-          <Carossel />
-        </div>
+
+        <Carossel />
+        <Divider></Divider>
       </Box>
-      <Divider></Divider>
       <Box
         sx={{
           display: "flex",
@@ -76,13 +79,23 @@ const MainContent = () => {
         Últimas postagens
       </Typography>
 
+      <>
+        {posts &&
+          posts?.map((post) => {
+            if (post.isEvent) {
+              return <EventCard key={post.publicationId} post={post} />;
+            }
+            return <PostCard key={post.publicationId} post={post} />;
+          })}
+      </>
+      {/* 
       <PostCard imagens={[imgEx]}></PostCard>
       <EventCard imagens={[imgEx, imgEx2]} subscribe={true}></EventCard>
       <EventCard
         id="ijk"
         imagens={[imgEx, imgEx2]}
         subscribe={false}
-      ></EventCard>
+      ></EventCard> */}
     </>
   );
 };

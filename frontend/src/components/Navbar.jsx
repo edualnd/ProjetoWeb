@@ -17,13 +17,24 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
+import { userStore } from "../../store/userStore.js";
 
-const Navbar = ({ logged }) => {
+const Navbar = ({ logged, userIamge, username }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleMenuClick = (event) => {
     if (open) setMenuAnchor(null);
     else setMenuAnchor(event.currentTarget);
+  };
+  const { logoutUser, userData } = userStore();
+  const handleLogout = async () => {
+    const res = await logoutUser();
+    if (res.success) {
+      console.log("deslogado");
+      return;
+    }
+    alert(res.message);
+    return;
   };
 
   return (
@@ -59,7 +70,7 @@ const Navbar = ({ logged }) => {
         {logged ? (
           <Stack spacing={2} direction="row" alignItems={"center"}>
             <Typography variant="h6" color="white">
-              Username
+              {username}
             </Typography>
             <Box>
               <Tooltip
@@ -74,7 +85,7 @@ const Navbar = ({ logged }) => {
                     },
                   }}
                 >
-                  <Avatar alt="Foto de perfil" src={""}></Avatar>
+                  <Avatar alt="Foto de perfil" src={userIamge}></Avatar>
                 </IconButton>
               </Tooltip>
             </Box>
@@ -105,7 +116,7 @@ const Navbar = ({ logged }) => {
                     variant="p"
                     underline="none"
                     component={RouterLink}
-                    to="/profile/me"
+                    to={`/profile/${userData.username}`}
                     color="ocean.dark"
                   >
                     Meu perfil
@@ -142,21 +153,12 @@ const Navbar = ({ logged }) => {
                   minHeight: 30,
                   py: 0,
                 }}
+                onClick={handleLogout}
               >
                 <ListItemIcon>
                   <LogoutIcon sx={{ fontSize: 24 }}></LogoutIcon>
                 </ListItemIcon>
-                <Typography component="p">
-                  <Link
-                    variant="p"
-                    underline="none"
-                    component={RouterLink}
-                    to="/"
-                    color="ocean.dark"
-                  >
-                    Logout
-                  </Link>
-                </Typography>
+                <Typography component="p">Logout</Typography>
               </MenuItem>
             </Menu>
           </Stack>
@@ -177,7 +179,7 @@ const Navbar = ({ logged }) => {
                   borderColor: "#fff",
                 },
               }}
-              href="/register"
+              href="/login"
             >
               Entrar
             </Button>
@@ -185,7 +187,7 @@ const Navbar = ({ logged }) => {
             <Button
               variant="contained"
               color=""
-              href="/login"
+              href="/register"
               disableRipple
               sx={{
                 bgcolor: "ocean.light",

@@ -1,17 +1,9 @@
 import { useForm } from "react-hook-form";
-import TextField from "@mui/material/TextField";
-import {
-  Checkbox,
-  Stack,
-  FormControlLabel,
-  Button,
-  Typography,
-  Box,
-  FormHelperText,
-  FormControl,
-} from "@mui/material";
+import { Stack, Button, Typography, Box, TextField } from "@mui/material";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { userStore } from "../../../store/userStore.js";
+import { redirect, useNavigate } from "react-router-dom";
 const registerSchema = z.object({
   data: z.string().nonempty("Este campo é obrigatório").min(3, "Muito curto"),
   password: z
@@ -20,8 +12,6 @@ const registerSchema = z.object({
     .min(8, "Senha deve ter no mínimo 8 caracteres")
     .max(100, "Senha muito longa"),
 });
-
-console.log("render");
 
 const LoginForm = () => {
   const {
@@ -32,10 +22,17 @@ const LoginForm = () => {
     resolver: zodResolver(registerSchema),
     mode: "all",
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const { loginUser } = userStore();
+  const navigate = useNavigate();
+  const onSubmit = async (data) => {
+    const response = await loginUser(data);
+    if (response.success) {
+      navigate("/");
+    } else {
+      alert(response.message);
+    }
   };
-  console.log(errors);
+
   return (
     <>
       <Stack

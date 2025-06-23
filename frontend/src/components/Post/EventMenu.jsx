@@ -13,8 +13,9 @@ import { useState } from "react";
 
 import EditEvent from "./EditEvent.jsx";
 import GetInscricoes from "./GetInscricoes.jsx";
+import { postStore } from "../../../store/postsStore.js";
 
-const EventMenu = () => {
+const EventMenu = ({ id }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleOpenMenu = (event) => {
@@ -25,11 +26,20 @@ const EventMenu = () => {
     setMenuAnchor(null);
   };
   const [confirm, setConfirm] = useState(null);
-  const handleClick = () => {
+  const { deletePost, fetchData } = postStore();
+  const handleClick = async () => {
     if (!confirm) {
       setConfirm(true);
     } else {
-      setConfirm(false);
+      const res = await deletePost(id);
+      if (res.success) {
+        console.log("Deletado");
+        await fetchData()
+        setConfirm(false);
+        return;
+      }
+      alert(res.message);
+      return;
     }
   };
   return (

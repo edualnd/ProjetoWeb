@@ -12,9 +12,12 @@ import {
 } from "@mui/material";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { userStore } from "../../../store/userStore.js";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]*$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.!%*?&])[A-Za-z\d@$.!%*?&]*$/;
 const registerSchema = z
   .object({
     username: z
@@ -45,7 +48,7 @@ const registerSchema = z
     message: "Senhas precisam ser iguais",
     path: ["passwordConfirmation"],
   });
-console.log("render");
+
 const RegisterForm = () => {
   const {
     register,
@@ -55,15 +58,31 @@ const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
     mode: "all",
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const { registerUser, userData } = userStore();
+  const navigate = useNavigate();
+  const onSubmit = async (data ) => {
+    
+    delete data.privacyTerms;
+    delete data.passwordConfirmation;
+    const res = await registerUser(data);
+    if (res.success) {
+      console.log("cadastrado");
+      navigate("/login");
+      return;
+    }
+    alert(res.message);
   };
-  console.log(errors);
+
+  useEffect(() => {
+    if (userData.logged) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <Stack
         direction={"column"}
-        spacing={3}
+        spacing={2}
         sx={{
           width: "65%",
           height: "80%",
@@ -73,7 +92,7 @@ const RegisterForm = () => {
         component={"form"}
       >
         <Typography
-          variant="h2"
+          variant="h6"
           component={"h1"}
           color="ocean.dark"
           sx={{
@@ -210,7 +229,6 @@ const RegisterForm = () => {
           Cadastrar
         </Button>
       </Stack>
-        
     </>
   );
 };

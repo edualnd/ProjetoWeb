@@ -19,19 +19,13 @@ const loginController = async (req, res, next) => {
 
     const typeOfData = data.includes('@') ? 'email' : 'username';
     if (!user) {
-      throw new CustomError(
-        401,
-        `Success false, ${typeOfData} or password incorrect`,
-      );
+      throw new CustomError(401, `Erro, ${typeOfData} ou senha incorreto`);
     }
 
     const isValidPassword = await compare(password, user.password);
 
     if (!isValidPassword) {
-      throw new CustomError(
-        401,
-        `Success false, ${typeOfData} or password incorrect`,
-      );
+      throw new CustomError(401, `Erro, ${typeOfData} ou senha incorreto`);
     }
 
     const deviceId = req.cookies?.deviceId;
@@ -44,6 +38,7 @@ const loginController = async (req, res, next) => {
     const expiredAt = dayjs()
       .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
       .toDate();
+    console.log(deviceId);
 
     const sessionData = {
       userId: user.userId,
@@ -69,10 +64,11 @@ const loginController = async (req, res, next) => {
       expires: expiredAt,
       path: '/auth',
     });
+    const { password: psw, ...loggedUser } = user;
     return res.status(200).json({
       success: true,
-      message: 'Success true',
-      user,
+      message: 'Logado',
+      user: loggedUser,
       accessToken,
     });
   } catch (e) {

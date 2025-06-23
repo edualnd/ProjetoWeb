@@ -10,7 +10,7 @@ const checkRegisteredCredentials = async (email, username) => {
       userId: true,
     },
   });
-  return user;
+  return user || null;
 };
 
 const registerUser = async (data) => {
@@ -18,7 +18,65 @@ const registerUser = async (data) => {
     data: data,
   });
 
-  return user;
+  return user || null;
+};
+//Profile
+
+const getUserProfile = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { userId },
+    include: {
+      EventSubscription: {
+        select: {
+          Publication: {
+            select: {
+              title: true,
+              eventDate: true,
+              image: true,
+              video: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          followerBy: true,
+          following: true,
+        },
+      },
+      Publication: {
+        select: {
+          publicationId: true,
+          createdAt: true,
+          video: true,
+          image: true,
+          text: true,
+          isEvent: true,
+          title: true,
+          eventDate: true,
+          registrationStartDate: true,
+          registrationEndDate: true,
+          User: {
+            select: {
+              username: true,
+              userId: true,
+              userImage: true,
+            },
+          },
+        },
+      },
+    },
+
+    omit: {
+      email: true,
+      password: true,
+      role: true,
+      name: true,
+      document: true,
+    },
+  });
+  return user || null;
 };
 
 //LOGIN
@@ -27,8 +85,30 @@ const checkLoginCredentials = async (data) => {
     where: {
       OR: [{ email: data }, { username: data }],
     },
+    select: {
+      role: true,
+      username: true,
+      userImage: true,
+      userId: true,
+      password: true,
+      bio: true,
+      Rating: {
+        select: {
+          publicationId: true,
+        },
+      },
+      following: {
+        select: {
+          followerBy: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+    },
   });
-  return user;
+  return user || null;
 };
 
 //AUTH
@@ -42,7 +122,7 @@ const getUserData = async (userId) => {
       role: true,
     },
   });
-  return user;
+  return user || null;
 };
 
 //Change ROLE
@@ -51,14 +131,15 @@ const changeUserRole = async (userId, role, document, name) => {
     where: { userId },
     data: { role, document, name },
     select: {
-      document: true,
-      name: true,
-      username: true,
       role: true,
-      email: true,
+      username: true,
+      userImage: true,
+      userId: true,
+      password: true,
+      bio: true,
     },
   });
-  return user;
+  return user || null;
 };
 
 //Edit USER PROFILE
@@ -69,7 +150,7 @@ const editUserProfile = async (userId, data) => {
       ...data,
     },
   });
-  return user;
+  return user || null;
 };
 
 const currentUserProfile = async (userId) => {
@@ -80,7 +161,7 @@ const currentUserProfile = async (userId) => {
       bio: true,
     },
   });
-  return user;
+  return user || null;
 };
 
 //DELETE
@@ -88,7 +169,7 @@ const deleteUser = async (userId) => {
   const user = await prisma.user.delete({
     where: { userId },
   });
-  return user;
+  return user || null;
 };
 
 //Change PASSWORD
@@ -99,7 +180,7 @@ const changePassword = async (userId, password) => {
       password,
     },
   });
-  return user;
+  return user || null;
 };
 
 //Change EMAIL
@@ -110,24 +191,48 @@ const changeEmail = async (userId, email) => {
       email,
     },
   });
-  return user;
+  return user || null;
 };
 
 //Find profile
 const findUserByUsername = async (username) => {
   const user = await prisma.user.findUnique({
     where: { username },
+    include: {
+      _count: {
+        select: {
+          followerBy: true,
+          following: true,
+        },
+      },
+      Publication: {
+        select: {
+          publicationId: true,
+          createdAt: true,
+          video: true,
+          image: true,
+          text: true,
+          isEvent: true,
+          title: true,
+          eventDate: true,
+          registrationStartDate: true,
+          registrationEndDate: true,
+          User: {
+            select: {
+              username: true,
+              userId: true,
+              userImage: true,
+            },
+          },
+        },
+      },
+    },
     omit: {
       email: true,
       password: true,
       role: true,
       name: true,
       document: true,
-    },
-    include: {
-      Publication: true,
-      followerBy: true,
-      following: true,
     },
   });
 
@@ -146,4 +251,5 @@ export {
   findUserByUsername,
   currentUserProfile,
   editUserProfile,
+  getUserProfile,
 };

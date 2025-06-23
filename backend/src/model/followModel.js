@@ -38,18 +38,20 @@ const stopFollow = async (followerById, followingId) => {
   }
 };
 
-const listFollowing = async (userId) => {
+const listFollowing = async (username) => {
   try {
     const following = await prisma.follows.findMany({
       where: {
-        followerById: userId, // quem eu estou seguindo
+        following: {
+          username: username,
+        },
       },
       include: {
-        following: {
+        followerBy: {
           select: {
             userId: true,
             username: true,
-            name: true,
+            bio: true,
             userImage: true,
           },
         },
@@ -61,24 +63,26 @@ const listFollowing = async (userId) => {
   }
 };
 
-const listFollowers = async (userId) => {
+const listFollowers = async (username) => {
   try {
     const followers = await prisma.follows.findMany({
       where: {
-        followingId: userId, // quem me segue
+        followerBy: {
+          username: username,
+        },
       },
       include: {
-        followerBy: {
+        following: {
           select: {
             userId: true,
             username: true,
-            name: true,
+            bio: true,
             userImage: true,
           },
         },
       },
     });
-    return { success: true, followers };
+    return { success: true, followers: followers };
   } catch (error) {
     return { success: false, error: error.message };
   }

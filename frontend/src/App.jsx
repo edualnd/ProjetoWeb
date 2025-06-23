@@ -15,8 +15,11 @@ import FollowsPage from "./pages/FollowsPage.jsx";
 import ConfigPage from "./pages/ConfigPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import { PostPage } from "./pages/PostPage.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import { userStore } from "../store/userStore.js";
 
 function App() {
+  const { userData } = userStore();
   const theme = createTheme({
     palette: {
       ocean: {
@@ -51,21 +54,25 @@ function App() {
             }
           >
             <Route index element={<Navigate to="me" replace />} />
-            <Route path="me" element={<UserProfilePage />}></Route>
-            <Route path="a" element={<Outlet></Outlet>}>
-              <Route index element={<ProfilePage></ProfilePage>} />
-              <Route
-                path="follows/:category"
-                element={<FollowsPage></FollowsPage>}
-              />
-            </Route>
+            
+            <Route
+              path=":username"
+              element={<ProfilePage></ProfilePage>}
+            ></Route>
+            <Route
+              path=":username/follows/:category"
+              element={<FollowsPage></FollowsPage>}
+            />
           </Route>
 
           <Route
             path="/config"
             element={
               <>
-                <Navbar logged={true}></Navbar>
+                <Navbar
+                  logged={userData.logged}
+                  username={userData.username}
+                ></Navbar>
                 <ConfigPage></ConfigPage>
               </>
             }
@@ -78,6 +85,10 @@ function App() {
                 <PostPage></PostPage>
               </>
             }
+          ></Route>
+          <Route
+            path="/forgot-password"
+            element={<ForgotPassword></ForgotPassword>}
           ></Route>
         </Routes>
       </ThemeProvider>

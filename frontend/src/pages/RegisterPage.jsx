@@ -42,8 +42,8 @@ const RegisterPage = () => {
             position: { xs: "absolute", lg: "relative" },
             zIndex: 1,
             height: {
-              xs: "76vh",
-              lg: "96vh",
+              xs: "85vh",
+              lg: "100vh",
             },
             width: {
               xs: "70vw",
@@ -56,12 +56,12 @@ const RegisterPage = () => {
             },
             justifyItems: "center",
             alignContent: "center",
-            py: 2,
+
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            gap:3
+            gap: 5,
           }}
         >
           <RegisterForm></RegisterForm>
@@ -71,9 +71,14 @@ const RegisterPage = () => {
             color="ocean.dark"
             sx={{
               ":hover": {
-                color: "ocean.main",
                 cursor: "pointer",
+                bgcolor: "#d8e5f380",
+                borderRadius: 1,
               },
+              p: "8px",
+              textTransform: "none",
+              fontFamily: "Inter",
+              fontSize: "16px",
             }}
             href="/login"
           >

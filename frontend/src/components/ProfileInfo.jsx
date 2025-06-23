@@ -3,13 +3,13 @@ import {
   Box,
   Avatar,
   Typography,
-  Button,
   ToggleButton,
   Divider,
   Link,
 } from "@mui/material";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { userStore } from "../../store/userStore.js";
 const ProfileInfo = ({
   followButton,
   userImage,
@@ -17,11 +17,25 @@ const ProfileInfo = ({
   followers,
   following,
   bio,
+  follow,
+  userId,
 }) => {
-  const [followState, setFollowState] = useState(false);
-
-  const handleClick = () => {
-    setFollowState(!followState);
+  const [followState, setFollowState] = useState(follow);
+  const { followProfile, stopFollowinfProfile } = userStore();
+  const handleClick = async () => {
+    let res;
+    if (followState) {
+      res = await stopFollowinfProfile({ daUnfollow: userId }, username);
+    } else {
+      res = await followProfile({ seguindo: userId }, username);
+    }
+    if (res.success) {
+      setFollowState(!followState);
+      console.log("Ação realizada");
+      return;
+    }
+    alert(res.message);
+    return;
   };
 
   return (

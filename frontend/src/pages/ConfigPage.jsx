@@ -7,8 +7,17 @@ import EditProfile from "../components/Config/EditProfile.jsx";
 import DeleteAccount from "../components/Config/DeleteAccount.jsx";
 import SideBar from "../components/Config/SideBar.jsx";
 import { Stack, Box } from "@mui/material";
-import OTPModal from "../components/Config/OTPModal.jsx";
+import { useNavigate } from "react-router-dom";
+import { userStore } from "../../store/userStore.js";
+import { useEffect } from "react";
 const ConfigPage = () => {
+  const navigate = useNavigate();
+  const { userData } = userStore();
+  useEffect(() => {
+    if (!userData.logged) {
+      navigate("/");
+    }
+  }, []);
   const [section, setSection] = useState("editProfile");
 
   return (

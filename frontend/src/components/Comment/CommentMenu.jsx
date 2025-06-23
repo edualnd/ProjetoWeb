@@ -14,8 +14,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import CommentEditForm from "./CommentEditForm.jsx";
+import { postStore } from "../../../store/postsStore.js";
 
-export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
+export const CommentMenu = ({ commentId, canEdit, canDelete, text }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
   const handleOpenMenu = (event) => {
@@ -26,11 +27,20 @@ export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
     setMenuAnchor(null);
   };
   const [confirm, setConfirm] = useState(null);
-  const handleClick = () => {
+  const { deleteComment } = postStore();
+  const handleClick = async () => {
     if (!confirm) {
       setConfirm(true);
     } else {
+      const res = await deleteComment(commentId);
+      if (res.success) {
+        console.log("Deletado");
+        return;
+      }
+      alert(res.message);
+
       setConfirm(false);
+      return;
     }
   };
 
@@ -74,7 +84,7 @@ export const CommentMenu = ({ commentId, canEdit, canDelete }) => {
                   py: 0,
                 }}
               >
-                <CommentEditForm></CommentEditForm>
+                <CommentEditForm text={text} id={commentId}></CommentEditForm>
               </MenuItem>
             )}
             {canEdit && canDelete && <Divider />}

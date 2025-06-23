@@ -3,40 +3,46 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import {
-  Stack,
-  Typography,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Stack, Typography, IconButton, TextField } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 
-
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-const commentSchema = z.object({
-  content: z
+import { postStore } from "../../../store/postsStore.js";
+const registerSchema = z.object({
+  comment: z
     .string()
-    .nonempty("Minimo de 1 caracter")
-    .max(200, "Maximo de 200 caracteres"),
+    .min(1, "Comentario muito curto")
+    .max(200, "Comentario muito longo"),
 });
 
-const CommentForm = () => {
+const CommentForm = ({ id }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm({
-    resolver: zodResolver(commentSchema),
+    resolver: zodResolver(registerSchema),
     mode: "all",
   });
-  const onSubmit = (data) => {
+  const { createComment } = postStore();
+  const onSubmit = async (data) => {
     console.log(data);
+    const res = await createComment(id, data);
+    setComment(!comment);
+    reset();
+    if (res.success) {
+      console.log("Criado");
+      return;
+    }
+    alert(res.message);
+    return;
   };
   const [comment, setComment] = useState(false);
 
   const handleComment = () => {
-    event.preventDefault();
     setComment(!comment);
+    reset();
   };
   return (
     <>
@@ -71,12 +77,12 @@ const CommentForm = () => {
             >
               <TextField
                 fullWidth
-                type="content"
-                name="content"
-                id="content"
-                {...register("content")}
+                type="text"
+                name="comment"
+                id="comment"
+                {...register("comment")}
                 helperText={
-                  errors?.content ? `${errors?.content?.message}` : ""
+                  errors?.comment ? `${errors?.comment?.message}` : ""
                 }
                 variant="outlined"
                 placeholder="Escreva aqui"
@@ -84,7 +90,7 @@ const CommentForm = () => {
                   width: "95%",
                   "& .MuiInputBase-input": {
                     height: "30px",
-                    py: 0,
+                    pt: 0,
                     px: 1,
                     mt: 1,
                   },

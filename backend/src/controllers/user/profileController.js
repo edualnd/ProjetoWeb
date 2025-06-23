@@ -9,7 +9,7 @@ const profileController = async (req, res, next) => {
       throw new CustomError(404, 'Não encontrado');
     }
     return res.status(200).json({
-      sucess: true,
+      success: true,
       message: 'Perfil encontrado',
       user,
     });

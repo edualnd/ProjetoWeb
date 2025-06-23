@@ -25,11 +25,13 @@ const refreshTokenController = async (req, res, next) => {
       res.clearCookie('id', {
         path: '/auth',
       });
+      console.log('1 ');
       throw new CustomError(401, 'Faça login');
     }
 
     const { success } = validateRefreshToken(refreshToken);
     if (!success) {
+      console.log('2 ');
       await deleteSession(deviceId);
       res.clearCookie('refreshToken', {
         path: '/refresh',
@@ -42,6 +44,7 @@ const refreshTokenController = async (req, res, next) => {
 
     const session = await findSession(deviceId);
     if (!session) {
+      console.log('3 ');
       await deleteExpiredSession(deviceId);
       res.clearCookie('refreshToken', {
         path: '/refresh',
@@ -53,12 +56,17 @@ const refreshTokenController = async (req, res, next) => {
     }
 
     await deleteSession(deviceId);
+
     const newAccessToken = generateAccessToken(deviceId, userId);
+
     const sessionId = crypto.randomUUID();
+
     const newRefreshToken = generateRefreshToken(deviceId, userId, sessionId);
+
     const expiredAt = dayjs()
       .add(process.env.RT_EXPIRE_INT, process.env.RT_EXPIRE_TIME)
       .toDate();
+
     const sessionData = {
       userId,
       deviceId,

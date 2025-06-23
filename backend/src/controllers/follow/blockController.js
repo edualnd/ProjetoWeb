@@ -8,11 +8,13 @@ const blockController = async (req, res, next) => {
 
   if (!bloqueado.success) {
     return res.status(400).json({
+      success: true,
       message: 'Esse usuario não te segue',
       error: bloqueado.error,
     });
   }
   return res.status(200).json({
+    success: true,
     message: 'bloqueado',
     bloqueado,
   });

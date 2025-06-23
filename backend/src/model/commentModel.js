@@ -14,8 +14,17 @@ const getCommentData = async (commentId) => {
 //Get comment
 const getComment = async (publicationId) => {
   const comment = await prisma.comments.findMany({
-    where:{ publicationId}
-  })
+    where: { publicationId },
+    select: {
+      comment: true,
+      commentId: true,
+      createdAt: true,
+      publicationId: true,
+      User: {
+        select: { username: true, userId: true },
+      },
+    },
+  });
   return comment;
 };
 
@@ -23,6 +32,15 @@ const getComment = async (publicationId) => {
 const createComment = async (data) => {
   const comment = await prisma.comments.create({
     data,
+    select: {
+      comment: true,
+      commentId: true,
+      createdAt: true,
+      publicationId: true,
+      User: {
+        select: { username: true, userId: true },
+      },
+    },
   });
   return comment;
 };
@@ -43,4 +61,10 @@ const updateComment = async (commentId, data) => {
   return comment;
 };
 
-export { getCommentData, getComment, createComment, deleteComment, updateComment };
+export {
+  getCommentData,
+  getComment,
+  createComment,
+  deleteComment,
+  updateComment,
+};

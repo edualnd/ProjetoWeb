@@ -9,15 +9,43 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-const CommentEditForm = () => {
+import { postStore } from "../../../store/postsStore.js";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+
+const registerSchema = z.object({
+  comment: z
+    .string()
+    .min(1, "Comentario muito curto")
+    .max(200, "Comentario muito longo"),
+});
+const CommentEditForm = ({ text, id }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    mode: "all",
+  });
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(!openModal);
+    reset();
   };
-  const handleSubmit = () => {
-    const comment = document.getElementById("comment");
-    console.log("Editando", comment.value);
+  const { editComment } = postStore();
+  const handleClick = async (data) => {
+    const res = await editComment(id, data);
     setOpenModal(!openModal);
+    if (res.success) {
+      console.log("Alterado");
+      return;
+    }
+    alert(res.message);
+    return;
   };
   return (
     <>
@@ -32,15 +60,22 @@ const CommentEditForm = () => {
             margin="dense"
             id="comment"
             name="comment"
-            defaultValue={"comentarioooo"}
+            defaultValue={text}
             type="text"
             fullWidth
             variant="standard"
+            {...register("comment")}
+            helperText={errors?.comment ? `${errors?.comment?.message}` : ""}
+            error={errors?.comment}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpenModal}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit}>
+          <Button
+            type="submit"
+            onClick={handleSubmit(handleClick)}
+            disabled={!isValid}
+          >
             Editar
           </Button>
         </DialogActions>

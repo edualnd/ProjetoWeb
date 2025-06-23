@@ -1,18 +1,29 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Avatar, Box, Typography, Link } from "@mui/material";
 import PostMenu from "./PostMenu.jsx";
+import { userStore } from "../../../store/userStore.js";
 const PostInfo = ({ content }) => {
+  const { userData } = userStore();
+  let openMenu = false;
+
+  if (userData.logged && userData.userId == content.userId) {
+    openMenu = true;
+  }
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
         <Link
           component={RouterLink}
-          to="/profile/a"
+          to={`/profile/${content.username}`}
           underline="none"
           sx={{ flex: 1 }}
         >
           <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-            <Avatar sx={{ width: "54px", height: "54px" }}></Avatar>
+            <Avatar
+              sx={{ width: "54px", height: "54px" }}
+              src={content.userImage}
+            ></Avatar>
             <Box sx={{ flex: 2 }}>
               <Typography variant="h5" color="ocean.dark">
                 {content.username}
@@ -24,7 +35,7 @@ const PostInfo = ({ content }) => {
           </Box>
         </Link>
 
-        <PostMenu></PostMenu>
+        {openMenu && <PostMenu></PostMenu>}
       </Box>
       <Box>
         <Typography
@@ -46,13 +57,3 @@ const PostInfo = ({ content }) => {
 };
 
 export default PostInfo;
-/*
-Interface Iproduto -> Produtos comprados
-
-Interface IProdutosFabricados filho de Iproduto ->(Produto Fabricado)
-
-
-IProdutosFabricados p -> ProdutoComrado e ProdutoFabricado
-
-Gerente
-*/

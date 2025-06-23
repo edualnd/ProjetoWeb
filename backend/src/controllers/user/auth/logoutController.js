@@ -13,7 +13,7 @@ const logoutController = async (req, res, next) => {
       path: '/auth',
     });
     return res.status(200).json({
-      sucess: true,
+      success: true,
       message: 'Logout com sucesso',
       userId,
       deviceId,

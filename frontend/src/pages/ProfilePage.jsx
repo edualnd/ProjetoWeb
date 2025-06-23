@@ -1,52 +1,132 @@
-import { Box, Typography } from "@mui/material";
-import Post from "../components/Post/PostsProfileCard.jsx";
+import { Box, Typography, Link } from "@mui/material";
+import EventCard from "../components/Post/EventCard.jsx";
 import ProfileInfo from "../components/ProfileInfo.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { userStore } from "../../store/userStore.js";
+import { Link as RouterLink } from "react-router-dom";
+import UserProfilePage from "./UserProfilePage.jsx";
 
-const imagensEx = [
-  "https://i.pinimg.com/236x/9e/41/d3/9e41d39158a0e30da1ab9b25f29b8b9d.jpg",
-  "https://images.unsplash.com/photo-1726137570057-2f410417c3ee?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8",
-  "https://plus.unsplash.com/premium_photo-1664110690525-1fe1da8375a2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8",
-  "https://plus.unsplash.com/premium_photo-1664637952509-c2627f44406b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZmxvcmVzdHxlbnwwfHwwfHx8MA%3D%3D",
-];
 const ProfilePage = () => {
+  const { username } = useParams();
+
+  const [profile, setProfile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const { getProfileByUsername } = userStore();
+  const { userData } = userStore();
+  const [follows, setFollows] = useState(false);
+  useEffect(() => {
+    const x = async () => {
+      const res = await getProfileByUsername(username);
+      if (res.success) {
+        console.log("Dados pegos");
+        setProfile({ ...res.perfil });
+        setPosts([...res.perfil.Publication]);
+        let isFollows;
+        if (userData.logged) {
+          isFollows = userData.following.some(
+            (follow) => follow.followerBy.username === res.perfil.username
+          );
+        }
+        setFollows(isFollows);
+        return;
+      } else if (res.status == 404) {
+        console.log("Perfil nao encontrado");
+        return;
+      }
+      alert(res.message);
+      return;
+    };
+    x();
+  }, []);
+  const isProfileFromUser = username == userData.username;
   return (
     <>
-      <ProfileInfo
-        userImage={""}
-        followers={"1.900"}
-        following={"10"}
-        username={"Username"}
-        followButton={true}
-        bio={
-          "Gato curioso, ama sonecas ao sol, caça sombras e busca carinho entre uma aventura e outra."
-        }
-      ></ProfileInfo>
-      <Box
-        sx={{
-          mt: 5,
-          height: 40,
-          bgcolor: "ocean.light",
-          borderRadius: 20,
-          border: "none",
-          width: "100%",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontFamily: "inter",
-        }}
-      >
-        <Typography variant="p" color="white">
-          PUBLICAÇÕES
-        </Typography>
-      </Box>
-
-      <>
-        {imagensEx.map((imagem) => (
-          <PostCard imagens={[imagem]} />
-        ))}
-      </>
+      {isProfileFromUser ? (
+        <UserProfilePage></UserProfilePage>
+      ) : profile ? (
+        <>
+          <ProfileInfo
+            userImage={profile.userImage}
+            followers={profile._count?.followerBy}
+            following={profile._count?.following}
+            username={profile.username}
+            followButton={userData.logged}
+            follow={follows}
+            bio={profile.bio}
+            userId={profile.userId}
+          ></ProfileInfo>
+          <Box
+            sx={{
+              mt: 5,
+              height: 40,
+              bgcolor: "ocean.light",
+              borderRadius: 20,
+              border: "none",
+              width: "100%",
+              color: "white",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontFamily: "inter",
+            }}
+          >
+            <Typography variant="p" color="white">
+              PUBLICAÇÕES
+            </Typography>
+          </Box>
+          <>
+            {posts.map((post) => {
+              if (post.isEvent) {
+                return <EventCard key={post.publicationId} post={post} />;
+              }
+              return <PostCard key={post.publicationId} post={post} />;
+            })}
+          </>
+        </>
+      ) : (
+        <>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 7,
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              component={"h3"}
+              variant="h3"
+              sx={{
+                fontFamily: "inter",
+                color: "ocean.dark",
+              }}
+            >
+              Não encontrado
+            </Typography>
+            <Link
+              variant="h4"
+              component={RouterLink}
+              to="/"
+              underline="none"
+              sx={{
+                fontSize: "20px",
+                p: 1,
+                borderRadius: 2,
+                border: "1px solid #ECECEC",
+                ":hover": {
+                  color: "ocean.light",
+                },
+              }}
+            >
+              Voltar
+            </Link>
+          </Box>
+        </>
+      )}
     </>
   );
 };

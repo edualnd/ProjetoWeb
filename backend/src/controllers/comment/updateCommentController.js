@@ -15,7 +15,7 @@ const updateCommentController = async (req, res, next) => {
     const { authorId } = comment;
 
     if (authorId != userId) {
-      throw new CustomError(401, 'Você não pode deletar esse comentário');
+      throw new CustomError(401, 'Você não pode editar esse comentário');
     }
 
     const { success, error, data } = await validateSchema(commentSchema, {

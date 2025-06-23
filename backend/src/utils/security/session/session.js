@@ -4,7 +4,7 @@ const createSession = async (data) => {
   const session = await prisma.session.create({
     data: data,
   });
-  return session;
+  return session || null;
 };
 
 const findSession = async (deviceId) => {

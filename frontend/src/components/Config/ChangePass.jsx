@@ -1,12 +1,42 @@
-import {
-  Stack,
-  Typography,
-  Box,
+import { Stack, Typography, Box, TextField, Button } from "@mui/material";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.!%*?&])[A-Za-z\d@$.!%*?&]*$/;
+const registerSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .nonempty("A senha é obrigatório")
+      .min(8, "Senha deve ter no mínimo 8 caracteres"),
+    newPassword: z
+      .string()
+      .nonempty("A senha é obrigatório")
+      .min(8, "Senha deve ter no mínimo 8 caracteres")
+      .regex(
+        passwordRegex,
+        "Deve ter: 1 letra maiúscula, 1 minúscula, 1 número, 1 caractere especial"
+      )
+      .max(100, "Senha muito longa"),
+  })
+  .refine((data) => data.oldPassword != data.newPassword, {
+    message: "Senhas precisam ser diferentes",
+    path: ["newPassword"],
+  });
 
-  TextField,
-  Button,
-} from "@mui/material";
 const ChangePass = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    mode: "all",
+  });
+  const handleChange = (data) => {
+    console.log(data);
+  };
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -31,9 +61,16 @@ const ChangePass = () => {
           >
             <TextField
               label="Senha atual"
+              id="oldPassword"
+              type="password"
               sx={{
                 width: "100%",
               }}
+              {...register("oldPassword")}
+              error={errors?.oldPassword}
+              helperText={
+                errors?.oldPassword ? `${errors?.oldPassword?.message}` : ""
+              }
             ></TextField>
           </Box>
           <Box
@@ -44,9 +81,16 @@ const ChangePass = () => {
           >
             <TextField
               label="Nova senha"
+              id="newPassword"
+              type="password"
               sx={{
                 width: "100%",
               }}
+              {...register("newPassword")}
+              error={errors?.newPassword}
+              helperText={
+                errors?.newPassword ? `${errors?.newPassword?.message}` : ""
+              }
             ></TextField>
           </Box>
           <Button
@@ -55,6 +99,8 @@ const ChangePass = () => {
               width: "50%",
               height: "50px",
             }}
+            disabled={!isValid}
+            onClick={handleSubmit(handleChange)}
           >
             Mudar
           </Button>

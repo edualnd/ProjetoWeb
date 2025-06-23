@@ -1,7 +1,7 @@
 import { createEvent } from '../../model/postModel.js';
 import validateSchema from '../../utils/validators/schemaValidator.js';
-import eventSchema from '../../schemas/eventSchema.js'
-import {uploadCloud, uploadVideo} from '../../utils/cloudinary/config.js';
+import eventSchema from '../../schemas/eventSchema.js';
+import { uploadCloud, uploadVideo } from '../../utils/cloudinary/config.js';
 
 export default async function createEventController(req, res, next) {
   try {
@@ -9,57 +9,69 @@ export default async function createEventController(req, res, next) {
     const photoId = [];
     const user = req.user.userId;
     const role = req.user.userRole;
-    
-    const { isEvent, text, title } = req.body;
-    
-    const post = { ...req.body, authorId: user };
+    const {
+      isEvent,
+      text,
+      title,
+      eventDate,
+      registrationStartDate,
+      registrationEndDate,
+    } = req.body;
+    console.log(typeof isEvent);
+    if (isEvent == 'true' && role == 'COMMOM') {
+      return res.status(401).json({ message: 'voce não e um profissional' });
+    }
 
-    const {success, error, data } = await validateSchema(eventSchema, {
-      text, title,
+    const post = {
+      text,
+      title,
+      isEvent: Boolean(isEvent),
+      authorId: user,
+      eventDate,
+      registrationEndDate,
+      registrationStartDate,
+    };
+
+    const { success, error, data } = await validateSchema(eventSchema, {
+      text,
+      title,
     });
 
-    let cloudImage
-    if(photo){
-      for(const p of photo)
-       {
-
-        if (p.mimetype.startsWith('image/')){
+    let cloudImage;
+    if (photo) {
+      for (const p of photo) {
+        if (p.mimetype.startsWith('image/')) {
           cloudImage = await uploadCloud(p.path);
-        }else if(p.mimetype.startsWith('video/')){
+        } else if (p.mimetype.startsWith('video/')) {
           cloudImage = await uploadVideo(p.path);
         }
 
-        if(!cloudImage){
+        if (!cloudImage) {
           return res.status(500).json({ error: error });
-          }
+        }
 
-        
-        photoId.push(cloudImage.public_id+ '.' + cloudImage.format)}
+        photoId.push(cloudImage.public_id + '.' + cloudImage.format);
+      }
     }
-    
-    if(!success){
-      console.log(error)
+
+    if (!success) {
+      console.log(error);
       return res.status(500).json({ error: error });
     }
 
     let images = {};
-    
-    if(photo && photoId.length == 2){
-      images = {image: photoId[0],video: photoId[1]}
-    }else if(photo && photoId.length == 1){
-      images = {image: photoId[0]}
+
+    if (photo && photoId.length == 2) {
+      images = { image: photoId[0], video: photoId[1] };
+    } else if (photo && photoId.length == 1) {
+      images = { image: photoId[0] };
     }
 
-
-    if (isEvent == true && role != 'COMMOM') {
-      const result = await createEvent(...post, ...images);
-      return res.json({
-        message: 'Evento criado com sucesso!',
-        post: result,
-      });
-    }
-    
-    return res.status(200).json({ message: 'voce não e um profissional' });
+    const result = await createEvent({ ...post, ...images });
+    return res.status(200).json({
+      message: 'Evento criado com sucesso!',
+      post: result,
+    });
   } catch (error) {
     console.log('Erro ao criar o evento:', error);
     return res.status(500).json({ error: error.message });

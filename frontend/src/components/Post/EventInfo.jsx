@@ -1,9 +1,48 @@
 import { Box, Stack, Typography, Button, Link, Rating } from "@mui/material";
 import RateMenu from "./RateMenu.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventMenu from "./EventMenu.jsx";
-const EventInfo = ({ content, subscribe }) => {
+import { userStore } from "../../../store/userStore.js";
+import { postStore } from "../../../store/postsStore.js";
+const EventInfo = ({ content }) => {
   const [inscricao, setInscricao] = useState(false);
+  const data = new Date(content.eventDate).toLocaleDateString();
+  const needSubscribe = content.registrationStartDate != null;
+  let subscribe = false;
+  if (needSubscribe) {
+    subscribe =
+      new Date() >= new Date(content.registrationStartDate) &&
+      new Date() <= new Date(content.registrationEndDate);
+  }
+  const handleSubmit = () => {
+    setInscricao(!inscricao);
+  };
+  const { userData } = userStore();
+  const { ratingPost } = postStore();
+  let openMenu = false;
+
+  if (userData.logged && userData.userId == content.User.userId) {
+    openMenu = true;
+  }
+
+  const [rating, setRating] = useState(0);
+  useEffect(() => {
+    const x = async () => {
+      const res = await ratingPost(content.publicationId);
+      if (res.success) {
+        let rate = +res.rating;
+        if (!res.rating) {
+          rate = 0;
+        }
+        setRating(rate);
+
+        return;
+      }
+      //alert(res.message);
+      return;
+    };
+    x();
+  }, []);
 
   return (
     <>
@@ -18,12 +57,12 @@ const EventInfo = ({ content, subscribe }) => {
             </Typography>
             <Rating
               name="half-rating-read"
-              defaultValue={2.5}
+              value={rating}
               precision={0.5}
               readOnly
             />
           </Box>
-          <EventMenu></EventMenu>
+          {openMenu && <EventMenu id={content.publicationId}></EventMenu>}
         </Box>
 
         <Box>
@@ -71,7 +110,7 @@ const EventInfo = ({ content, subscribe }) => {
                   px: 2,
                 }}
               >
-                <Typography>12/12/2025 08:00</Typography>
+                <Typography>{data}</Typography>
               </Box>
             </Box>
             <Box
@@ -81,12 +120,14 @@ const EventInfo = ({ content, subscribe }) => {
                 display: "flex",
               }}
             >
-              <RateMenu></RateMenu>
+              {openMenu && (
+                <RateMenu publication={content.publicationId}></RateMenu>
+              )}
             </Box>
           </Box>
         </Stack>
 
-        {subscribe && (
+        {needSubscribe && (
           <Box>
             <Button
               variant="contained"
@@ -94,10 +135,14 @@ const EventInfo = ({ content, subscribe }) => {
                 width: "100%",
                 bgcolor: "ocean.dark",
               }}
-              onClick={(e) => setInscricao(!inscricao)}
-              disabled={inscricao}
+              onClick={() => handleSubmit()}
+              disabled={inscricao || !subscribe}
             >
-              {inscricao ? "Inscrito" : "Inscrever"}
+              {subscribe
+                ? inscricao
+                  ? "Inscrito"
+                  : "Inscrever"
+                : "Finalizada"}
             </Button>
           </Box>
         )}

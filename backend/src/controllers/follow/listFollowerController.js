@@ -1,21 +1,22 @@
 import { listFollowers } from '../../model/followModel.js';
 
 const listFollowerController = async (req, res) => {
-const userId = req.user.userId;
+  const { username } = req.params;
 
-  const result = await listFollowers(userId);
-
+  const result = await listFollowers(username);
+  
   if (!result.success) {
     return res.status(400).json({
+      success: false,
       message: 'Erro ao buscar seguidores',
       error: result.error,
     });
   }
 
   return res.status(200).json({
-    message: 'Seguidores',
-    //followers: result.followers.map((item) => item.followerBy), ou
-    //followers: result,
+    success: true,
+    message: 'Dados coletados',
+    follower: result.followers,
   });
 };
 

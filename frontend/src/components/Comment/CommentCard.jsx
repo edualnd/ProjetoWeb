@@ -1,102 +1,121 @@
-import {
-  Box,
-  Avatar,
-  Typography,
-  List,
-  ListItem,
-} from "@mui/material";
+import { Box, Avatar, Typography, List, ListItem } from "@mui/material";
 
 import { useState } from "react";
 
 import { CommentMenu } from "./CommentMenu.jsx";
-const CommentCard = ({ comments }) => {
-  const [card, setCard] = useState(comments);
+import { userStore } from "../../../store/userStore.js";
+const CommentCard = ({ comments, postAuthor }) => {
+  const isComments = comments.length != 0;
 
-  
- 
+  const { userData } = userStore();
+
+  const updatedComments = comments.map((comment) => {
+    let isOwnerComment = false;
+    let isOwnerPost = false;
+
+    if (userData.logged) {
+      isOwnerComment = comment.User.userId === userData.userId;
+      isOwnerPost = postAuthor == userData.userId;
+    }
+
+    return {
+      ...comment,
+      canEdit: isOwnerComment,
+      canDelete: isOwnerComment || isOwnerPost,
+    };
+  });
+
+  const [card] = useState(updatedComments);
   return (
     <>
-      <List>
-        {card.map((comment) => (
-          <ListItem key={comment.id}>
-            <Box
-              sx={{
-                height: "auto",
-                width: "100%",
-              }}
-            >
+      {isComments ? (
+        <List>
+          {card.map((comment) => (
+            <ListItem key={comment.commentId}>
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 1,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-
+                  height: "auto",
                   width: "100%",
                 }}
               >
-                <Avatar sx={{ width: "40px", height: "40px" }}></Avatar>
                 <Box
                   sx={{
-                    flex: 1,
                     display: "flex",
                     flexDirection: "row",
-                    gap: 2,
+                    gap: 1,
+                    justifyContent: "space-between",
                     alignItems: "center",
+
+                    width: "100%",
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    component={"p"}
-                    color="ocean.dark"
+                  <Avatar sx={{ width: "40px", height: "40px" }}></Avatar>
+                  <Box
                     sx={{
-                      fontFamily: "inter",
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 2,
+                      alignItems: "center",
                     }}
                   >
-                    {comment.username}
-                  </Typography>
-                  <Typography variant="body2" color="ocean.dark">
-                    {comment.date}
+                    <Typography
+                      variant="body2"
+                      component={"p"}
+                      color="ocean.dark"
+                      sx={{
+                        fontFamily: "inter",
+                      }}
+                    >
+                      {comment.User.username}
+                    </Typography>
+                    <Typography variant="body2" color="ocean.dark">
+                      {new Date(comment.createdAt).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                  {comment.canEdit || comment.canDelete ? (
+                    <>
+                      <CommentMenu
+                        canDelete={comment.canDelete}
+                        canEdit={comment.canEdit}
+                        commentId={comment.commentId}
+                        text = {comment.comment}
+                      ></CommentMenu>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </Box>
+
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "inter",
+                      color: "ocean.dark",
+                      whiteSpace: "pre-line",
+                      wordBreak: "break-word",
+                      textAlign: "justify",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      px: 1,
+                      ml: 6,
+                      mt: -1,
+                    }}
+                  >
+                    {comment.comment}
                   </Typography>
                 </Box>
-                {comment.canEdit || comment.canDelete ? (
-                  <>
-                    <CommentMenu
-                      canDelete={comment.canDelete}
-                      canEdit={comment.canEdit}
-                      commentId={comment.id}
-                    ></CommentMenu>
-                  </>
-                ) : (
-                  ""
-                )}
               </Box>
-
-              <Box>
-                <Typography
-                  sx={{
-                    fontFamily: "inter",
-                    color: "ocean.dark",
-                    whiteSpace: "pre-line",
-                    wordBreak: "break-word",
-                    textAlign: "justify",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    px: 1,
-                    ml: 6,
-                    mt: -1,
-                  }}
-                >
-                  {comment.text}
-                </Typography>
-              </Box>
-            </Box>
-          </ListItem>
-        ))}
-      </List>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <Typography color="#CBCBCB" align="center">
+          Seja o primeiro a comentar
+        </Typography>
+      )}
     </>
   );
 };

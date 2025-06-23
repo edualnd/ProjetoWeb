@@ -17,44 +17,28 @@ import CommentCard from "../Comment/CommentCard.jsx";
 
 import PostInfo from "./PostInfo.jsx";
 import CommentForm from "../Comment/CommentForm.jsx";
-const comments = [
-  {
-    id: 1,
-    username: "joao_silva",
-    date: "2025-06-16",
-    text: "Muito bom esse post! Parabéns pelo conteúdo.",
-    canEdit: true,
-    canDelete: false,
-  },
-  {
-    id: 2,
-    username: "ana_pereira",
-    date: "2025-06-15",
-    text: "Achei muito interessante, obrigado por compartilhar!",
-    canEdit: true,
-    canDelete: true,
-  },
-  {
-    id: 3,
-    username: "carlos_oliveira",
-    date: "2025-06-14",
-    text: "Tenho uma dúvida sobre o tema, poderia explicar mais?",
-    canEdit: false,
-    canDelete: true,
-  },
-];
+import { postStore } from "../../../store/postsStore.js";
+import { userStore } from "../../../store/userStore.js";
 
-const PostCard = ({ imagens }) => {
-  const tam = imagens.length > 1 ? 2 : 1;
+const PostCard = ({ post }) => {
+  const image = [post.video, post.image].filter((item) => item != null);
+  const tam = image.length > 1 ? 2 : 1;
+  const data = new Date(post.createdAt).toLocaleDateString();
+  const { getComments } = postStore();
+  const { userData } = userStore();
   const [openComments, setOpenComments] = useState(false);
 
-  const handleOpenComments = () => {
+  const handleOpenComments = async () => {
+    if (!post.comments || post.comments?.length == 0) {
+      await getComments(post.publicationId);
+    }
     setOpenComments(!openComments);
   };
 
   return (
     <>
       <Box
+        id={post.publicationId}
         sx={{
           width: "100%",
           borderRadius: 4,
@@ -71,7 +55,7 @@ const PostCard = ({ imagens }) => {
             borderRadius: "16px 16px 0 0",
           }}
         >
-          {imagens.map((img, index) => (
+          {image.map((img, index) => (
             <>
               {img && (
                 <ImageListItem key={index}>
@@ -98,13 +82,21 @@ const PostCard = ({ imagens }) => {
         >
           <PostInfo
             content={{
-              username: "User",
-              date: "12/12/2012",
-              text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, sunt? ",
+              username: post.User.username,
+              userId: post.User.userId,
+              date: data,
+              text: post.text,
+              userImage: post.User.userImage,
+              publicationId: post.publicationId,
             }}
           ></PostInfo>
           <Divider></Divider>
-          {openComments && <CommentCard comments={comments}></CommentCard>}
+          {openComments && (
+            <CommentCard
+              comments={post.comments || []}
+              postAuthor={post.authorId}
+            ></CommentCard>
+          )}
           <Box
             sx={{
               m: 0,
@@ -115,7 +107,9 @@ const PostCard = ({ imagens }) => {
               height: "50px",
             }}
           >
-            <CommentForm></CommentForm>
+            {userData.logged && (
+              <CommentForm id={post.publicationId}></CommentForm>
+            )}
 
             <ToggleButton
               selected={openComments}

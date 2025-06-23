@@ -21,43 +21,26 @@ import CommentCard from "../Comment/CommentCard.jsx";
 
 import EventInfo from "./EventInfo.jsx";
 import CommentForm from "../Comment/CommentForm.jsx";
-const commentsEx = [
-  {
-    id: 1,
-    username: "joao_silva",
-    date: "2025-06-16",
-    text: "Muito bom esse post! Parabéns pelo conteúdo.",
-  },
-  {
-    id: 2,
-    username: "ana_pereira",
-    date: "2025-06-15",
-    text: "Achei muito interessante, obrigado por compartilhar!",
-  },
-  {
-    id: 3,
-    username: "carlos_oliveira",
-    date: "2025-06-14",
-    text: "Tenho uma dúvida sobre o tema, poderia explicar mais?",
-  },
-];
+import { postStore } from "../../../store/postsStore.js";
+import { userStore } from "../../../store/userStore.js";
 
-const EventCard = ({ id, imagens, subscribe }) => {
-  const tam = imagens.length > 1 ? 2 : 1;
+const EventCard = ({ post }) => {
+  const image = [post.video, post.image].filter((item) => item != null);
+  const tam = image.length > 1 ? 2 : 1;
   const [openComments, setOpenComments] = useState(false);
-  const [comment, setComment] = useState(false);
 
-  const handleOpenComments = () => {
+  const { getComments } = postStore();
+  const { userData } = userStore();
+  const handleOpenComments = async () => {
+    if (!post.comments || post.comments?.length == 0) {
+      await getComments(post.publicationId);
+    }
     setOpenComments(!openComments);
   };
-  const handleComment = () => {
-    setComment(!comment);
-  };
-
+  
   return (
     <>
       <Box
-        id={id}
         sx={{
           width: "100%",
           borderRadius: 4,
@@ -66,6 +49,7 @@ const EventCard = ({ id, imagens, subscribe }) => {
           pb: 2,
           border: "1px solid #ECEDEE",
         }}
+        id={post.publicationId}
       >
         <ImageList
           cols={tam}
@@ -74,7 +58,7 @@ const EventCard = ({ id, imagens, subscribe }) => {
             borderRadius: "16px 16px 0 0",
           }}
         >
-          {imagens.map((img, index) => (
+          {image.map((img, index) => (
             <ImageListItem key={index}>
               <img
                 src={img}
@@ -95,17 +79,15 @@ const EventCard = ({ id, imagens, subscribe }) => {
           }}
           spacing={1}
         >
-          <EventInfo
-            content={{
-              title: "Cachoeira .....",
-              date: "12/12/2012",
-              text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, sunt?",
-            }}
-            subscribe={subscribe}
-          ></EventInfo>
+          <EventInfo content={post}></EventInfo>
 
           <Divider></Divider>
-          {openComments && <CommentCard comments={commentsEx}></CommentCard>}
+          {openComments && (
+            <CommentCard
+              comments={post.comments || []}
+              postAuthor={post.authorId}
+            ></CommentCard>
+          )}
           <Box
             sx={{
               m: 0,
@@ -116,58 +98,10 @@ const EventCard = ({ id, imagens, subscribe }) => {
               height: "50px",
             }}
           >
-            {/*  */}
-
-            {comment ? (
-              <Stack
-                direction={"row"}
-                justifyContent={"flex-start"}
-                alignItems={"center"}
-                sx={{ width: "100%", height: "100%", px: 1 }}
-              >
-                <Stack
-                  direction={"row"}
-                  justifyContent={"center"}
-                  alignContent={"center"}
-                  sx={{
-                    bgcolor: "#ECEDEE",
-                    width: "100%",
-                    height: "75%",
-                    borderRadius: 3,
-                  }}
-                >
-                  <CommentForm></CommentForm>
-                  <IconButton onClick={handleComment}>
-                    <CloseRoundedIcon
-                      sx={{
-                        color: "ocean.dark",
-                      }}
-                    ></CloseRoundedIcon>
-                  </IconButton>
-                </Stack>
-              </Stack>
-            ) : (
-              <IconButton
-                sx={{
-                  gap: 1,
-                  alignItems: "center",
-                  borderRadius: 2,
-                  flex: 1,
-                }}
-                onClick={handleComment}
-              >
-                <AddCommentIcon></AddCommentIcon>
-                <Typography
-                  variant="body"
-                  component={"span"}
-                  sx={{
-                    fontSize: "20px",
-                  }}
-                >
-                  Comentar
-                </Typography>
-              </IconButton>
+            {userData.logged && (
+              <CommentForm id={post.publicationId}></CommentForm>
             )}
+
             <ToggleButton
               selected={openComments}
               onClick={handleOpenComments}

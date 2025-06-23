@@ -25,7 +25,7 @@ const emailOtpController = async (req, res, next) => {
         'Dados inválidos: verifique e tente novamente',
       );
     }
-    const checkEmail = await checkRegisteredCredentials(newEmail, '');
+    const checkEmail = await checkRegisteredCredentials(newEmail, "");
     if (checkEmail) {
       throw new CustomError(409, 'Email já cadastrado');
     }

@@ -81,7 +81,7 @@ const editUserController = async (req, res, next) => {
     }
 
     return res.status(200).json({
-      sucess: true,
+      success: true,
       message: 'Perfil atualizado com sucesso',
       editProfile,
     });
