@@ -86,6 +86,11 @@ const checkLoginCredentials = async (data) => {
       OR: [{ email: data }, { username: data }],
     },
     select: {
+      EventSubscription: {
+        select: {
+          publicationId: true,
+        },
+      },
       role: true,
       username: true,
       userImage: true,

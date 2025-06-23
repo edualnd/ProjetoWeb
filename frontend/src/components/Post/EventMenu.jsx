@@ -34,7 +34,7 @@ const EventMenu = ({ id }) => {
       const res = await deletePost(id);
       if (res.success) {
         console.log("Deletado");
-        await fetchData()
+        await fetchData();
         setConfirm(false);
         return;
       }
@@ -42,6 +42,7 @@ const EventMenu = ({ id }) => {
       return;
     }
   };
+  
   return (
     <>
       <>
@@ -106,7 +107,7 @@ const EventMenu = ({ id }) => {
 
           <Divider></Divider>
           <MenuItem>
-            <GetInscricoes></GetInscricoes>
+            <GetInscricoes id={id}></GetInscricoes>
           </MenuItem>
         </Menu>
       </>

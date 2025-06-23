@@ -17,6 +17,7 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      console.log(response.user);
       set(() => ({
         userData: {
           ...response.user,
@@ -433,7 +434,7 @@ const userStore = create((set, get) => ({
 
     return { success: false, message: response.message };
   },
-  stopFollowinfProfile: async (data, username) => {
+  stopFollowingProfile: async (data, username) => {
     let token = get().userData?.accessToken;
     let res = await fetch("http://localhost:3000/auth/follow/stop-follow", {
       method: "DELETE",
@@ -515,6 +516,103 @@ const userStore = create((set, get) => ({
       return { success: true, following: response.following || [] };
     }
 
+    return { success: false, message: response.message };
+  },
+  blockFollower: async (data) => {
+    let token = get().userData?.accessToken;
+    let res = await fetch(`http://localhost:3000/auth/follow/block`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await get().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData?.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/follow/block`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+    }
+    const response = await res.json();
+    if (response.success) {
+      set(() => ({
+        userData: {
+          ...get().userData,
+          ...response.user,
+          logged: true,
+          accessToken: token,
+        },
+      }));
+      return { success: true, message: "Seguidor retirado" };
+    }
+    return { success: false, message: response.message };
+  },
+
+  subscribeEvent: async (publicationId) => {
+    let token = get().userData?.accessToken;
+    let res = await fetch(
+      `http://localhost:3000//auth/event-subscription/${publicationId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    if (res.status === 401) {
+      const refreshResult = await get().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData?.accessToken;
+
+      res = await fetch(
+        `http://localhost:3000//auth/event-subscription/${publicationId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        }
+      );
+    }
+    const response = await res.json();
+    if (response.success) {
+      set(() => ({
+        userData: {
+          ...get().userData,
+          ...response.user,
+          logged: true,
+          accessToken: token,
+        },
+      }));
+      return { success: true, message: "Role alterado" };
+    }
     return { success: false, message: response.message };
   },
 }));

@@ -43,6 +43,10 @@ const EventInfo = ({ content }) => {
     };
     x();
   }, []);
+  let canSubscribe = false;
+  if (userData.logged) {
+    canSubscribe = userData;
+  }
 
   return (
     <>

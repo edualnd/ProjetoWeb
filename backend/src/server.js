@@ -15,6 +15,7 @@ import commentRoutes from './routes/commentRoutes.js';
 import logger from './middlewares/logger.js';
 import errorsHandler from './middlewares/errorHandler.js';
 import ratingRoutes from './routes/rating/ratingRoutes.js';
+import eventSubRoutes from './routes//eventSubRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -56,6 +57,7 @@ app.use('/auth/comments/', commentRoutes);
 
 app.use('/auth/rating', ratingRoutes);
 
+app.use('/auth/event-subscription', eventSubRoutes);
 app.use(errorsHandler);
 app.listen(PORT, (req, res) => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

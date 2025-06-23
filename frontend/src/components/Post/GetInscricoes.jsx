@@ -6,17 +6,41 @@ import {
   Button,
   IconButton,
   Stack,
+  Typography,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  ListItemIcon,
 } from "@mui/material";
 
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 
 import iconIdenity from "../../assets/carteira-de-identidade.png";
-const GetInscricoes = () => {
+import { postStore } from "../../../store/postsStore.js";
+import { useNavigate } from "react-router-dom";
+const GetInscricoes = ({ id }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(!openModal);
   };
-
+  const { listSubs } = postStore();
+  const [subs, setSubs] = useState([]);
+  useEffect(() => {
+    const x = async () => {
+      const res = await listSubs(id);
+      if (res.success) {
+        setSubs(res.subs);
+        return;
+      }
+      alert(res.message);
+      return;
+    };
+    x();
+  }, []);
+  const navigate = useNavigate();
+  console.log(subs);
   return (
     <>
       <IconButton
@@ -50,7 +74,55 @@ const GetInscricoes = () => {
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <>
-            <Stack spacing={2}></Stack>
+            <Stack spacing={2}>
+              <List
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {subs.map((value) => (
+                  <ListItem
+                    key={value.User.userId}
+                    sx={{
+                      bgcolor: "#d9d9d9a1",
+                      my: 1,
+                      height: "90px",
+                      width: "95%",
+                      borderRadius: 2,
+                      gap: 2,
+                      ":hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                    alignItems="flex-start"
+                    onClick={() => navigate(`/profile/${value.User.username}`)}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          width: "60px",
+                          height: "60px",
+                        }}
+                        src={value.User.userImage}
+                      ></Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={value.User.username}
+                      secondary={
+                        <>
+                          <Typography component={"span"} variant="body2">
+                            {value.User.bio}
+                          </Typography>
+                        </>
+                      }
+                    ></ListItemText>
+                  </ListItem>
+                ))}
+              </List>
+            </Stack>
           </>
         </DialogContent>
         <DialogActions>

@@ -476,5 +476,51 @@ const postStore = create((set, get) => ({
 
     return { success: false, message: response.message };
   },
+  listSubs: async (id) => {
+    let token = userStore.getState().userData.accessToken;
+
+    let res = await fetch(
+      `http://localhost:3000/auth/event-subscription/list/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = userStore.getState().userData.accessToken;
+
+      res = await fetch(
+        `http://localhost:3000/auth/event-subscription/list/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        }
+      );
+    }
+
+    const response = await res.json();
+
+    if (response.success) {
+      return { success: true, message: response.message, subs: response.subs };
+    }
+
+    return { success: false, message: response.message };
+  },
 }));
 export { postStore };

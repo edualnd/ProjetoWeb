@@ -21,11 +21,11 @@ const ProfileInfo = ({
   userId,
 }) => {
   const [followState, setFollowState] = useState(follow);
-  const { followProfile, stopFollowinfProfile } = userStore();
+  const { followProfile, stopFollowingProfile } = userStore();
   const handleClick = async () => {
     let res;
     if (followState) {
-      res = await stopFollowinfProfile({ daUnfollow: userId }, username);
+      res = await stopFollowingProfile({ daUnfollow: userId }, username);
     } else {
       res = await followProfile({ seguindo: userId }, username);
     }

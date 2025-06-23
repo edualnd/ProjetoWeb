@@ -83,15 +83,17 @@ const FollowsPage = () => {
       <Stack>
         {categoryView == "Seguindo" ? (
           <FollowsCard
-            perfis={follows.follower}
+            perfis={follows.following || []}
             canEdit={canEdit}
-            follow="following"
+            follow="followerBy"
+            category="Não segue ninguem"
           ></FollowsCard>
         ) : (
           <FollowsCard
-            perfis={follows.following}
+            perfis={follows.follower || []}
             canEdit={canEdit}
-            follow="followerBy"
+            follow="following"
+            category="Não tem seguidores"
           ></FollowsCard>
         )}
       </Stack>
