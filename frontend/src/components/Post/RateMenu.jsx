@@ -18,6 +18,7 @@ const RateMenu = ({ publication }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(!openModal);
+    setDeleteRating(false);
   };
   const { userData } = userStore();
   const { ratePost, editRatePost, deleteRate, fetchData } = postStore();
@@ -29,20 +30,25 @@ const RateMenu = ({ publication }) => {
     setDeleteRating(!deleteRating);
   };
   const rates = userData.Rating || [0];
+
   const alreadyRate =
     rates.filter((r) => r.publicationId == publication).length > 0;
   const handleSubmit = async () => {
     let res;
-
+    console.log(alreadyRate, deleteRating);
     if (alreadyRate && !deleteRating) {
       res = await editRatePost(publication, { rating: rateValue });
-    } else if (!alreadyRate && !deleteRating) {
-      res = await ratePost(publication, { rating: rateValue });
-    } else {
+    } else if (alreadyRate && deleteRating) {
       res = await deleteRate(publication);
+    } else {
+      setDeleteRating(false);
+      res = await ratePost(publication, { rating: rateValue });
     }
+
     if (res.success) {
       console.log(res.message);
+
+      console.log(rateValue, userData);
       await fetchData();
       setOpenModal(!openModal);
       return;
@@ -82,7 +88,7 @@ const RateMenu = ({ publication }) => {
               onChange={(e, newValue) => setRateValue(newValue)}
               value={rateValue}
             />
-            {!alreadyRate && (
+            {alreadyRate && (
               <ToggleButton
                 selected={deleteRating}
                 onClick={handleDeleteRating}

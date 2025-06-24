@@ -18,6 +18,7 @@ export default async function createRatingController(req, res, next) {
     }
 
     const result = await createRating(rating, authorId, +publicationId);
+
     return res.status(200).json({
       success: true,
       message: 'Avaliação registrada com sucesso!',

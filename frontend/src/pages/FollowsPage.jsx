@@ -44,7 +44,7 @@ const FollowsPage = () => {
     }
   };
   useEffect(() => {
-    console.log("aaaa");
+    
     if (category == "Seguindo") {
       followerFun();
     } else {

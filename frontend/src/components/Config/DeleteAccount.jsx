@@ -16,7 +16,7 @@ const registerSchema = z.object({
 const DeleteAccount = () => {
   const [confirm, setConfirm] = useState(null);
   const handleClick = () => {
-    console.log("a");
+    
     if (!confirm) {
       setConfirm(true);
     } else {

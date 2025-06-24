@@ -34,7 +34,6 @@ export const EditPost = ({ id }) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(postSchema),
@@ -42,8 +41,8 @@ export const EditPost = ({ id }) => {
     defaultValues: { subs: false },
   });
 
-  const { userData } = userStore();
-  const { postsData } = postStore();
+  const { editPost } = userStore();
+  const { postsData, fetchData } = postStore();
   const post = postsData.posts.filter((p) => p.publicationId == id)[0];
 
   const [openModal, setOpenModal] = useState(false);
@@ -86,7 +85,7 @@ export const EditPost = ({ id }) => {
     setFileUrl((prev) => {
       let updated = [...prev];
 
-      files.forEach((f, i) => {
+      files.forEach((f) => {
         const newFile = {
           url: URL.createObjectURL(f),
           type: f.type,
@@ -96,10 +95,8 @@ export const EditPost = ({ id }) => {
 
         if (deletePhoto1) {
           updated[0] = newFile;
-          setDeletePhoto1(false);
         } else if (deletePhoto2) {
           updated[1] = newFile;
-          setDeletePhoto2(false);
         } else if (updated.length < 2) {
           updated.push(newFile);
         } else {
@@ -110,6 +107,7 @@ export const EditPost = ({ id }) => {
       return updated.slice(0, 2);
     });
   };
+
   const handleSubmitClick = async (data) => {
     data = Object.fromEntries(
       Object.entries(data)
@@ -119,12 +117,11 @@ export const EditPost = ({ id }) => {
           }
           return [key, value];
         })
-        .filter(Boolean),
+        .filter(Boolean)
     );
 
     const sendFormData = new FormData();
 
-    // Append campos do formulário (ex: text)
     Object.entries(data).forEach(([key, value]) => {
       sendFormData.append(key, value);
     });
@@ -144,22 +141,17 @@ export const EditPost = ({ id }) => {
       sendFormData.append("photos", f.file);
     });
 
-    // Só pra debug
-    for (const pair of sendFormData.entries()) {
-      console.log(pair[0], pair[1]);
+    let res;
+    res = await editPost(id, sendFormData);
+
+    if (res.success) {
+      console.log("Postado", res.post);
+      await fetchData();
+      handleOpenModal();
+      return;
     }
-
-    //   let res;
-    //   res = await createPost(sendFormData);
-
-    // if (res.success) {
-    //   console.log("Postado", res.post);
-    //   await fetchData();
-    //   handleOpenModal();
-    //   return;
-    // }
-    // alert(res.message);
-    // return;
+    alert(res.message);
+    return;
   };
 
   return (
@@ -208,7 +200,6 @@ export const EditPost = ({ id }) => {
                   multiple
                   style={{ display: "none" }}
                   onChange={handleFileChange}
-                  accept="image/*, video/*"
                 />
                 <ToggleButtonGroup>
                   <ToggleButton
@@ -275,7 +266,11 @@ export const EditPost = ({ id }) => {
             Para apagar alguma foto deixe o campo ativo
           </Typography>
           <Button onClick={handleOpenModal}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit(handleSubmitClick)}>
+          <Button
+            type="submit"
+            disable={!isValid}
+            onClick={handleSubmit(handleSubmitClick)}
+          >
             Postar
           </Button>
         </DialogActions>

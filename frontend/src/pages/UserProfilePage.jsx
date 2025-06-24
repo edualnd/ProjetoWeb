@@ -26,7 +26,7 @@ const UserProfilePage = () => {
     };
     get();
   }, []);
-  console.log(data);
+ 
   const posts = data.Publication || [];
 
   return (

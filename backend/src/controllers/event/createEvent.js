@@ -21,9 +21,9 @@ export default async function createEventController(req, res, next) {
     if (isEvent == 'true' && role == 'COMMOM') {
       return res.status(401).json({ message: 'voce não e um profissional' });
     }
-    const rEnd = registrationEndDate == 'null' ? null : registrationEndDate;
+    const rEnd = registrationEndDate == undefined ? null : registrationEndDate;
     const rStart =
-      registrationStartDate == 'null' ? null : registrationStartDate;
+      registrationStartDate == undefined ? null : registrationStartDate;
     const post = {
       text,
       title,
@@ -70,7 +70,7 @@ export default async function createEventController(req, res, next) {
     }
 
     const result = await createEvent({ ...post, ...images });
-    
+
     return res.status(200).json({
       success: true,
       message: 'Evento criado com sucesso!',

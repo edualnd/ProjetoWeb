@@ -135,7 +135,7 @@ const CreatePostModal = () => {
     }
   };
   const { createPost, createEvent } = userStore();
-  const {fetchData } = postStore();
+  const { fetchData } = postStore();
   const handleSubmitClick = async (data) => {
     delete data.subs;
     data = Object.fromEntries(
@@ -145,11 +145,11 @@ const CreatePostModal = () => {
             return [key, value.toISOString()];
           }
           if (value === undefined || value === null) {
-            return null; 
+            return null;
           }
           return [key, value];
         })
-        .filter(Boolean),
+        .filter(Boolean)
     );
     const sendFormData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
@@ -158,6 +158,7 @@ const CreatePostModal = () => {
     fileUrl.forEach((f) => {
       sendFormData.append("photos", f.file);
     });
+    
     let res;
     if (categoryView == "Evento") {
       sendFormData.append("isEvent", "true");
@@ -430,7 +431,7 @@ const CreatePostModal = () => {
                         style={{ maxWidth: "100%" }}
                         controls
                       ></video>
-                    ),
+                    )
                   )}
                 </ImageList>
               </Stack>

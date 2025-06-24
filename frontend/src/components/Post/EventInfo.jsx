@@ -38,7 +38,7 @@ const EventInfo = ({ content }) => {
       return;
     }
   };
-  const { ratingPost } = postStore();
+
   let openMenu = false;
 
   if (userData.logged && userData.userId == content.User.userId) {
@@ -46,23 +46,7 @@ const EventInfo = ({ content }) => {
   }
 
   const [rating, setRating] = useState(0);
-  useEffect(() => {
-    const x = async () => {
-      const res = await ratingPost(content.publicationId);
-      if (res.success) {
-        let rate = +res.rating;
-        if (!res.rating) {
-          rate = 0;
-        }
-        setRating(rate);
 
-        return;
-      }
-      //alert(res.message);
-      return;
-    };
-    x();
-  }, []);
   let canSubscribe = false;
   if (userData.logged) {
     canSubscribe = !userData.EventSubscription.some(
@@ -83,7 +67,7 @@ const EventInfo = ({ content }) => {
             </Typography>
             <Rating
               name="half-rating-read"
-              value={rating}
+              value={content.avgRating}
               precision={0.5}
               readOnly
             />
@@ -146,7 +130,7 @@ const EventInfo = ({ content }) => {
                 display: "flex",
               }}
             >
-              {openMenu && (
+              {userData.logged && (
                 <RateMenu publication={content.publicationId}></RateMenu>
               )}
             </Box>

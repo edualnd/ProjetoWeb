@@ -25,10 +25,7 @@ const MainContent = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  useEffect(() => {
-    console.log(postsData, "Aqui");
-  }, [postsData]);
-  console.log(postsData);
+
   return (
     <>
       {postsData.carousel.length != 0 && (

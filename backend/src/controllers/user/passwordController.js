@@ -21,6 +21,7 @@ const passwordController = async (req, res, next) => {
       throw new Error();
     }
     return res.status(200).json({
+      success: true,
       message: 'Senha atualiza com sucesso',
     });
   } catch (e) {

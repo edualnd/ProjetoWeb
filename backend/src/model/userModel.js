@@ -100,6 +100,7 @@ const checkLoginCredentials = async (data) => {
       Rating: {
         select: {
           publicationId: true,
+          rating: true,
         },
       },
       following: {

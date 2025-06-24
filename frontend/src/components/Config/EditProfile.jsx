@@ -11,9 +11,9 @@ import {
   Checkbox,
   ToggleButton,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { userStore } from "../../../store/userStore.js";
-import { isValid, z } from "zod";
+import {  z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 const registerSchema = z.object({
@@ -49,7 +49,6 @@ const EditProfile = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(registerSchema),

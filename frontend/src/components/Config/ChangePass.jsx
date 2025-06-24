@@ -2,6 +2,7 @@ import { Stack, Typography, Box, TextField, Button } from "@mui/material";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { userStore } from "../../../store/userStore.js";
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$.!%*?&])[A-Za-z\d@$.!%*?&]*$/;
 const registerSchema = z
@@ -29,14 +30,24 @@ const ChangePass = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(registerSchema),
     mode: "all",
   });
-  const handleChange = (data) => {
-    console.log(data);
+  const { changePass } = userStore();
+  const handleChange = async (data) => {
+    const res = await changePass(data);
+    if (res.success) {
+      console.log("Senha alterado");
+      reset();
+      return;
+    }
+    alert(res.message);
+    return;
   };
+
   return (
     <>
       <Box sx={{ width: "100%" }}>

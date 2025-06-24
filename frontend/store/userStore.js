@@ -18,7 +18,6 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
-      console.log(response.user);
       set(() => ({
         userData: {
           ...response.user,
@@ -27,6 +26,7 @@ const userStore = create((set, get) => ({
         },
       }));
     }
+    console.log(get().userData);
 
     return { success: response.success, message: response.message };
   },
@@ -192,7 +192,6 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
-      console.log(response.editProfile);
       set({
         userData: {
           ...get().userData,
@@ -329,6 +328,44 @@ const userStore = create((set, get) => ({
         },
       }));
       return { success: true, message: "Role alterado" };
+    }
+    return { success: false, message: response.message };
+  },
+  changePass: async (data) => {
+    let token = get().userData?.accessToken;
+    let res = await fetch("http://localhost:3000/auth/user/change-password", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await get().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData?.accessToken;
+
+      res = await fetch("http://localhost:3000/auth/user/change-password", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+    }
+    const response = await res.json();
+    if (response.success) {
+      return { success: true, message: "Senha alterado" };
     }
     return { success: false, message: response.message };
   },
@@ -479,7 +516,7 @@ const userStore = create((set, get) => ({
         userData: {
           ...state.userData,
           following: state.userData.following.filter(
-            (follow) => follow.followerBy.username !== username,
+            (follow) => follow.followerBy.username !== username
           ),
         },
       }));
@@ -581,7 +618,7 @@ const userStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (res.status === 401) {
@@ -602,13 +639,13 @@ const userStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        },
+        }
       );
     }
     const response = await res.json();
     if (response.success) {
       const alreadySubscribed = get().userData.EventSubscription.some(
-        (sub) => sub.publicationId === publicationId,
+        (sub) => sub.publicationId === publicationId
       );
 
       if (!alreadySubscribed) {
@@ -622,7 +659,7 @@ const userStore = create((set, get) => ({
           },
         });
       }
-      console.log(get().userData);
+
       return { success: true, message: "Inscrito" };
     }
     return { success: false, message: response.message };
@@ -639,7 +676,7 @@ const userStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (res.status === 401) {
@@ -660,7 +697,7 @@ const userStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        },
+        }
       );
     }
     const response = await res.json();
@@ -669,11 +706,11 @@ const userStore = create((set, get) => ({
         userData: {
           ...get().userData,
           EventSubscription: get().userData.EventSubscription.filter(
-            (sub) => sub.publicationId !== publicationId,
+            (sub) => sub.publicationId !== publicationId
           ),
         },
       }));
-      console.log(get().userData);
+
       return { success: true, message: "inscrição cancelada" };
     }
     return { success: false, message: response.message };
@@ -748,7 +785,7 @@ const userStore = create((set, get) => ({
 
     if (response.success) {
       const posts = [...postStore.getState().postsData.posts].filter(
-        (p) => p.publicationId != id,
+        (p) => p.publicationId != id
       );
       set(() => ({
         postsData: { ...postStore.getState().postsData, posts },
@@ -839,8 +876,46 @@ const userStore = create((set, get) => ({
   editPost: async (publicationId, data) => {
     let token = get().userData.accessToken;
 
+    let res = await fetch(`http://localhost:3000/auth/post/${publicationId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: data,
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/post/${publicationId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: data,
+        credentials: "include",
+      });
+    }
+
+    const response = await res.json();
+
+    if (response.success) {
+      return { success: true, message: response.message, post: response.post };
+    }
+
+    return { success: false, message: response.message };
+  },
+  editEvent: async (publicationId, data) => {
+    let token = get().userData.accessToken;
+
     let res = await fetch(`http://localhost:3000/auth/event/${publicationId}`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -857,7 +932,7 @@ const userStore = create((set, get) => ({
       token = get().userData.accessToken;
 
       res = await fetch(`http://localhost:3000/auth/event/${publicationId}`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -27,7 +27,7 @@ const CommentForm = ({ id }) => {
   });
   const { createComment } = postStore();
   const onSubmit = async (data) => {
-    console.log(data);
+    
     const res = await createComment(id, data);
     setComment(!comment);
     reset();

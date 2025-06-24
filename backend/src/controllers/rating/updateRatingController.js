@@ -18,7 +18,7 @@ export default async function updateRatingController(req, res, next) {
     }
 
     const result = await updateRating(rating, authorId, +publicationId);
-
+    console.log(result);
     return res.status(200).json({
       success: true,
       message: 'Avaliação atualizada com sucesso!',

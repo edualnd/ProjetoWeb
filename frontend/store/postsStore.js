@@ -36,6 +36,7 @@ const postStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      console.log(response.data);
       const posts = [...response.data];
       set(() => ({
         postsData: { ...get().postsData, posts },
@@ -46,28 +47,6 @@ const postStore = create((set, get) => ({
     return { success: false, message: response.message };
   },
 
-  ratingPost: async (id) => {
-    let res = await fetch(`http://localhost:3000/ratings/${id}`, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "include",
-    });
-
-    const response = await res.json();
-
-    if (response.success) {
-      return {
-        success: true,
-        message: response.message,
-        rating: response.rating,
-      };
-    }
-
-    return { success: false, message: response.message };
-  },
   ratePost: async (id, data) => {
     let token = userStore.getState().userData.accessToken;
 
@@ -105,6 +84,12 @@ const postStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      userStore.setState((state) => ({
+        userData: {
+          ...state.userData,
+          Rating: [...state.userData.Rating, response.rating],
+        },
+      }));
       return { success: true, message: response.message };
     }
 
@@ -147,6 +132,14 @@ const postStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      userStore.setState((state) => ({
+        userData: {
+          ...state.userData,
+          Rating: state.userData.Rating.map((rating) =>
+            rating.publicationId === id ? { ...rating, ...data.rating } : rating
+          ),
+        },
+      }));
       return { success: true, message: response.message };
     }
 
@@ -187,6 +180,14 @@ const postStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
+      userStore.setState((state) => ({
+        userData: {
+          ...state.userData,
+          Rating: state.userData.Rating.filter(
+            (rating) => rating.publicationId !== id
+          ),
+        },
+      }));
       return { success: true, message: response.message };
     }
 
@@ -219,7 +220,7 @@ const postStore = create((set, get) => ({
 
       const updatedPosts = get().postsData.posts.map((post) => {
         const postComments = comments.filter(
-          (comment) => comment.publicationId === post.publicationId,
+          (comment) => comment.publicationId === post.publicationId
         );
 
         return {
@@ -278,7 +279,7 @@ const postStore = create((set, get) => ({
       const updatedPosts = get().postsData.posts.map((post) => {
         if (post.comments) {
           const filteredComments = post.comments.filter(
-            (comment) => comment.commentId !== id,
+            (comment) => comment.commentId !== id
           );
 
           return {
@@ -444,7 +445,7 @@ const postStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (res.status === 401) {
@@ -465,7 +466,7 @@ const postStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        },
+        }
       );
     }
 

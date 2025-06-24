@@ -7,16 +7,15 @@ import { userStore } from "../../store/userStore.js";
 import { postStore } from "../../store/postsStore.js";
 const HomePage = () => {
   const { loginUser } = userStore();
-  
+
   const handleClick = async () => {
-    await loginUser({ data: "profi", password: "qwerty123" });
+    await loginUser({ data: "profi", password: "Duda2006." });
   };
- 
 
   return (
     <>
       <Button onClick={handleClick}>CLiquea aqui</Button>
-     
+
       <MainContent></MainContent>
     </>
   );

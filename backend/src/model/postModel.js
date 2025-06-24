@@ -32,11 +32,10 @@ export async function create(post) {
   return result;
 }
 
-export async function update(authorId, publicationId, post) {
+export async function update(publicationId, post) {
   const result = await prisma.publication.update({
     where: {
       publicationId: Number(publicationId),
-      authorId: authorId,
     },
     data: post,
   });
@@ -89,12 +88,12 @@ export async function createEvent(post) {
   return result;
 }
 
-export async function updateEvent(authorId, publicationId, post) {
+export async function updateEvent(publicationId, data) {
   const result = await prisma.publication.update({
     where: {
       publicationId: Number(publicationId),
     },
-    data: { post },
+    data: data,
     include: {
       User: {
         select: {
@@ -166,8 +165,19 @@ export async function getAllPostsVisitor(page = 1, limit = 20) {
         createdAt: 'desc',
       },
     });
+    const postsWithAvg = posts.map((post) => {
+      const ratings = (post.Rating || []).map((r) => r.rating);
+      const avg =
+        ratings.length > 0
+          ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+          : null;
 
-    return posts;
+      return {
+        ...post,
+        avgRating: avg == null ? 0 : avg,
+      };
+    });
+    return postsWithAvg;
   } catch (error) {
     console.error('Database error in getAllPostsVisitor:', error);
     throw new Error('Falha ao buscar publicações no banco de dados');

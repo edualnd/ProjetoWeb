@@ -87,7 +87,7 @@ function Item({ item }) {
           {date}
         </Box>
 
-        <Box sx={{ bgcolor: "blue", width: "100%", height: "70%" }}>
+        <Box sx={{ bgcolor: "white", width: "100%", height: "70%" }}>
           <img
             src={
               isImagens

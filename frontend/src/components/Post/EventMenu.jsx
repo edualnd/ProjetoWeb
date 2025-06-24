@@ -83,7 +83,7 @@ const EventMenu = ({ id }) => {
               py: 0,
             }}
           >
-            <EditEvent></EditEvent>
+            <EditEvent id={id}></EditEvent>
           </MenuItem>
 
           <Divider />
