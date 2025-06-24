@@ -26,6 +26,7 @@ const CommentCard = ({ comments, postAuthor }) => {
   });
 
   const [card] = useState(updatedComments);
+  console.log(card);
   return (
     <>
       {isComments ? (
@@ -49,7 +50,10 @@ const CommentCard = ({ comments, postAuthor }) => {
                     width: "100%",
                   }}
                 >
-                  <Avatar sx={{ width: "40px", height: "40px" }}></Avatar>
+                  <Avatar
+                    src={`https://res.cloudinary.com/dzkegljd1/image/upload/v1750800404/${comment.User.userImage}`}
+                    sx={{ width: "40px", height: "40px" }}
+                  ></Avatar>
                   <Box
                     sx={{
                       flex: 1,
@@ -79,7 +83,7 @@ const CommentCard = ({ comments, postAuthor }) => {
                         canDelete={comment.canDelete}
                         canEdit={comment.canEdit}
                         commentId={comment.commentId}
-                        text = {comment.comment}
+                        text={comment.comment}
                       ></CommentMenu>
                     </>
                   ) : (

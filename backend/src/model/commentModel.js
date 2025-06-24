@@ -21,7 +21,7 @@ const getComment = async (publicationId) => {
       createdAt: true,
       publicationId: true,
       User: {
-        select: { username: true, userId: true },
+        select: { username: true, userId: true, userImage: true },
       },
     },
   });
