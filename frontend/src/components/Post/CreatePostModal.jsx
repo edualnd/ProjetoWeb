@@ -22,6 +22,7 @@ import { userStore } from "../../../store/userStore.js";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { postStore } from "../../../store/postsStore.js";
 
 const eventSchema = z
   .object({
@@ -134,15 +135,21 @@ const CreatePostModal = () => {
     }
   };
   const { createPost, createEvent } = userStore();
+  const {fetchData } = postStore();
   const handleSubmitClick = async (data) => {
     delete data.subs;
     data = Object.fromEntries(
-      Object.entries(data).map(([key, value]) => {
-        if (value instanceof Date) {
-          return [key, value.toISOString()];
-        }
-        return [key, value];
-      })
+      Object.entries(data)
+        .map(([key, value]) => {
+          if (value instanceof Date) {
+            return [key, value.toISOString()];
+          }
+          if (value === undefined || value === null) {
+            return null; 
+          }
+          return [key, value];
+        })
+        .filter(Boolean),
     );
     const sendFormData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
@@ -159,7 +166,8 @@ const CreatePostModal = () => {
       res = await createPost(sendFormData);
     }
     if (res.success) {
-      console.log("Postado");
+      console.log("Postado", res.post);
+      await fetchData();
       handleOpenModal();
       return;
     }
@@ -422,7 +430,7 @@ const CreatePostModal = () => {
                         style={{ maxWidth: "100%" }}
                         controls
                       ></video>
-                    )
+                    ),
                   )}
                 </ImageList>
               </Stack>

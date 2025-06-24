@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import { userStore } from "../../store/userStore.js";
 
 const MainContent = () => {
-  const { postsData } = postStore();
+  const postsData = postStore((state) => state.postsData);
 
   const posts = postsData.posts || null;
   const { fetchData } = postStore();
@@ -25,34 +25,39 @@ const MainContent = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  useEffect(() => {
+    console.log(postsData, "Aqui");
+  }, [postsData]);
+  console.log(postsData);
   return (
     <>
-      <Box
-        sx={{
-          width: "100%",
-          height: "400px",
-          mt: 8,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-        }}
-      >
-        <Typography
-          component={"h3"}
-          variant="h4"
+      {postsData.carousel.length != 0 && (
+        <Box
           sx={{
-            color: "ocean.dark",
-            fontFamily: "inter",
-            fontSize: { xs: "32px", lg: "36px" },
+            width: "100%",
+            height: "400px",
+            mt: 8,
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
           }}
         >
-          Próximos eventos
-        </Typography>
+          <Typography
+            component={"h3"}
+            variant="h4"
+            sx={{
+              color: "ocean.dark",
+              fontFamily: "inter",
+              fontSize: { xs: "32px", lg: "36px" },
+            }}
+          >
+            Próximos eventos
+          </Typography>
 
-        <Carossel />
-        <Divider></Divider>
-      </Box>
+          <Carossel />
+          <Divider></Divider>
+        </Box>
+      )}
       <Box
         sx={{
           display: "flex",

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { userStore } from "./userStore.js";
 
 const postStore = create((set, get) => ({
-  postsData: {},
+  postsData: { carousel: [], posts: [] },
   getCarousel: async () => {
     let res = await fetch("http://localhost:3000/newer-event", {
       method: "GET",
@@ -45,7 +45,7 @@ const postStore = create((set, get) => ({
 
     return { success: false, message: response.message };
   },
-  
+
   ratingPost: async (id) => {
     let res = await fetch(`http://localhost:3000/ratings/${id}`, {
       method: "get",
@@ -219,7 +219,7 @@ const postStore = create((set, get) => ({
 
       const updatedPosts = get().postsData.posts.map((post) => {
         const postComments = comments.filter(
-          (comment) => comment.publicationId === post.publicationId
+          (comment) => comment.publicationId === post.publicationId,
         );
 
         return {
@@ -278,7 +278,7 @@ const postStore = create((set, get) => ({
       const updatedPosts = get().postsData.posts.map((post) => {
         if (post.comments) {
           const filteredComments = post.comments.filter(
-            (comment) => comment.commentId !== id
+            (comment) => comment.commentId !== id,
           );
 
           return {
@@ -444,7 +444,7 @@ const postStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (res.status === 401) {
@@ -465,7 +465,7 @@ const postStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        }
+        },
       );
     }
 

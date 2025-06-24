@@ -61,8 +61,6 @@ export default async function updatePostController(req, res, next) {
           id = idFile[0];
           await deleteFromCloud(id);
         }
-
-        await deleteFromCloud(id);
       }
       if (getCurrentImages.video) {
         const idFile = getCurrentImages.video.split('.');
@@ -88,7 +86,7 @@ export default async function updatePostController(req, res, next) {
           await deleteFromCloud(id);
         }
 
-        await deleteFromCloud(id);
+       
       }
     }
 
@@ -103,8 +101,7 @@ export default async function updatePostController(req, res, next) {
           id = idFile[0];
           await deleteFromCloud(id);
         }
-
-        await deleteFromCloud(id);
+     
       }
       if (getCurrentImages.video) {
         const idFile = getCurrentImages.video.split('.');

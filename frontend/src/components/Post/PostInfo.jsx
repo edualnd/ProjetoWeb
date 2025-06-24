@@ -38,7 +38,9 @@ const PostInfo = ({ content }) => {
           </Box>
         </Link>
 
-        {openMenu && <PostMenu id={content.publicationId}></PostMenu>}
+        {openMenu && (
+          <PostMenu id={content.publicationId} ></PostMenu>
+        )}
       </Box>
       <Box>
         <Typography

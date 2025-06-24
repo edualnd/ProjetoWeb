@@ -14,7 +14,7 @@ import { userStore } from "../../../store/userStore.js";
 import { EditPost } from "./EditPost.jsx";
 import { postStore } from "../../../store/postsStore.js";
 
-export const PostMenu = ({id}) => {
+export const PostMenu = ({ id, post }) => {
   const { deletePost } = userStore();
   const { fetchData } = postStore();
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -81,7 +81,7 @@ export const PostMenu = ({id}) => {
               py: 0,
             }}
           >
-            <EditPost></EditPost>
+            <EditPost id={id}></EditPost>
           </MenuItem>
 
           <Divider />

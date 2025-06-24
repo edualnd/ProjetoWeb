@@ -48,6 +48,7 @@ export default async function createPostController(req, res, next) {
     }
 
     const result = await create({ ...post, ...images });
+    console.log(result);
     return res.status(200).json({
       success: true,
       message: 'Post criado com sucesso!',

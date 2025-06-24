@@ -479,7 +479,7 @@ const userStore = create((set, get) => ({
         userData: {
           ...state.userData,
           following: state.userData.following.filter(
-            (follow) => follow.followerBy.username !== username
+            (follow) => follow.followerBy.username !== username,
           ),
         },
       }));
@@ -581,7 +581,7 @@ const userStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (res.status === 401) {
@@ -602,13 +602,13 @@ const userStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        }
+        },
       );
     }
     const response = await res.json();
     if (response.success) {
       const alreadySubscribed = get().userData.EventSubscription.some(
-        (sub) => sub.publicationId === publicationId
+        (sub) => sub.publicationId === publicationId,
       );
 
       if (!alreadySubscribed) {
@@ -639,7 +639,7 @@ const userStore = create((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (res.status === 401) {
@@ -660,7 +660,7 @@ const userStore = create((set, get) => ({
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        }
+        },
       );
     }
     const response = await res.json();
@@ -669,7 +669,7 @@ const userStore = create((set, get) => ({
         userData: {
           ...get().userData,
           EventSubscription: get().userData.EventSubscription.filter(
-            (sub) => sub.publicationId !== publicationId
+            (sub) => sub.publicationId !== publicationId,
           ),
         },
       }));
@@ -748,7 +748,7 @@ const userStore = create((set, get) => ({
 
     if (response.success) {
       const posts = [...postStore.getState().postsData.posts].filter(
-        (p) => p.publicationId != id
+        (p) => p.publicationId != id,
       );
       set(() => ({
         postsData: { ...postStore.getState().postsData, posts },
@@ -792,20 +792,12 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
-      const posts = [...postStore.getState().postsData.posts, response.post];
-
-      set(() => ({
-        postsData: {
-          ...postStore.getState().postsData,
-          posts,
-        },
-      }));
-
-      return { success: true, message: response.message };
+      return { success: true, message: response.message, post: response.post };
     }
 
     return { success: false, message: response.message };
   },
+
   createEvent: async (data) => {
     let token = get().userData.accessToken;
 
@@ -839,16 +831,45 @@ const userStore = create((set, get) => ({
     const response = await res.json();
 
     if (response.success) {
-      const posts = [...postStore.getState().postsData.posts, response.post];
+      return { success: true, message: response.message, post: response.post };
+    }
 
-      set(() => ({
-        postsData: {
-          ...postStore.getState().postsData,
-          posts,
+    return { success: false, message: response.message };
+  },
+  editPost: async (publicationId, data) => {
+    let token = get().userData.accessToken;
+
+    let res = await fetch(`http://localhost:3000/auth/event/${publicationId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: data,
+      credentials: "include",
+    });
+
+    if (res.status === 401) {
+      const refreshResult = await userStore.getState().refreshToken();
+      if (!refreshResult.success) {
+        return { success: false, message: "Re-login necessário" };
+      }
+
+      token = get().userData.accessToken;
+
+      res = await fetch(`http://localhost:3000/auth/event/${publicationId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      }));
+        body: data,
+        credentials: "include",
+      });
+    }
 
-      return { success: true, message: response.message };
+    const response = await res.json();
+
+    if (response.success) {
+      return { success: true, message: response.message, post: response.post };
     }
 
     return { success: false, message: response.message };

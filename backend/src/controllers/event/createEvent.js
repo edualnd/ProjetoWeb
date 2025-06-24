@@ -21,15 +21,17 @@ export default async function createEventController(req, res, next) {
     if (isEvent == 'true' && role == 'COMMOM') {
       return res.status(401).json({ message: 'voce não e um profissional' });
     }
-
+    const rEnd = registrationEndDate == 'null' ? null : registrationEndDate;
+    const rStart =
+      registrationStartDate == 'null' ? null : registrationStartDate;
     const post = {
       text,
       title,
       isEvent: Boolean(isEvent),
       authorId: user,
       eventDate,
-      registrationEndDate: registrationEndDate || null,
-      registrationStartDate: registrationStartDate || null,
+      registrationEndDate: rEnd,
+      registrationStartDate: rStart,
     };
 
     const { success, error, data } = await validateSchema(eventSchema, {
@@ -56,7 +58,7 @@ export default async function createEventController(req, res, next) {
 
     if (!success) {
       console.log(error);
-      return res.status(500).json({ error: error });
+      return res.status(500).json({ success: false, error: error });
     }
 
     let images = {};
@@ -68,7 +70,9 @@ export default async function createEventController(req, res, next) {
     }
 
     const result = await createEvent({ ...post, ...images });
+    
     return res.status(200).json({
+      success: true,
       message: 'Evento criado com sucesso!',
       post: result,
     });
