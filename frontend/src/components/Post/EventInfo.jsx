@@ -1,9 +1,9 @@
 import { Box, Stack, Typography, Button, Link, Rating } from "@mui/material";
 import RateMenu from "./RateMenu.jsx";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import EventMenu from "./EventMenu.jsx";
 import { userStore } from "../../../store/userStore.js";
-import { postStore } from "../../../store/postsStore.js";
+
 const EventInfo = ({ content }) => {
   const { userData, deleteSubscribeEvent, subscribeEvent } = userStore();
   const [inscricao, setInscricao] = useState(false);
@@ -45,7 +45,7 @@ const EventInfo = ({ content }) => {
     openMenu = true;
   }
 
-  const [rating, setRating] = useState(0);
+
 
   let canSubscribe = false;
   if (userData.logged) {
